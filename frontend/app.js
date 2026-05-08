@@ -112,6 +112,45 @@ class AppController {
     });
     this.bindCollapsibles();
     this._initPanelDividers();
+    this._initI18n();
+  }
+
+  _initI18n() {
+    if (!window.OMC_I18N) return;
+    this._uiLanguage = window.OMC_I18N.getLanguage();
+    const select = document.getElementById('settings-language-select');
+    if (select) {
+      select.innerHTML = window.OMC_I18N.getLanguages()
+        .map((lang) => `<option value="${lang.code}">${lang.label}</option>`)
+        .join('');
+      select.value = this._uiLanguage;
+      select.addEventListener('change', () => {
+        this._uiLanguage = window.OMC_I18N.setLanguage(select.value);
+        window.OMC_I18N.applyTo(document);
+        this._syncLocalizedChrome();
+        select.value = this._uiLanguage;
+      });
+    }
+    window.OMC_I18N.applyTo(document);
+    this._syncLocalizedChrome();
+  }
+
+  _syncLocalizedChrome() {
+    if (!window.OMC_I18N) return;
+    const t = (key, fallback) => window.OMC_I18N.t(key, fallback);
+    document.getElementById('create-product-btn')?.setAttribute('title', t('toolbar.newProduct', 'New Product'));
+    document.getElementById('import-product-btn')?.setAttribute('title', t('toolbar.importProduct', 'Import Product'));
+    document.getElementById('settings-toolbar-btn')?.setAttribute('title', t('toolbar.settings', 'Settings'));
+    document.getElementById('ex-employee-toolbar-btn')?.setAttribute('title', t('toolbar.exEmployeeWall', 'Ex-Employee Wall'));
+    document.getElementById('company-culture-toolbar-btn')?.setAttribute('title', t('toolbar.companyCulture', 'Company Culture'));
+    document.getElementById('company-direction-toolbar-btn')?.setAttribute('title', t('toolbar.companyDirection', 'Company Direction'));
+    document.getElementById('dashboard-toolbar-btn')?.setAttribute('title', t('toolbar.dashboard', 'Dashboard'));
+    document.getElementById('announcements-toolbar-btn')?.setAttribute('title', t('toolbar.announcements', 'Announcements'));
+    document.getElementById('ceo-conv-input')?.setAttribute('placeholder', t('common.messagePlaceholder', '$ Type message, / for commands (Enter to send)'));
+    const statusEl = document.getElementById('connection-status');
+    if (statusEl) {
+      statusEl.textContent = statusEl.classList.contains('online') ? t('status.online', '● ONLINE') : t('status.offline', '● OFFLINE');
+    }
   }
 
   // ===== WebSocket =====
