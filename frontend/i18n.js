@@ -20,6 +20,14 @@
       'settings.apiConnections': '🔑 API Connections',
       'settings.systemCrons': '⏰ System Crons',
       'settings.display': '👁 Display',
+      'ceo.chat': '💬 Chat',
+      'ceo.projects': 'Projects',
+      'ceo.oneOnOne': '1-on-1',
+      'ceo.linkTaskToProduct': 'Link task to product',
+      'ceo.noProduct': 'No Product',
+      'status.employeeCount': '👥 {count}',
+      'status.toolCount': '🔧 {count}',
+      'status.roomCount': '🏢 {free}/{total}',
     },
     'pt-BR': {
       'nav.products': 'PRODUTOS',
@@ -33,6 +41,14 @@
       'settings.apiConnections': '🔑 Conexões de API',
       'settings.systemCrons': '⏰ Tarefas agendadas',
       'settings.display': '👁 Exibição',
+      'ceo.chat': '💬 Chat',
+      'ceo.projects': 'Projetos',
+      'ceo.oneOnOne': '1-a-1',
+      'ceo.linkTaskToProduct': 'Vincular tarefa ao produto',
+      'ceo.noProduct': 'Sem produto',
+      'status.employeeCount': '👥 {count}',
+      'status.toolCount': '🔧 {count}',
+      'status.roomCount': '🏢 {free}/{total}',
     },
   };
 
@@ -59,6 +75,9 @@
   function applyTo(root = document) {
     root.querySelectorAll('[data-i18n]').forEach((node) => {
       const key = node.getAttribute('data-i18n');
+      if (!key) return;
+      if (key.startsWith('status.')) return;
+      if (node.childElementCount > 0) return;
       const value = t(key, node.textContent || '');
       if ('placeholder' in node) {
         node.placeholder = value;

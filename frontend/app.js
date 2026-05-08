@@ -133,27 +133,6 @@ class AppController {
     }
     window.OMC_I18N.applyTo(document);
     this._syncLocalizedChrome();
-    if (select && select.value !== this._uiLanguage) {
-      select.value = this._uiLanguage;
-    }
-  }
-
-  _syncLocalizedChrome() {
-    if (!window.OMC_I18N) return;
-    const t = (key, fallback) => window.OMC_I18N.t(key, fallback);
-    document.getElementById('create-product-btn')?.setAttribute('title', t('toolbar.newProduct', 'New Product'));
-    document.getElementById('import-product-btn')?.setAttribute('title', t('toolbar.importProduct', 'Import Product'));
-    document.getElementById('settings-toolbar-btn')?.setAttribute('title', t('toolbar.settings', 'Settings'));
-    document.getElementById('ex-employee-toolbar-btn')?.setAttribute('title', t('toolbar.exEmployeeWall', 'Ex-Employee Wall'));
-    document.getElementById('company-culture-toolbar-btn')?.setAttribute('title', t('toolbar.companyCulture', 'Company Culture'));
-    document.getElementById('company-direction-toolbar-btn')?.setAttribute('title', t('toolbar.companyDirection', 'Company Direction'));
-    document.getElementById('dashboard-toolbar-btn')?.setAttribute('title', t('toolbar.dashboard', 'Dashboard'));
-    document.getElementById('announcements-toolbar-btn')?.setAttribute('title', t('toolbar.announcements', 'Announcements'));
-    document.getElementById('ceo-conv-input')?.setAttribute('placeholder', t('common.messagePlaceholder', '$ Type message, / for commands (Enter to send)'));
-    const statusEl = document.getElementById('connection-status');
-    if (statusEl) {
-      statusEl.textContent = statusEl.classList.contains('online') ? t('status.online', '● ONLINE') : t('status.offline', '● OFFLINE');
-    }
   }
 
   // ===== WebSocket =====
@@ -166,8 +145,10 @@ class AppController {
     this.ws.onopen = () => {
       this.reconnectDelay = 1000;
       const statusEl = document.getElementById('connection-status');
-      statusEl.textContent = '● ONLINE';
-      statusEl.classList.add('online');
+      if (statusEl) {
+        statusEl.textContent = window.OMC_I18N?.t('status.online', '● ONLINE') || '● ONLINE';
+        statusEl.classList.add('online');
+      }
       // Hide reconnecting overlay
       document.getElementById('reconnecting-overlay').classList.add('hidden');
       // Clear restart banner after successful reconnect (server restarted)
@@ -191,8 +172,10 @@ class AppController {
 
     this.ws.onclose = () => {
       const statusEl = document.getElementById('connection-status');
-      statusEl.textContent = '● OFFLINE';
-      statusEl.classList.remove('online');
+      if (statusEl) {
+        statusEl.textContent = window.OMC_I18N?.t('status.offline', '● OFFLINE') || '● OFFLINE';
+        statusEl.classList.remove('online');
+      }
       // Show reconnecting overlay
       document.getElementById('reconnecting-overlay').classList.remove('hidden');
       setTimeout(() => this.connect(), this.reconnectDelay);
