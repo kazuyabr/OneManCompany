@@ -5738,9 +5738,9 @@ class AppController {
         const hasSetupToken = group.choices && group.choices.some(c => c.auth_method === 'setup_token' && c.available);
         const oauthSection = hasSetupToken ? `
               <div style="margin-bottom:6px;">
-                <label class="api-field-label">Setup Token (Recommended)</label>
+                <label class="api-field-label">${t('settings.setupTokenRecommended', 'Setup Token (Recommended)')}</label>
                 <div class="api-card-actions">
-                  <button class="pixel-btn small" onclick="app._startCompanyOAuth()">Authorize with Anthropic</button>
+                  <button class="pixel-btn small" onclick="app._startCompanyOAuth()">${t('settings.authorizeWithAnthropic', 'Authorize with Anthropic')}</button>
                   <span id="api-oauth-result" class="api-test-result"></span>
                   <div id="oauth-code-input" style="display:none;margin-top:4px;">
                     <label style="font-size:5.5px;color:var(--pixel-yellow);">Paste the code from Anthropic:</label>
