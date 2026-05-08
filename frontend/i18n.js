@@ -1,6 +1,6 @@
 (() => {
   const STORAGE_KEY = 'omc-ui-language';
-  const DEFAULT_LANGUAGE = 'en';
+  const DEFAULT_LANGUAGE = 'pt-BR';
 
   const LANGUAGES = [
     { code: 'en', label: 'English' },

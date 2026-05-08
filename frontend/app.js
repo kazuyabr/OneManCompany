@@ -133,6 +133,9 @@ class AppController {
     }
     window.OMC_I18N.applyTo(document);
     this._syncLocalizedChrome();
+    if (select && select.value !== this._uiLanguage) {
+      select.value = this._uiLanguage;
+    }
   }
 
   _syncLocalizedChrome() {

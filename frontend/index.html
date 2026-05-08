@@ -39,11 +39,11 @@
     <!-- Center top: Office Canvas -->
     <main id="office-panel">
       <div class="panel-header">
-        <h1 class="pixel-title">&#127970; ONE MAN COMPANY <span id="app-version" class="version-badge"></span></h1>
+        <h1 class="pixel-title" data-i18n="nav.ceoConsole">&#127970; ONE MAN COMPANY <span id="app-version" class="version-badge"></span></h1>
         <div id="status-bar">
-          <span class="status-item" id="employee-count">&#128101; 2</span>
-          <span class="status-item status-clickable" id="tool-count" onclick="window.app.openToolList()">&#128295; 0</span>
-          <span class="status-item" id="room-count">&#127970; 0/0</span>
+          <span class="status-item" id="employee-count" data-i18n="status.employeeCount">&#128101; 2</span>
+          <span class="status-item status-clickable" id="tool-count" onclick="window.app.openToolList()" data-i18n="status.toolCount">&#128295; 0</span>
+          <span class="status-item" id="room-count" data-i18n="status.roomCount">&#127970; 0/0</span>
           <!-- Meeting moved to /meeting slash command in CEO console -->
           <button id="ex-employee-toolbar-btn" class="toolbar-icon-btn" title="Ex-Employee Wall" aria-label="Ex-Employee Wall">&#128220;</button>
           <button id="company-culture-toolbar-btn" class="toolbar-icon-btn" title="Company Culture" aria-label="Company Culture">&#127988;</button>
@@ -51,7 +51,7 @@
           <button id="dashboard-toolbar-btn" class="toolbar-icon-btn" title="Dashboard" aria-label="Dashboard">&#128202;</button>
           <button id="announcements-toolbar-btn" class="toolbar-icon-btn" title="Announcements" aria-label="Announcements" style="position:relative;">&#128276;<span id="announcements-badge" class="announcement-badge hidden"></span></button>
           <button id="settings-toolbar-btn" class="toolbar-icon-btn" title="Settings" aria-label="Settings">&#9881;</button>
-          <span class="status-item" id="connection-status" role="status" aria-live="polite">&#9679; OFFLINE</span>
+          <span class="status-item" id="connection-status" role="status" aria-live="polite" data-i18n="status.offline">&#9679; OFFLINE</span>
           <span class="status-item" id="last-sync-time"></span>
         </div>
       </div>
