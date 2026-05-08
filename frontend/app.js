@@ -135,6 +135,74 @@ class AppController {
     this._syncLocalizedChrome();
   }
 
+  _syncLocalizedChrome() {
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    const resolveEl = (selector) => {
+      if (!selector) return null;
+      if (selector.startsWith('#') && !selector.includes(' ')) return document.getElementById(selector.slice(1));
+      return document.querySelector(selector);
+    };
+    const setText = (selector, key, fallback, vars) => {
+      const el = resolveEl(selector);
+      if (!el) return;
+      el.textContent = t(key, fallback, vars);
+    };
+    const setPlaceholder = (selector, key, fallback, vars) => {
+      const el = resolveEl(selector);
+      if (!el) return;
+      el.placeholder = t(key, fallback, vars);
+    };
+    const setTitle = (selector, key, fallback, vars) => {
+      const el = resolveEl(selector);
+      if (!el) return;
+      el.title = t(key, fallback, vars);
+      if (el.getAttribute('aria-label') != null) el.setAttribute('aria-label', t(key, fallback, vars));
+    };
+
+    setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconnecting...');
+
+    setTitle('#create-product-btn', 'toolbar.newProduct', 'New Product');
+    setTitle('#import-product-btn', 'toolbar.importProduct', 'Import Product');
+    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Ex-Employee Wall');
+    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Company Culture');
+    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Company Direction');
+    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Dashboard');
+    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Announcements');
+    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Settings');
+    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Do Not Disturb');
+    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Background Tasks');
+    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Export SVG Screenshot');
+    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Stop All Tasks');
+    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Force reload all data from disk');
+
+    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Live Meeting Log');
+    setText('#emp-modal-title', 'employee.detailsTitle', 'Employee Details');
+    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Select a workflow to view');
+    setText('#hiring-request-approve', 'common.approve', 'Approve');
+    setText('#hiring-request-reject', 'common.reject', 'Reject');
+    setText('#interview-modal-title', 'interview.title', '🎤 Interview');
+    setText('#onboarding-toggle-btn', 'onboarding.toggle', '▼');
+    setText('#onboarding-done-btn', 'common.close', '✕');
+    setText('#ex-employee-close-btn', 'common.close', '✕');
+    setText('#dashboard-close-btn', 'common.close', '✕');
+    setText('#company-culture-close-btn', 'common.close', '✕');
+    setText('#project-close-btn', 'common.close', '✕');
+    setText('#product-modal-title', 'product.detailTitle', 'Product Detail');
+    setText('#company-direction-close-btn', 'common.close', '✕');
+    setText('#generic-popup-title', 'common.notification', 'Notification');
+    setText('#bg-tasks-close-btn', 'common.close', '✕');
+    setText('#trace-modal-title', 'traceViewer.title', 'TRACE VIEWER');
+
+    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'e.g. We focus on AI-driven creative tools for indie creators...');
+    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Add a new culture entry...');
+    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'e.g. OneManCompany官网');
+    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Product goal / objective');
+    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Type message, / for commands (Enter to send)');
+    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Type a message...');
+    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Send a message to this meeting...');
+    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Type a message...');
+  }
+
   // ===== WebSocket =====
   connect() {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -2299,7 +2367,9 @@ class AppController {
     const banner = document.getElementById('code-update-banner');
     const textEl = document.getElementById('code-update-text');
     const shortFiles = (files || []).map(f => f.split('/').slice(-2).join('/'));
-    textEl.textContent = `🔄 ${count} backend file(s) changed: ${shortFiles.slice(0, 3).join(', ')}${count > 3 ? '...' : ''}`;
+    const summary = shortFiles.slice(0, 3).join(', ');
+    const base = window.OMC_I18N?.t('banner.codeUpdated', '🔄 Code updated') || '🔄 Code updated';
+    textEl.textContent = `${base}: ${count} backend file(s) changed${summary ? `: ${summary}` : ''}${count > 3 ? '...' : ''}`;
     banner.classList.remove('hidden');
   }
 
@@ -2308,7 +2378,7 @@ class AppController {
     const textEl = document.getElementById('code-update-text');
     const applyBtn = document.getElementById('code-update-apply-btn');
     textEl.textContent = `⏳ ${message}`;
-    applyBtn.textContent = 'Waiting...';
+    applyBtn.textContent = window.OMC_I18N?.t('banner.waiting', 'Waiting...') || 'Waiting...';
     applyBtn.disabled = true;
     banner.classList.remove('hidden');
   }
@@ -5233,21 +5303,21 @@ class AppController {
     if (oldAgenda) oldAgenda.parentElement.remove();
 
     // Title
-    document.getElementById('meeting-modal-title').textContent = `🏢 ${room.name}`;
+    document.getElementById('meeting-modal-title').textContent = window.OMC_I18N?.t('meeting.roomTitle', '🏢 {name}', { name: room.name }) || `🏢 ${room.name}`;
 
     // Status
     const led = document.getElementById('meeting-modal-status-led');
     const statusText = document.getElementById('meeting-modal-status-text');
     if (room.is_booked) {
       led.className = 'status-led booked';
-      statusText.textContent = 'In Meeting';
+      statusText.textContent = window.OMC_I18N?.t('meeting.inMeeting', 'In Meeting') || 'In Meeting';
     } else {
       led.className = 'status-led free';
-      statusText.textContent = 'Available';
+      statusText.textContent = window.OMC_I18N?.t('meeting.available', 'Available') || 'Available';
     }
 
     // Capacity
-    document.getElementById('meeting-capacity').textContent = `${room.capacity} people`;
+    document.getElementById('meeting-capacity').textContent = window.OMC_I18N?.t('meeting.capacity', '{count} people', { count: room.capacity }) || `${room.capacity} people`;
 
     // Participants
     const partEl = document.getElementById('meeting-participants');
@@ -5263,7 +5333,7 @@ class AppController {
         </div>`;
       }).join('');
     } else {
-      partEl.innerHTML = '<div style="color:var(--text-dim)">No participants</div>';
+      partEl.innerHTML = `<div style="color:var(--text-dim)">${window.OMC_I18N?.t('meeting.noParticipants', 'No participants') || 'No participants'}</div>`;
     }
 
     // Show CEO input if room is booked (meeting in progress)
@@ -5282,13 +5352,13 @@ class AppController {
 
     // Load chat history from API
     const chatEl = document.getElementById('meeting-chat-messages');
-    chatEl.innerHTML = '<div class="chat-empty">Loading...</div>';
+    chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.loading', 'Loading...') || 'Loading...'}</div>`;
     fetch(`/api/rooms/${encodeURIComponent(room.id)}/chat`)
       .then(r => r.json())
       .then(messages => {
         chatEl.innerHTML = '';
         if (!messages || messages.length === 0) {
-          chatEl.innerHTML = '<div class="chat-empty">No meeting logs</div>';
+          chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.noLogs', 'No meeting logs') || 'No meeting logs'}</div>`;
         } else {
           for (const msg of messages) {
             this._appendChatMessage(msg);
@@ -5297,7 +5367,7 @@ class AppController {
       })
       .catch(err => {
         console.error('[loadChat] failed:', err);
-        chatEl.innerHTML = '<div class="chat-empty">Failed to load chat</div>';
+        chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.failedLoadChat', 'Failed to load chat') || 'Failed to load chat'}</div>`;
       });
   }
 
@@ -5305,11 +5375,11 @@ class AppController {
   openMeetingMinutes(room) {
     const modal = document.getElementById('meeting-modal');
     modal.classList.remove('hidden');
-    document.getElementById('meeting-modal-title').textContent = `Meeting Minutes: ${room.name}`;
+    document.getElementById('meeting-modal-title').textContent = window.OMC_I18N?.t('meeting.minutesTitle', '📒 Meeting Minutes: {name}', { name: room.name }) || `Meeting Minutes: ${room.name}`;
 
     // Reuse meeting modal body area for minutes list
     const chatEl = document.getElementById('meeting-chat-messages');
-    chatEl.innerHTML = '<div class="chat-empty">Loading minutes...</div>';
+    chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.loadingMinutes', 'Loading minutes...') || 'Loading minutes...'}</div>`;
 
     // Hide CEO input and info panel clutter
     const ceoInputArea = document.getElementById('meeting-ceo-input-area');
@@ -5319,7 +5389,7 @@ class AppController {
       .then(r => r.json())
       .then(minutes => {
         if (!minutes || minutes.length === 0) {
-          chatEl.innerHTML = '<div class="chat-empty">No archived meetings</div>';
+          chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.noArchivedMeetings', 'No archived meetings') || 'No archived meetings'}</div>`;
           return;
         }
         chatEl.innerHTML = '';
@@ -5341,25 +5411,25 @@ class AppController {
       })
       .catch(err => {
         console.error('[meetingMinutes] failed:', err);
-        chatEl.innerHTML = '<div class="chat-empty">Failed to load minutes</div>';
+        chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.failedLoadMinutes', 'Failed to load minutes') || 'Failed to load minutes'}</div>`;
       });
   }
 
   _showMeetingMinuteDetail(minuteId) {
     const chatEl = document.getElementById('meeting-chat-messages');
-    chatEl.innerHTML = '<div class="chat-empty">Loading...</div>';
+    chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.loading', 'Loading...') || 'Loading...'}</div>`;
 
     fetch(`/api/meeting-minutes/${encodeURIComponent(minuteId)}`)
       .then(r => r.json())
       .then(data => {
         if (!data || data.error) {
-          chatEl.innerHTML = '<div class="chat-empty">Not found</div>';
+          chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.notFound', 'Not found') || 'Not found'}</div>`;
           return;
         }
         chatEl.innerHTML = '';
         // Back button
         const backBtn = document.createElement('button');
-        backBtn.textContent = 'Back to list';
+        backBtn.textContent = window.OMC_I18N?.t('meeting.backToList', 'Back to list') || 'Back to list';
         backBtn.className = 'btn-small';
         backBtn.style.marginBottom = '8px';
         backBtn.addEventListener('click', () => {
@@ -5372,7 +5442,7 @@ class AppController {
         if (data.summary) {
           const summaryEl = document.createElement('div');
           summaryEl.className = 'meeting-minute-detail';
-          summaryEl.innerHTML = `<h4>Summary</h4><pre>${this._escHtml(data.summary)}</pre>`;
+          summaryEl.innerHTML = `<h4>${window.OMC_I18N?.t('meeting.summary', 'Summary') || 'Summary'}</h4><pre>${this._escHtml(data.summary)}</pre>`;
           chatEl.appendChild(summaryEl);
         }
 
@@ -5384,7 +5454,7 @@ class AppController {
       })
       .catch(err => {
         console.error('[minuteDetail] failed:', err);
-        chatEl.innerHTML = '<div class="chat-empty">Failed to load</div>';
+        chatEl.innerHTML = `<div class="chat-empty">${window.OMC_I18N?.t('meeting.failedLoadMinutes', 'Failed to load minutes') || 'Failed to load minutes'}</div>`;
       });
   }
 
@@ -5580,7 +5650,7 @@ class AppController {
       const data = await resp.json();
       const items = (data.announcements || []).filter(a => !dismissed.includes(a.id));
       if (!items.length) {
-        list.innerHTML = '<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">No new announcements</div>';
+        list.innerHTML = `<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">${window.OMC_I18N?.t('announcements.empty', 'No new announcements') || 'No new announcements'}</div>`;
         return;
       }
       list.innerHTML = items.map(a => `
@@ -5592,7 +5662,7 @@ class AppController {
         </div>
       `).join('');
     } catch (e) {
-      list.innerHTML = '<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">Could not load announcements</div>';
+      list.innerHTML = `<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">${window.OMC_I18N?.t('announcements.failed', 'Could not load announcements') || 'Could not load announcements'}</div>`;
     }
   }
 
@@ -5606,7 +5676,7 @@ class AppController {
     const remaining = document.querySelectorAll('.announcement-item').length;
     if (!remaining) {
       document.getElementById('announcements-badge')?.classList.add('hidden');
-      document.getElementById('announcements-list').innerHTML = '<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">No new announcements</div>';
+      document.getElementById('announcements-list').innerHTML = `<div style="color:#666;font-size:10px;text-align:center;padding:20px 0;">${window.OMC_I18N?.t('announcements.empty', 'No new announcements') || 'No new announcements'}</div>`;
     }
   }
 
