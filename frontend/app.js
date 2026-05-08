@@ -3855,6 +3855,7 @@ class AppController {
   async _refreshSessionStatus(empId, empData) {
     const statusEl = document.getElementById('emp-session-status');
     const keyStatus = document.getElementById('emp-api-key-status');
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     try {
       // Use sessions from pre-fetched employee data, or fetch them
       let sessions;
@@ -3868,16 +3869,16 @@ class AppController {
         const labels = sessions.map(s => s.project_id).join(', ');
         statusEl.textContent = `Sessions (${sessions.length}): ${labels}`;
         statusEl.style.color = 'var(--pixel-green)';
-        keyStatus.textContent = `${sessions.length} session(s)`;
+        keyStatus.textContent = t('settings.ok', `${sessions.length} session(s)`);
         keyStatus.style.color = 'var(--pixel-green)';
       } else {
-        statusEl.textContent = 'On-demand (no active sessions)';
+        statusEl.textContent = t('settings.enterValue', 'On-demand (no active sessions)');
         statusEl.style.color = 'var(--pixel-blue, #4af)';
-        keyStatus.textContent = 'Ready';
+        keyStatus.textContent = t('settings.ok', 'Ready');
         keyStatus.style.color = 'var(--pixel-green)';
       }
     } catch {
-      statusEl.textContent = 'Status unknown';
+      statusEl.textContent = t('settings.errorLoading', 'Status unknown');
       statusEl.style.color = '#aaa';
     }
   }
@@ -4847,7 +4848,8 @@ class AppController {
 
   loadProjectList() {
     const listEl = document.getElementById('project-list');
-    listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('settings.loading', 'Loading...')}</div>`;
     listEl.classList.remove('hidden');
     document.getElementById('project-detail').classList.add('hidden');
 
@@ -4856,7 +4858,7 @@ class AppController {
       .then(data => {
         const projects = this._sortProjectsNewestFirst(data.projects || []);
         if (projects.length === 0) {
-          listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No project records</div>';
+          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'No project records')}</div>`;
           return;
         }
         listEl.innerHTML = '';
@@ -5708,7 +5710,8 @@ class AppController {
 
   async _renderApiSettings() {
     const container = document.getElementById('api-settings-content');
-    container.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:6px;">Loading...</div>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:6px;">${t('settings.loading', 'Loading...')}</div>`;
     try {
       const [settingsResp, groupsResp] = await Promise.all([
         fetch('/api/settings/api'),
@@ -5764,20 +5767,20 @@ class AppController {
             <div id="${bodyId}" class="api-card-body collapsed">
               ${oauthSection}
               <label class="api-field-label">API Key</label>
-              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : 'Enter API key...'}" />
+              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Enter model ID...')}" />
               <div class="api-card-actions">
-                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">Test</button>
-                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">Save</button>
+                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Start')}</button>
+                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Save')}</button>
                 <span id="api-${providerId}-result" class="api-test-result"></span>
               </div>
               <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">
-                <label class="api-field-label">Default Model</label>
+                <label class="api-field-label">${t('settings.defaultModel', 'Default Model')}</label>
                 <select id="api-${providerId}-model" class="emp-model-select" style="font-size:6px;width:100%;padding:3px 4px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);">
-                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : '<option value="">Select model...</option>'}
+                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Select model...')}</option>`}
                 </select>
                 <div class="api-card-actions" style="margin-top:4px;">
                   <button class="pixel-btn small${isDefault ? '' : ' api-test-btn'}" onclick="app._setDefaultProvider('${providerId}')"
-                    ${!isConfigured ? 'disabled title="Save API key first"' : ''}>${isDefault ? 'Save Model' : 'Set as Default'}</button>
+                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Save API key first')}"` : ''}>${isDefault ? t('settings.saveModel', 'Save Model') : t('settings.setAsDefault', 'Set as Default')}</button>
                   <span id="api-${providerId}-default-result" class="api-test-result"></span>
                 </div>
               </div>
@@ -5806,17 +5809,17 @@ class AppController {
                 : '💾 Using Local Talent Market (' + (tm.local_talent_count || 0) + ' talents)'}
             </div>
             <div style="margin:6px 0;display:flex;align-items:center;gap:6px;">
-              <label style="font-size:6.5px;color:var(--text-dim);margin-right:2px;">Mode:</label>
+              <label style="font-size:6.5px;color:var(--text-dim);margin-right:2px;">${t('settings.mode', 'Mode')}:</label>
               <input type="hidden" id="api-tm-mode-val" value="${tm.mode || 'local'}" />
               <button class="pixel-btn small" id="api-tm-mode-local"
                 onclick="document.getElementById('api-tm-mode-val').value='local';this.style.borderColor='var(--pixel-green)';this.style.color='var(--pixel-green)';document.getElementById('api-tm-mode-remote').style.borderColor='';document.getElementById('api-tm-mode-remote').style.color='';document.getElementById('api-tm-remote-opts').style.display='none'"
-                style="font-size:5.5px;padding:2px 6px;${tm.mode === 'local' ? 'border-color:var(--pixel-green);color:var(--pixel-green);' : ''}">💾 Local</button>
+                style="font-size:5.5px;padding:2px 6px;${tm.mode === 'local' ? 'border-color:var(--pixel-green);color:var(--pixel-green);' : ''}">${t('settings.local', 'Local')}</button>
               <button class="pixel-btn small" id="api-tm-mode-remote"
                 onclick="document.getElementById('api-tm-mode-val').value='remote';this.style.borderColor='var(--pixel-cyan)';this.style.color='var(--pixel-cyan)';document.getElementById('api-tm-mode-local').style.borderColor='';document.getElementById('api-tm-mode-local').style.color='';document.getElementById('api-tm-remote-opts').style.display='block'"
-                style="font-size:5.5px;padding:2px 6px;${tm.mode === 'remote' ? 'border-color:var(--pixel-cyan);color:var(--pixel-cyan);' : ''}">☁️ Remote</button>
+                style="font-size:5.5px;padding:2px 6px;${tm.mode === 'remote' ? 'border-color:var(--pixel-cyan);color:var(--pixel-cyan);' : ''}">${t('settings.remote', 'Remote')}</button>
             </div>
             <div id="api-tm-remote-opts" style="${tm.mode === 'remote' ? '' : 'display:none;'}">
-              <label class="api-field-label">API Key</label>
+              <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
               <input type="password" id="api-tm-key" class="api-key-input" placeholder="${tm.api_key_set ? tm.api_key_preview : '(none)'}" />
               ${tm.api_key_set ? `
               <div style="margin:6px 0;display:flex;align-items:center;gap:6px;">
@@ -5827,7 +5830,7 @@ class AppController {
               </div>` : ''}
             </div>
             <div class="api-card-actions">
-              <button class="pixel-btn small" onclick="app._saveApiSettings('talent_market')">Save</button>
+              <button class="pixel-btn small" onclick="app._saveApiSettings('talent_market')">${t('settings.save', 'Save')}</button>
               <span id="api-tm-result" class="api-test-result"></span>
             </div>
           </div>
@@ -5852,7 +5855,7 @@ class AppController {
         });
       });
     } catch (e) {
-      container.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;padding:6px;">Error: ${e.message}</div>`;
+      container.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;padding:6px;">${t('settings.cronsError', 'Error: {message}', { message: e.message })}</div>`;
     }
   }
 
@@ -6143,8 +6146,12 @@ class AppController {
   _renderDashboard() {
     const content = document.getElementById('dashboard-content');
     const state = window.officeRenderer?.state;
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    const fmt = (key, fallback, vars) => t(key, fallback, vars);
+    const moneyLabel = '\u{1F4B0}';
+
     if (!state) {
-      content.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No data</div>';
+      content.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('dashboard.noData', 'No data')}</div>`;
       return;
     }
 
@@ -6181,42 +6188,42 @@ class AppController {
 
     content.innerHTML = `
       <div class="dash-section">
-        <div class="dash-title">Staff Overview</div>
+        <div class="dash-title">${t('dashboard.staffOverview', 'Staff Overview')}</div>
         <div class="dash-stats">
-          <div class="dash-stat"><span class="dash-num">${employees.length}</span><span class="dash-label">Active</span></div>
-          <div class="dash-stat"><span class="dash-num">${exEmployees.length}</span><span class="dash-label">Departed</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${workingCount}</span><span class="dash-label">Working</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-gray);">${idleCount}</span><span class="dash-label">Idle</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-cyan);">${meetingCount}</span><span class="dash-label">In Meeting</span></div>
+          <div class="dash-stat"><span class="dash-num">${employees.length}</span><span class="dash-label">${t('dashboard.active', 'Active')}</span></div>
+          <div class="dash-stat"><span class="dash-num">${exEmployees.length}</span><span class="dash-label">${t('dashboard.departed', 'Departed')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${workingCount}</span><span class="dash-label">${t('dashboard.working', 'Working')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-gray);">${idleCount}</span><span class="dash-label">${t('dashboard.idle', 'Idle')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-cyan);">${meetingCount}</span><span class="dash-label">${t('dashboard.inMeeting', 'In Meeting')}</span></div>
         </div>
       </div>
       <div class="dash-section">
-        <div class="dash-title">Equipment & Meeting Rooms</div>
+        <div class="dash-title">${t('dashboard.equipmentRooms', 'Equipment & Meeting Rooms')}</div>
         <div class="dash-stats">
-          <div class="dash-stat"><span class="dash-num">${tools.length}</span><span class="dash-label">Tools</span></div>
-          <div class="dash-stat"><span class="dash-num">${rooms.length}</span><span class="dash-label">Rooms</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${freeRooms}</span><span class="dash-label">Available</span></div>
+          <div class="dash-stat"><span class="dash-num">${tools.length}</span><span class="dash-label">${t('dashboard.tools', 'Tools')}</span></div>
+          <div class="dash-stat"><span class="dash-num">${rooms.length}</span><span class="dash-label">${t('dashboard.rooms', 'Rooms')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${freeRooms}</span><span class="dash-label">${t('dashboard.available', 'Available')}</span></div>
         </div>
       </div>
       <div class="dash-section">
-        <div class="dash-title">Task Status</div>
+        <div class="dash-title">${t('dashboard.taskStatus', 'Task Status')}</div>
         <div class="dash-stats">
-          <div class="dash-stat"><span class="dash-num">${tasks.filter(t => t.status === 'running').length}</span><span class="dash-label">Running</span></div>
-          <div class="dash-stat"><span class="dash-num">${tasks.filter(t => t.status === 'queued').length}</span><span class="dash-label">Queued</span></div>
+          <div class="dash-stat"><span class="dash-num">${tasks.filter(t => t.status === 'running').length}</span><span class="dash-label">${t('dashboard.running', 'Running')}</span></div>
+          <div class="dash-stat"><span class="dash-num">${tasks.filter(t => t.status === 'queued').length}</span><span class="dash-label">${t('dashboard.queued', 'Queued')}</span></div>
         </div>
       </div>
       <div class="dash-section">
-        <div class="dash-title">Dept Distribution</div>
+        <div class="dash-title">${t('dashboard.deptDistribution', 'Dept Distribution')}</div>
         <div class="dash-dept-list">
           ${Object.entries(depts).map(([d, c]) => `<div class="dash-dept-item"><span>${d}</span><span>${c}</span></div>`).join('')}
         </div>
       </div>
       <div class="dash-section">
-        <div class="dash-title">Performance Distribution</div>
+        <div class="dash-title">${t('dashboard.performanceDistribution', 'Performance Distribution')}</div>
         <div class="dash-stats">
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${perf375}</span><span class="dash-label">3.75 Excellent</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-yellow);">${perf350}</span><span class="dash-label">3.5 Qualified</span></div>
-          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-red);">${perf325}</span><span class="dash-label">3.25 Needs Improvement</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-green);">${perf375}</span><span class="dash-label">${t('dashboard.excellent', '3.75 Excellent')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-yellow);">${perf350}</span><span class="dash-label">${t('dashboard.qualified', '3.5 Qualified')}</span></div>
+          <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-red);">${perf325}</span><span class="dash-label">${t('dashboard.needsImprovement', '3.25 Needs Improvement')}</span></div>
         </div>
       </div>
     `;
@@ -6225,36 +6232,35 @@ class AppController {
     fetch('/api/dashboard/costs').then(r => r.json()).then(data => {
       let costHtml = '';
       // Section 1: Grand total (project + overhead combined)
-      const t = data.total || {};
+      const tData = data.total || {};
       const grandTotal = data.grand_total_usd || 0;
       const oh = data.overhead || {};
-      const projectCost = t.cost_usd || 0;
+      const projectCost = tData.cost_usd || 0;
       const overheadCost = oh.total_cost_usd || 0;
       costHtml += `
         <div class="dash-section">
-          <div class="dash-title">\u{1F4B0} Cost Overview <span style="font-size:5px;color:var(--text-dim);">(estimated, subject to actual billing)</span></div>
+          <div class="dash-title">${moneyLabel} ${t('dashboard.costOverview', 'Cost Overview')} <span style="font-size:5px;color:var(--text-dim);">${t('dashboard.costNote', '(estimated, subject to actual billing)')}</span></div>
           <div class="dash-stats">
-            <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-yellow);">$${grandTotal.toFixed(3)}</span><span class="dash-label">Grand Total</span></div>
-            <div class="dash-stat"><span class="dash-num">$${projectCost.toFixed(3)}</span><span class="dash-label">Projects</span></div>
-            <div class="dash-stat"><span class="dash-num">$${overheadCost.toFixed(3)}</span><span class="dash-label">Overhead</span></div>
+            <div class="dash-stat"><span class="dash-num" style="color:var(--pixel-yellow);">$${grandTotal.toFixed(3)}</span><span class="dash-label">${t('dashboard.grandTotal', 'Grand Total')}</span></div>
+            <div class="dash-stat"><span class="dash-num">$${projectCost.toFixed(3)}</span><span class="dash-label">${t('dashboard.projects', 'Projects')}</span></div>
+            <div class="dash-stat"><span class="dash-num">$${overheadCost.toFixed(3)}</span><span class="dash-label">${t('dashboard.overhead', 'Overhead')}</span></div>
           </div>
           <div class="dash-stats" style="margin-top:4px;">
-            <div class="dash-stat"><span class="dash-num">${((t.total_tokens || 0) / 1000).toFixed(1)}k</span><span class="dash-label">Project Tokens</span></div>
-            <div class="dash-stat"><span class="dash-num">${(((oh.total_input_tokens || 0) + (oh.total_output_tokens || 0)) / 1000).toFixed(1)}k</span><span class="dash-label">Overhead Tokens</span></div>
+            <div class="dash-stat"><span class="dash-num">${((tData.total_tokens || 0) / 1000).toFixed(1)}k</span><span class="dash-label">${t('dashboard.projectTokens', 'Project Tokens')}</span></div>
+            <div class="dash-stat"><span class="dash-num">${(((oh.total_input_tokens || 0) + (oh.total_output_tokens || 0)) / 1000).toFixed(1)}k</span><span class="dash-label">${t('dashboard.overheadTokens', 'Overhead Tokens')}</span></div>
           </div>
         </div>`;
 
       // Section 2: Overhead by category
       const cats = oh.by_category || {};
       if (Object.keys(cats).length) {
-        const catLabels = {oneonone:'1-on-1', meeting:'Meeting', routine:'Routine', interview:'Interview', agent_task:'Agent Task', history_compress:'History Compress', completion_check:'Completion Check', nickname_gen:'Nickname Gen', remote_worker:'Remote Worker'};
         costHtml += `
           <div class="dash-section">
-            <div class="dash-title">\u{1F4B0} Overhead by Category</div>
+            <div class="dash-title">${moneyLabel} ${t('dashboard.overheadByCategory', 'Overhead by Category')}</div>
             <table class="dash-cost-table">
-              <tr><th>Category</th><th>USD</th><th>In Tokens</th><th>Out Tokens</th></tr>
+              <tr><th>${t('dashboard.category', 'Category')}</th><th>${t('dashboard.usd', 'USD')}</th><th>${t('dashboard.inTokens', 'In Tokens')}</th><th>${t('dashboard.outTokens', 'Out Tokens')}</th></tr>
               ${Object.entries(cats).sort((a,b) => b[1].cost_usd - a[1].cost_usd).map(([c, v]) =>
-                `<tr><td>${catLabels[c] || c}</td><td>$${v.cost_usd.toFixed(3)}</td><td>${(v.input_tokens/1000).toFixed(1)}k</td><td>${(v.output_tokens/1000).toFixed(1)}k</td></tr>`
+                `<tr><td>${c}</td><td>$${v.cost_usd.toFixed(3)}</td><td>${(v.input_tokens/1000).toFixed(1)}k</td><td>${(v.output_tokens/1000).toFixed(1)}k</td></tr>`
               ).join('')}
             </table>
           </div>`;
@@ -6265,9 +6271,9 @@ class AppController {
       if (Object.keys(deptCosts).length) {
         costHtml += `
           <div class="dash-section">
-            <div class="dash-title">\u{1F4B0} Cost by Department</div>
+            <div class="dash-title">${moneyLabel} ${t('dashboard.costByDepartment', 'Cost by Department')}</div>
             <table class="dash-cost-table">
-              <tr><th>Department</th><th>USD</th><th>Tokens</th></tr>
+              <tr><th>${t('dashboard.project', 'Project')}</th><th>${t('dashboard.usd', 'USD')}</th><th>${t('dashboard.tokens', 'Tokens')}</th></tr>
               ${Object.entries(deptCosts).map(([d, v]) =>
                 `<tr><td>${d}</td><td>$${v.cost_usd.toFixed(3)}</td><td>${(v.total_tokens/1000).toFixed(1)}k</td></tr>`
               ).join('')}
@@ -6280,9 +6286,9 @@ class AppController {
       if (projects.length) {
         costHtml += `
           <div class="dash-section">
-            <div class="dash-title">\u{1F4B0} Recent Projects Cost</div>
+            <div class="dash-title">${moneyLabel} ${t('dashboard.projects', 'Recent Projects Cost')}</div>
             <table class="dash-cost-table">
-              <tr><th>Project</th><th>USD</th><th>Tokens</th><th>Status</th></tr>
+              <tr><th>${t('dashboard.project', 'Project')}</th><th>${t('dashboard.usd', 'USD')}</th><th>${t('dashboard.tokens', 'Tokens')}</th><th>${t('dashboard.status', 'Status')}</th></tr>
               ${projects.map(p =>
                 `<tr><td title="${p.project_id}">${p.task || p.project_id}</td><td>$${(p.cost_usd||0).toFixed(3)}</td><td>${((p.total_tokens||0)/1000).toFixed(1)}k</td><td>${p.status}</td></tr>`
               ).join('')}
@@ -6306,13 +6312,14 @@ class AppController {
 
   _renderCompanyCulture() {
     const list = document.getElementById('company-culture-list');
-    list.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:12px;">Loading...</div>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    list.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:12px;">${t('settings.loading', 'Loading...')}</div>`;
     fetch('/api/company-culture')
       .then(r => r.json())
       .then(data => {
         const items = data.items || data || [];
         if (!items.length) {
-          list.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:12px;">No culture entries yet. CEO can add above.</div>';
+          list.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:12px;">${t('companyCulture.empty', 'No culture entries yet. CEO can add above.')}</div>`;
           return;
         }
         list.innerHTML = items.map((item, idx) => {
@@ -6334,7 +6341,7 @@ class AppController {
       })
       .catch(err => {
         console.error('[loadCulture] failed:', err);
-        list.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:12px;">Failed to load culture.</div>';
+        list.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:12px;">${t('companyCulture.failed', 'Failed to load culture.')}</div>`;
       });
   }
 
