@@ -16,7 +16,7 @@
     <aside id="left-top-panel" aria-label="Products">
       <div class="collapsible-header" data-target="projects-panel-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title">PRODUCTS</h3>
+        <h3 class="pixel-title" data-i18n="nav.products">PRODUCTS</h3>
         <button id="create-product-btn" class="panel-add-btn" title="New Product" aria-label="New Product">+</button>
         <button id="import-product-btn" class="panel-add-btn" title="Import Product" aria-label="Import Product">&#8593;</button>
       </div>
@@ -29,7 +29,7 @@
     <aside id="left-bottom-panel" aria-label="Activity Log">
       <div class="collapsible-header" data-target="activity-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title">ACTIVITY LOG</h3>
+        <h3 class="pixel-title" data-i18n="nav.activity">ACTIVITY LOG</h3>
       </div>
       <div id="activity-body" class="collapsible-body collapsible-flex">
         <div id="activity-log" style="background:#0a0a0a;flex:1"></div>
@@ -63,7 +63,7 @@
     <aside id="roster-panel" aria-label="Team Roster">
       <div class="collapsible-header" data-target="roster-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title">TEAM ROSTER</h3>
+        <h3 class="pixel-title" data-i18n="nav.teamRoster">TEAM ROSTER</h3>
       </div>
       <div id="roster-body" class="collapsible-body">
         <div id="roster-filters" class="roster-filters">
@@ -79,7 +79,7 @@
     <div id="console-panel">
       <div class="collapsible-header" data-target="ceo-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h2 class="pixel-title">CEO CONSOLE</h2>
+        <h2 class="pixel-title" data-i18n="nav.ceoConsole">CEO CONSOLE</h2>
       </div>
       <div id="ceo-body" class="collapsible-body collapsible-flex">
         <div id="ceo-avatar-area">
@@ -135,31 +135,35 @@
   <!-- Settings Floating Panel (positioned via JS) -->
   <div id="settings-floating-panel" class="floating-panel hidden">
     <div class="floating-panel-header">
-      <span>&#9881; SETTINGS</span>
+      <span data-i18n="settings.title">&#9881; SETTINGS</span>
       <button class="floating-panel-close" onclick="document.getElementById('settings-floating-panel').classList.add('hidden')">&#10005;</button>
     </div>
     <div class="floating-panel-body">
+      <div class="settings-language-row">
+        <label for="settings-language-select" data-i18n="settings.languageLabel">Language</label>
+        <select id="settings-language-select" class="settings-language-select" aria-label="Language selector"></select>
+      </div>
       <div class="settings-section-header collapsed" data-target="settings-api-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title">&#128273; API Connections</span>
+        <span class="settings-section-title" data-i18n="settings.apiConnections">&#128273; API Connections</span>
       </div>
       <div id="settings-api-body" class="settings-section-body collapsed">
         <div id="api-settings-content"></div>
       </div>
       <div class="settings-section-header collapsed" data-target="settings-crons-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title">&#9200; System Crons</span>
+        <span class="settings-section-title" data-i18n="settings.systemCrons">&#9200; System Crons</span>
       </div>
       <div id="settings-crons-body" class="settings-section-body collapsed">
         <div id="system-crons-content"></div>
       </div>
       <div class="settings-section-header collapsed" data-target="settings-display-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title">&#128065; Display</span>
+        <span class="settings-section-title" data-i18n="settings.display">&#128065; Display</span>
       </div>
       <div id="settings-display-body" class="settings-section-body collapsed">
         <div style="padding: 8px;">
-          <label style="color: #aaa; font-size: 10px; display: block; margin-bottom: 6px;">Text Size</label>
+          <label style="color: #aaa; font-size: 10px; display: block; margin-bottom: 6px;" data-i18n="settings.textSize">Text Size</label>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="color: #888; font-size: 8px;">A</span>
             <input type="range" id="font-boost-slider" min="0" max="9" value="2" step="1" style="flex: 1; accent-color: var(--pixel-cyan);" />

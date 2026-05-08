@@ -358,6 +358,31 @@ h3.pixel-title { font-size: var(--text-label); }
 .floating-panel-body {
   padding: var(--pad-button);
 }
+.settings-language-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: #aaa;
+}
+.settings-language-row label {
+  font-family: var(--font-pixel);
+  color: var(--pixel-cyan);
+}
+.settings-language-select {
+  min-width: 130px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font: inherit;
+  padding: 4px 6px;
+}
+.settings-language-select:focus {
+  outline: none;
+  border-color: var(--pixel-cyan);
+}
 
 /* ===== Console Panel (Bottom, spans center+right) ===== */
 #console-panel {
