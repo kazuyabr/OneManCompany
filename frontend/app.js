@@ -1183,8 +1183,9 @@ class AppController {
         const targetId = hdr.getAttribute('data-target');
         const body = document.getElementById(targetId);
         if (body) {
-          hdr.classList.toggle('collapsed');
-          body.classList.toggle('collapsed');
+          const nextCollapsed = !body.classList.contains('collapsed');
+          hdr.classList.toggle('collapsed', nextCollapsed);
+          body.classList.toggle('collapsed', nextCollapsed);
         }
       });
     });
