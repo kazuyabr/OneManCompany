@@ -5743,16 +5743,16 @@ class AppController {
                   <button class="pixel-btn small" onclick="app._startCompanyOAuth()">${t('settings.authorizeWithAnthropic', 'Authorize with Anthropic')}</button>
                   <span id="api-oauth-result" class="api-test-result"></span>
                   <div id="oauth-code-input" style="display:none;margin-top:4px;">
-                    <label style="font-size:5.5px;color:var(--pixel-yellow);">Paste the code from Anthropic:</label>
+                    <label style="font-size:5.5px;color:var(--pixel-yellow);">${t('settings.pasteAnthropicCode', 'Paste the code from Anthropic:')}</label>
                     <div style="display:flex;gap:4px;margin-top:2px;">
                       <input id="oauth-code-field" type="text" placeholder="code#state" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
-                      <button class="pixel-btn small" onclick="app._submitOAuthCode()">Submit</button>
+                      <button class="pixel-btn small" onclick="app._submitOAuthCode()">${t('settings.submit', 'Submit')}</button>
                     </div>
                   </div>
                 </div>
               </div>
               <div style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">
-                <label class="api-field-label" style="font-size:5.5px;color:var(--text-dim);">Or use API Key directly</label>
+                <label class="api-field-label" style="font-size:5.5px;color:var(--text-dim);">${t('settings.orUseApiKeyDirectly', 'Or use API Key directly')}</label>
               </div>` : '';
 
         html += `
@@ -5760,13 +5760,13 @@ class AppController {
             <div class="api-card-header api-card-toggle" data-target="${bodyId}">
               <span class="api-status-dot ${isConfigured ? 'online' : 'offline'}"></span>
               <span class="api-card-title">${group.label}</span>
-              ${isDefault ? '<span style="font-size:5px;color:var(--pixel-green);margin-left:4px;">DEFAULT</span>' : ''}
+              ${isDefault ? `<span style="font-size:5px;color:var(--pixel-green);margin-left:4px;">${t('settings.defaultBadge', 'DEFAULT')}</span>` : ''}
               <span class="api-card-hint" style="font-size:5.5px;color:var(--text-dim);margin-left:4px;">${group.hint}</span>
               <span class="api-card-arrow">&#9660;</span>
             </div>
             <div id="${bodyId}" class="api-card-body collapsed">
               ${oauthSection}
-              <label class="api-field-label">API Key</label>
+              <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
               <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Enter model ID...')}" />
               <div class="api-card-actions">
                 <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Start')}</button>
@@ -5794,7 +5794,7 @@ class AppController {
         <div class="api-provider-card">
           <div class="api-card-header api-card-toggle" data-target="api-tm-body">
             <span class="api-status-dot ${tm.connected ? 'online' : (tm.mode === 'local' ? 'online' : 'offline')}"></span>
-            <span class="api-card-title">Talent Market</span>
+            <span class="api-card-title">${t('settings.talentMarket', 'Talent Market')}</span>
             <span class="api-card-status">${tm.connected ? '☁️ Cloud' : (tm.local_talent_count > 0 ? '💾 Local (' + tm.local_talent_count + ')' : '⚠️ Not Connected')}</span>
             <span class="api-card-arrow">&#9660;</span>
           </div>
@@ -5802,11 +5802,11 @@ class AppController {
             <div class="tm-status-info" style="font-size:6.5px;margin-bottom:4px;color:var(--text-dim);">
               ${tm.mode === 'remote'
                 ? (tm.connected
-                  ? '✅ Connected to Cloud Talent Market'
+                  ? `✅ ${t('settings.connected', 'Connected')} to ${t('settings.talentMarket', 'Talent Market')}`
                   : tm.api_key_set
-                    ? '❌ Cloud connection failed'
-                    : '⚠️ API Key not configured')
-                : '💾 Using Local Talent Market (' + (tm.local_talent_count || 0) + ' talents)'}
+                    ? `❌ ${t('settings.cloudConnectionFailed', 'Cloud connection failed')}`
+                    : `⚠️ ${t('settings.apiKeyNotConfigured', 'API Key not configured')}`)
+                : `💾 ${t('settings.localTalentMarket', 'Using Local Talent Market')} (${tm.local_talent_count || 0} talents)`}
             </div>
             <div style="margin:6px 0;display:flex;align-items:center;gap:6px;">
               <label style="font-size:6.5px;color:var(--text-dim);margin-right:2px;">${t('settings.mode', 'Mode')}:</label>
@@ -5820,12 +5820,12 @@ class AppController {
             </div>
             <div id="api-tm-remote-opts" style="${tm.mode === 'remote' ? '' : 'display:none;'}">
               <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
-              <input type="password" id="api-tm-key" class="api-key-input" placeholder="${tm.api_key_set ? tm.api_key_preview : '(none)'}" />
+              <input type="password" id="api-tm-key" class="api-key-input" placeholder="${tm.api_key_set ? tm.api_key_preview : t('settings.apiKeyPlaceholder', '(none)')}" />
               ${tm.api_key_set ? `
               <div style="margin:6px 0;display:flex;align-items:center;gap:6px;">
                 <input type="checkbox" id="api-tm-use-ai" ${tm.use_ai_search ? 'checked' : ''} style="accent-color:var(--pixel-green);" />
                 <label for="api-tm-use-ai" style="font-size:6.5px;color:var(--pixel-yellow);cursor:pointer;">
-                  AI-Powered Search (improves candidate quality)
+                  ${t('settings.aiPoweredSearch', 'AI-Powered Search')} (${t('settings.improvesCandidateQuality', 'improves candidate quality')})
                 </label>
               </div>` : ''}
             </div>
