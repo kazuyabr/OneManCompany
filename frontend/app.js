@@ -5795,7 +5795,7 @@ class AppController {
           <div class="api-card-header api-card-toggle" data-target="api-tm-body">
             <span class="api-status-dot ${tm.connected ? 'online' : (tm.mode === 'local' ? 'online' : 'offline')}"></span>
             <span class="api-card-title">${t('settings.talentMarket', 'Talent Market')}</span>
-            <span class="api-card-status">${tm.connected ? '☁️ Cloud' : (tm.local_talent_count > 0 ? '💾 Local (' + tm.local_talent_count + ')' : '⚠️ Not Connected')}</span>
+            <span class="api-card-status">${tm.connected ? '☁️ Cloud' : (tm.local_talent_count > 0 ? '💾 Local (' + tm.local_talent_count + ')' : `⚠️ ${t('settings.notConnected', 'Not Connected')}`)}</span>
             <span class="api-card-arrow">&#9660;</span>
           </div>
           <div id="api-tm-body" class="api-card-body collapsed">
@@ -5889,7 +5889,7 @@ class AppController {
     const keyInput = document.getElementById(`api-${providerId}-key`);
     const resultEl = document.getElementById(`api-${providerId}-result`);
     const apiKey = keyInput ? keyInput.value.trim() : '';
-    if (!apiKey) { if (resultEl) { resultEl.textContent = 'No key'; resultEl.className = 'api-test-result fail'; } return; }
+    if (!apiKey) { if (resultEl) { resultEl.textContent = t('settings.noKey', 'No key'); resultEl.className = 'api-test-result fail'; } return; }
 
     try {
       const resp = await fetch('/api/auth/apply', {
@@ -5903,11 +5903,11 @@ class AppController {
       });
       const data = await resp.json();
       if (data.status === 'applied') {
-        if (resultEl) { resultEl.textContent = 'Saved'; resultEl.className = 'api-test-result success'; }
+        if (resultEl) { resultEl.textContent = t('settings.saved', 'Saved'); resultEl.className = 'api-test-result success'; }
         this._settingsLoaded = false;
         this._renderApiSettings();
       } else {
-        if (resultEl) { resultEl.textContent = data.error || 'Error'; resultEl.className = 'api-test-result fail'; }
+        if (resultEl) { resultEl.textContent = data.error || t('settings.errorLoading', 'Error loading'); resultEl.className = 'api-test-result fail'; }
       }
     } catch (e) {
       if (resultEl) { resultEl.textContent = 'Error'; resultEl.className = 'api-test-result fail'; }

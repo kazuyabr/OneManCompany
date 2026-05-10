@@ -1,40 +1,39 @@
 # Objetivo
-Adicionar um menu de tradução na interface do OneManCompany com mudança mínima no código existente, permitindo alternar o idioma da UI sem exigir API key quando possível.
+Consolidar a continuidade das traduções client-side da UI do OneManCompany com mudança mínima, mantendo a fonte de verdade em [`.vibecoding/`](.vibecoding/) e evitando novo crescimento de escopo.
 
 # Contexto
-O projeto já possui uma frontend grande em [`frontend/index.html`](frontend/index.html:1) e [`frontend/app.js`](frontend/app.js:1), com bastante texto renderizado no HTML e em trechos dinâmicos via JavaScript. A demanda prioriza baixo impacto arquitetural e deve preservar o comportamento atual do app.
+A base de i18n client-side já está estabelecida em [`frontend/i18n.js`](frontend/i18n.js:1). O seletor de idioma já existe, a preferência em `localStorage` foi validada e a tradução do topo/console já foi concluída. O próximo trecho em andamento é a seção de API settings, que deve avançar apenas por microtarefas pequenas para evitar loops de escopo.
 
 # Decisões aplicadas
-- Preferir uma solução **client-side** para evitar alterar backend, rotas ou persistência de dados do servidor.
-- Não depender de API key como requisito básico.
-- Tratar a tradução como uma camada de apresentação, com fallback seguro para o idioma original.
-- Persistir a preferência de idioma no navegador para manter a escolha após reload.
+- A tradução continua **client-side** e sem depender de API key para o fluxo principal.
+- [`frontend/i18n.js`](frontend/i18n.js:1) é a base da infraestrutura de i18n desta fase.
+- A preferência de idioma deve continuar persistida em `localStorage` e restaurada no carregamento.
+- A cobertura deve permanecer focada em chrome/UI visível, com fallback seguro para o idioma original quando faltar chave.
+- A seção de API settings será tratada como área incremental, sem tentativa de cobertura ampla em uma única passagem.
+- **Regra operacional:** avançar com **uma label por vez** e **uma microtarefa por vez**; não expandir o escopo no meio da execução.
 
 # Estratégia
-Implementar um seletor de idioma no cabeçalho da UI e introduzir uma camada de tradução no frontend que opere sobre o conteúdo textual visível da página.
-
-Abordagem recomendada:
-1. **Camada base sem API key**: usar traduções locais para o texto da própria interface, cobrindo menus, botões, labels e títulos principais.
-2. **Atualização DOM controlada**: marcar nós relevantes com chaves de tradução para trocar texto sem reescrever a tela inteira.
-3. **Fallback opcional**: se houver suporte nativo no navegador para tradução de conteúdo, aproveitar como melhoria opcional; caso contrário, manter o fallback local.
-4. **Conteúdo dinâmico**: limitar inicialmente a tradução aos elementos de chrome/UI e aos textos gerados pelo próprio app; deixar conteúdo complexo, logs e mensagens de sistema no idioma original até segunda fase.
+Seguir a trilha já validada e manter a implementação em incrementos muito pequenos:
+1. estabilizar as labels/controles já traduzidos;
+2. concluir a seção de API settings em passos mínimos;
+3. revisar impacto visual e consistência apenas no elemento alvo da vez;
+4. registrar qualquer nova lacuna no plano antes de ampliar cobertura.
 
 # Etapas
-1. Mapear os textos fixos e os blocos de UI com maior visibilidade em [`frontend/index.html`](frontend/index.html:1).
-2. Criar uma tabela simples de traduções por idioma em [`frontend/app.js`](frontend/app.js:1), com chaves estáveis para labels e botões.
-3. Inserir um menu de idioma no header atual da aplicação, reutilizando o padrão visual existente.
-4. Aplicar a tradução no carregamento inicial e quando o usuário trocar o idioma.
-5. Persistir o idioma selecionado em `localStorage` e restaurar na inicialização.
-6. Adicionar fallback para idioma padrão caso uma chave esteja ausente.
-7. Ajustar textos dinâmicos e áreas mais críticas apenas se necessário para manter consistência visual.
+1. Considerar concluído o núcleo de i18n em [`frontend/i18n.js`](frontend/i18n.js:1), incluindo seletor, persistência e aplicação inicial.
+2. Tratar o topo e o console como cobertura já concluída, sem reabrir esse escopo.
+3. Avançar a seção de API settings em microtarefas pequenas, uma label/controle por vez, validando o texto após cada ajuste.
+4. Mapear apenas os próximos alvos imediatos da API settings quando a label atual estiver estável.
+5. Evitar abrir novos blocos de tradução até que a seção atual esteja consistente.
+6. Se surgir um novo agrupamento de textos, registrar primeiro no contexto em [`.vibecoding/`](.vibecoding/) antes de executar a próxima rodada.
 
 # Riscos
-- Uma tradução puramente automática do HTML inteiro pode quebrar seletores, estados e conteúdo dinâmico.
-- Conteúdo renderizado depois do carregamento pode não ser traduzido se não houver um mecanismo de reaplicação.
-- Tradução externa sem API key pode depender de recurso de navegador ou de serviço de terceiros e pode ser instável.
-- Textos dentro de atributos, placeholders e tooltips exigem cobertura explícita.
+- O escopo da API settings pode crescer rapidamente e reintroduzir o ciclo de “traduzir tudo de uma vez”.
+- Cobertura parcial de labels pode deixar estados mistos de idioma se a próxima microtarefa não for aplicada no mesmo bloco visual.
+- Textos dinâmicos, placeholders e tooltips podem exigir chaves adicionais fora da label principal.
+- Duplicação de lógica entre arquivos de frontend pode confundir a fonte de verdade se o plano voltar a misturar prioridades.
 
 # Observações
-- A solução recomendada prioriza **baixo acoplamento** e **baixo risco**.
-- Se o objetivo evoluir para tradução completa automática de toda a página, isso deve virar uma fase separada com impacto maior.
-- Arquivos mais prováveis de alteração: [`frontend/index.html`](frontend/index.html:1), [`frontend/app.js`](frontend/app.js:1), e possivelmente [`frontend/style.css`](frontend/style.css:1) para o seletor de idioma.
+- O plano deve permanecer como guia de execução incremental, não como inventário completo de tradução.
+- Arquivos de referência principal nesta fase: [`frontend/i18n.js`](frontend/i18n.js:1), [`frontend/app.js`](frontend/app.js:1), [`frontend/index.html`](frontend/index.html:1) e [`frontend/style.css`](frontend/style.css:1).
+- A próxima execução deve respeitar a regra de menor mudança possível e parar assim que a label atual estiver traduzida e consistente.
