@@ -66,6 +66,21 @@ const I18N = {
     'settings.languageLabel': 'Idioma',
     'settings.textSize': 'Tamanho do texto',
     'settings.apiConnections': '🔑 Conexões de API',
+    'common.send': 'Enviar',
+    'employee.uploadAvatar': 'Enviar avatar',
+    'employee.nameLabel': 'Nome',
+    'employee.nicknameLabel': 'Apelido',
+    'employee.departmentLabel': 'Depto',
+    'employee.roleLabel': 'Função',
+    'employee.levelLabel': 'Nível',
+    'employee.skillsLabel': 'Habilidades',
+    'meeting.typeLabel': 'Tipo de reunião',
+    'meeting.type.oneonone': 'Reunião 1-a-1',
+    'meeting.type.allHands': 'All-Hands (fala do CEO)',
+    'meeting.type.discussion': 'Discussão (abertura geral)',
+    'meeting.startMeeting': 'Iniciar reunião',
+    'meeting.endMeeting': 'Encerrar reunião',
+    'meeting.attachFile': 'Anexar arquivo ou imagem',
     'settings.systemCrons': '⏰ Tarefas agendadas',
     'settings.display': '👁 Exibição',
     'settings.language.en': 'English',
@@ -5795,7 +5810,7 @@ class AppController {
           <div class="api-card-header api-card-toggle" data-target="api-tm-body">
             <span class="api-status-dot ${tm.connected ? 'online' : (tm.mode === 'local' ? 'online' : 'offline')}"></span>
             <span class="api-card-title">${t('settings.talentMarket', 'Talent Market')}</span>
-            <span class="api-card-status">${tm.connected ? '☁️ Cloud' : (tm.local_talent_count > 0 ? '💾 Local (' + tm.local_talent_count + ')' : `⚠️ ${t('settings.notConnected', 'Not Connected')}`)}</span>
+            <span class="api-card-status">${tm.connected ? `☁️ ${t('settings.connected', 'Connected')}` : (tm.local_talent_count > 0 ? `💾 ${t('settings.localTalentMarket', 'Using Local Talent Market')} (${tm.local_talent_count})` : `⚠️ ${t('settings.notConnected', 'Not Connected')}`)}</span>
             <span class="api-card-arrow">&#9660;</span>
           </div>
           <div id="api-tm-body" class="api-card-body collapsed">

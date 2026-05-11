@@ -30,6 +30,14 @@
       'settings.languageLabel': 'Language',
       'settings.textSize': 'Text Size',
       'settings.apiConnections': '🔑 API Connections',
+      'common.send': 'Send',
+      'meeting.typeLabel': 'Meeting Type',
+      'meeting.type.oneonone': '1-on-1 Meeting',
+      'meeting.type.allHands': 'All-Hands (CEO Address)',
+      'meeting.type.discussion': 'Discussion (Open Floor)',
+      'meeting.startMeeting': 'Start Meeting',
+      'meeting.endMeeting': 'End Meeting',
+      'meeting.attachFile': 'Attach file or image',
       'settings.systemCrons': '⏰ System Crons',
       'settings.display': '👁 Display',
       'ceo.chat': '💬 Chat',
@@ -200,6 +208,14 @@
       'settings.languageLabel': 'Idioma',
       'settings.textSize': 'Tamanho do texto',
       'settings.apiConnections': '🔑 Conexões de API',
+      'common.send': 'Enviar',
+      'meeting.typeLabel': 'Tipo de reunião',
+      'meeting.type.oneonone': 'Reunião 1-a-1',
+      'meeting.type.allHands': 'All-Hands (fala do CEO)',
+      'meeting.type.discussion': 'Discussão (abertura geral)',
+      'meeting.startMeeting': 'Iniciar reunião',
+      'meeting.endMeeting': 'Encerrar reunião',
+      'meeting.attachFile': 'Anexar arquivo ou imagem',
       'settings.systemCrons': '⏰ Tarefas agendadas',
       'settings.display': '👁 Exibição',
       'ceo.chat': '💬 Chat',
@@ -326,6 +342,25 @@
       'oauth.loginSuccessful': 'Login bem-sucedido',
       'workflow.selectPrompt': '← Selecione um workflow para ver',
       'employee.detailsTitle': 'Detalhes do funcionário',
+      'employee.uploadAvatar': 'Enviar avatar',
+      'employee.nameLabel': 'Nome',
+      'employee.nicknameLabel': 'Apelido',
+      'employee.departmentLabel': 'Depto',
+      'employee.roleLabel': 'Função',
+      'employee.levelLabel': 'Nível',
+      'employee.skillsLabel': 'Habilidades',
+      'employee.permsLabel': 'Permissões',
+      'employee.salaryLabel': 'Salário',
+      'employee.perfLabel': 'Desempenho',
+      'employee.okrsLabel': 'OKRs',
+      'employee.workPrinciplesLabel': 'Princípios de trabalho',
+      'employee.oneOnOneNotesLabel': 'Notas 1-a-1',
+      'employee.scheduledJobsLabel': 'Tarefas agendadas',
+      'employee.stopAllLabel': 'Parar todas',
+      'employee.noScheduledJobsLabel': 'Nenhuma tarefa agendada',
+      'employee.projectHistoryLabel': 'Histórico de projetos',
+      'employee.startOneOnOne': 'Iniciar 1-a-1',
+      'employee.dismissEmployee': 'Demitir colaborador',
       'interview.title': '🎤 Entrevista',
       'toolList.title': '🛠 LISTA DE FERRAMENTAS',
       'product.detailTitle': 'Detalhe do produto',
@@ -387,6 +422,13 @@
       } else {
         node.textContent = value;
       }
+    });
+    root.querySelectorAll('[data-i18n-title]').forEach((node) => {
+      const key = node.getAttribute('data-i18n-title');
+      if (!key) return;
+      const value = t(key, node.getAttribute('title') || '');
+      node.title = value;
+      if (node.getAttribute('aria-label') != null) node.setAttribute('aria-label', value);
     });
     document.documentElement.lang = getLanguage();
   }

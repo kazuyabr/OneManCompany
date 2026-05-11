@@ -67,9 +67,9 @@
       </div>
       <div id="roster-body" class="collapsible-body">
         <div id="roster-filters" class="roster-filters">
-          <select id="roster-filter-role" class="roster-filter-select"><option value="">All Roles</option></select>
-          <select id="roster-filter-dept" class="roster-filter-select"><option value="">All Departments</option></select>
-          <select id="roster-filter-level" class="roster-filter-select"><option value="">All Levels</option></select>
+          <select id="roster-filter-role" class="roster-filter-select" aria-label="All Roles"><option value="">All Roles</option></select>
+          <select id="roster-filter-dept" class="roster-filter-select" aria-label="All Departments"><option value="">All Departments</option></select>
+          <select id="roster-filter-level" class="roster-filter-select" aria-label="All Levels"><option value="">All Levels</option></select>
         </div>
         <div id="roster-list"></div>
       </div>
@@ -83,7 +83,7 @@
       </div>
       <div id="ceo-body" class="collapsible-body collapsible-flex">
         <div id="ceo-avatar-area">
-          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" onerror="this.style.display='none'" />
+          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="CEO avatar" onerror="this.style.display='none'" />
           <span class="ceo-label">&#128081; YOU</span>
           <button id="dnd-toggle-btn" class="toolbar-icon-btn" title="Do Not Disturb" aria-label="Do Not Disturb">&#127769;</button>
           <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" title="Background Tasks" aria-label="Background Tasks">&#9641;</button>
@@ -166,7 +166,7 @@
           <label style="color: #aaa; font-size: 10px; display: block; margin-bottom: 6px;" data-i18n="settings.textSize">Text Size</label>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="color: #888; font-size: 8px;">A</span>
-            <input type="range" id="font-boost-slider" min="0" max="9" value="2" step="1" style="flex: 1; accent-color: var(--pixel-cyan);" />
+            <input type="range" id="font-boost-slider" min="0" max="9" value="2" step="1" style="flex: 1; accent-color: var(--pixel-cyan);" aria-label="Text size slider" />
             <span style="color: #888; font-size: 14px; font-weight: bold;">A</span>
             <span id="font-boost-label" style="color: var(--pixel-cyan); font-size: 10px; min-width: 30px;">+2px</span>
           </div>
@@ -178,11 +178,11 @@
   <!-- Announcements Panel -->
   <div id="announcements-panel" class="floating-panel hidden" style="right: 120px; top: 36px; left: auto; width: 380px; max-height: 480px;">
     <div class="floating-panel-header">
-      <span>&#128276; Announcements</span>
+      <span data-i18n="announcements.title">&#128276; Announcements</span>
       <button class="floating-panel-close" onclick="document.getElementById('announcements-panel').classList.add('hidden')">&#10005;</button>
     </div>
     <div class="floating-panel-body" id="announcements-list" style="overflow-y: auto; max-height: 420px; padding: 8px;">
-      <div style="color: #666; font-size: 10px; text-align: center; padding: 20px 0;">Loading...</div>
+      <div style="color: #666; font-size: 10px; text-align: center; padding: 20px 0;" data-i18n="announcements.loading">Loading...</div>
     </div>
   </div>
 
@@ -192,29 +192,29 @@
       <!-- Phase 1: Select meeting type + employee -->
       <div id="oneonone-setup" class="oneonone-phase">
         <div class="modal-header">
-          <h3 class="pixel-title">&#127891; Meeting</h3>
+          <h3 class="pixel-title" data-i18n="meeting.oneononeTitle">&#127891; Meeting</h3>
           <button id="oneonone-close-btn" class="modal-close">&#10005;</button>
         </div>
         <div class="modal-body" style="flex-direction:column;padding:12px;">
-          <label class="guidance-label">Meeting Type:</label>
-          <select id="meeting-type-select">
-            <option value="oneonone">1-on-1 Meeting</option>
-            <option value="all_hands">All-Hands (CEO Address)</option>
-            <option value="discussion">Discussion (Open Floor)</option>
+          <label class="guidance-label" data-i18n="meeting.typeLabel">Meeting Type:</label>
+          <select id="meeting-type-select" aria-label="Meeting Type">
+            <option value="oneonone" data-i18n="meeting.type.oneonone">1-on-1 Meeting</option>
+            <option value="all_hands" data-i18n="meeting.type.allHands">All-Hands (CEO Address)</option>
+            <option value="discussion" data-i18n="meeting.type.discussion">Discussion (Open Floor)</option>
           </select>
           <div id="oneonone-employee-select-row">
-            <label class="guidance-label" style="margin-top:8px;">Select Employee:</label>
-            <select id="oneonone-target">
-              <option value="">-- Select Employee --</option>
+            <label class="guidance-label" style="margin-top:8px;" data-i18n="meeting.selectEmployee">Select Employee:</label>
+            <select id="oneonone-target" aria-label="Select Employee">
+              <option value="" data-i18n="meeting.selectEmployeePlaceholder">-- Select Employee --</option>
             </select>
           </div>
-          <button id="oneonone-start-btn" class="pixel-btn guidance" disabled style="margin-top:10px;">&#127891; Start Meeting</button>
+          <button id="oneonone-start-btn" class="pixel-btn guidance" disabled style="margin-top:10px;" data-i18n="meeting.startMeeting">&#127891; Start Meeting</button>
         </div>
       </div>
       <!-- Phase 2: Chat -->
       <div id="oneonone-chat-phase" class="oneonone-phase hidden">
         <div class="modal-header">
-          <h3 class="pixel-title" id="oneonone-chat-title">&#127891; 1-on-1 Meeting</h3>
+          <h3 class="pixel-title" id="oneonone-chat-title" data-i18n="meeting.oneononeTitle">&#127891; 1-on-1 Meeting</h3>
           <button id="oneonone-close-btn2" class="modal-close">&#10005;</button>
         </div>
         <div class="chat-container">
@@ -226,15 +226,15 @@
         </div>
         <div id="oneonone-preview-bar" class="chat-preview-bar hidden"></div>
         <div class="chat-input-area">
-          <label class="chat-attach-btn" title="Attach file or image">
+          <label class="chat-attach-btn" title="Attach file or image" data-i18n-title="meeting.attachFile">
             <input type="file" id="oneonone-file-input" multiple hidden />
             &#128206;
           </label>
-          <textarea id="oneonone-input" class="chat-textarea" placeholder="Type a message..." rows="1"></textarea>
-          <button id="oneonone-send-btn" class="chat-send-btn" title="Send">&#9654;</button>
+          <textarea id="oneonone-input" class="chat-textarea" placeholder="Type a message..." rows="1" data-i18n-placeholder="meeting.messagePlaceholder"></textarea>
+          <button id="oneonone-send-btn" class="chat-send-btn" title="Send" data-i18n-title="common.send">&#9654;</button>
         </div>
         <div class="oneonone-actions">
-          <button id="oneonone-end-btn" class="pixel-btn secondary">&#128308; End Meeting</button>
+          <button id="oneonone-end-btn" class="pixel-btn secondary" data-i18n="meeting.endMeeting">&#128308; End Meeting</button>
         </div>
       </div>
     </div>
@@ -244,7 +244,7 @@
   <div id="employee-modal" class="modal-overlay hidden">
     <div class="modal-content employee-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title" id="emp-modal-title">Employee Details</h3>
+        <h3 class="pixel-title" id="emp-modal-title" data-i18n="employee.detailsTitle">Employee Details</h3>
         <button id="employee-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body employee-modal-body">
@@ -254,7 +254,7 @@
             <div class="employee-avatar-section" id="emp-detail-avatar-section">
               <img id="emp-detail-avatar" class="employee-avatar" alt="AI employee avatar" />
               <label class="avatar-upload-btn">
-                Upload Avatar
+                <span data-i18n="employee.uploadAvatar">Upload Avatar</span>
                 <input type="file" accept="image/png,image/jpeg" style="display:none" id="emp-avatar-upload-input" />
               </label>
             </div>
@@ -264,79 +264,79 @@
                 <span class="emp-detail-value" id="emp-detail-number"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Name</span>
+                <span class="emp-detail-label" data-i18n="employee.nameLabel">Name</span>
                 <span class="emp-detail-value" id="emp-detail-name"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Nickname</span>
+                <span class="emp-detail-label" data-i18n="employee.nicknameLabel">Nickname</span>
                 <span class="emp-detail-value" id="emp-detail-nickname"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Dept</span>
+                <span class="emp-detail-label" data-i18n="employee.departmentLabel">Dept</span>
                 <span class="emp-detail-value" id="emp-detail-department"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Role</span>
+                <span class="emp-detail-label" data-i18n="employee.roleLabel">Role</span>
                 <span class="emp-detail-value" id="emp-detail-role"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Level</span>
+                <span class="emp-detail-label" data-i18n="employee.levelLabel">Level</span>
                 <span class="emp-detail-value" id="emp-detail-level"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Skills</span>
+                <span class="emp-detail-label" data-i18n="employee.skillsLabel">Skills</span>
                 <span class="emp-detail-value" id="emp-detail-skills"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Perms</span>
+                <span class="emp-detail-label" data-i18n="employee.permsLabel">Perms</span>
                 <span class="emp-detail-value" id="emp-detail-permissions"></span>
               </div>
               <div class="emp-detail-row">
-                <span class="emp-detail-label">Salary</span>
+                <span class="emp-detail-label" data-i18n="employee.salaryLabel">Salary</span>
                 <span class="emp-detail-value" id="emp-detail-salary"></span>
               </div>
               <div class="emp-detail-row perf-row">
-                <span class="emp-detail-label">Perf</span>
+                <span class="emp-detail-label" data-i18n="employee.perfLabel">Perf</span>
                 <div class="emp-detail-value" id="emp-detail-perf-wrapper"></div>
               </div>
               <div id="emp-detail-hr-badges" class="emp-detail-row"></div>
               <div id="emp-detail-okr-section" class="emp-detail-section emp-okr-section hidden">
-                <div class="emp-detail-section-title">OKRs</div>
+                <div class="emp-detail-section-title" data-i18n="employee.okrsLabel">OKRs</div>
                 <div class="emp-detail-section-content" id="emp-detail-okrs"></div>
               </div>
               <div id="emp-settings-container" class="emp-detail-section emp-model-section-wrap">
                 <!-- Dynamically rendered from manifest.json settings -->
               </div>
-              <button id="emp-oneonone-btn" class="pixel-btn emp-fire-btn">&#127891; Start 1-on-1</button>
-              <button id="emp-fire-btn" class="pixel-btn danger emp-fire-btn" style="display:none;">
+              <button id="emp-oneonone-btn" class="pixel-btn emp-fire-btn" data-i18n="employee.startOneOnOne">&#127891; Start 1-on-1</button>
+              <button id="emp-fire-btn" class="pixel-btn danger emp-fire-btn" style="display:none;" data-i18n="employee.dismissEmployee">
                 &#128308; Dismiss Employee
               </button>
             </div>
 
             <div class="emp-detail-section emp-detail-flex-section">
-              <div class="emp-detail-section-title">Work Principles</div>
+              <div class="emp-detail-section-title" data-i18n="employee.workPrinciplesLabel">Work Principles</div>
               <div class="emp-detail-section-content" id="emp-detail-principles"></div>
             </div>
 
             <div class="emp-detail-section emp-detail-flex-section">
-              <div class="emp-detail-section-title">1-on-1 Notes</div>
+              <div class="emp-detail-section-title" data-i18n="employee.oneOnOneNotesLabel">1-on-1 Notes</div>
               <div class="emp-detail-section-content" id="emp-detail-guidance"></div>
             </div>
 
             <div class="emp-detail-section emp-detail-flex-section" id="emp-detail-cron-section">
               <div class="emp-detail-section-title" style="display:flex;align-items:center;justify-content:space-between;">
-                <span>Scheduled Jobs</span>
-                <button class="emp-cron-stop-all-btn" id="emp-cron-stop-all-btn" style="display:none;">Stop All</button>
+                <span data-i18n="employee.scheduledJobsLabel">Scheduled Jobs</span>
+                <button class="emp-cron-stop-all-btn" id="emp-cron-stop-all-btn" style="display:none;" data-i18n="employee.stopAllLabel">Stop All</button>
               </div>
               <div class="emp-detail-section-content" id="emp-detail-crons">
-                <span class="empty-hint">No scheduled jobs</span>
+                <span class="empty-hint" data-i18n="employee.noScheduledJobsLabel">No scheduled jobs</span>
               </div>
             </div>
 
             <div class="emp-section" id="emp-detail-projects-section">
-              <div class="emp-section-title">Project History</div>
+              <div class="emp-section-title" data-i18n="employee.projectHistoryLabel">Project History</div>
               <div id="emp-detail-projects" class="emp-detail-projects">
-                <span class="empty-hint">Loading...</span>
+                <span class="empty-hint" data-i18n="common.loading">Loading...</span>
               </div>
             </div>
           </div>
@@ -383,7 +383,7 @@
         <div id="workflow-editor" class="workflow-main">
           <div id="workflow-placeholder" class="workflow-placeholder">&#8592; Select a workflow to view</div>
           <div id="workflow-rendered" class="workflow-rendered hidden"></div>
-          <textarea id="workflow-content" class="workflow-textarea hidden" rows="20"></textarea>
+          <textarea id="workflow-content" class="workflow-textarea hidden" rows="20" aria-label="Workflow content"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -698,7 +698,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Owner</label>
-          <select id="create-product-owner" class="form-input">
+          <select id="create-product-owner" class="form-input" aria-label="Create product owner">
             <option value="">Select owner...</option>
           </select>
         </div>
