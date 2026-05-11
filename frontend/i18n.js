@@ -219,7 +219,7 @@
       'settings.systemCrons': '⏰ Tarefas agendadas',
       'settings.display': '👁 Exibição',
       'ceo.chat': '💬 Chat',
-      'ceo.projects': 'Projetos',
+      'ceo.projects': 'PROJETOS',
       'ceo.oneOnOne': '1-a-1',
       'ceo.linkTaskToProduct': 'Vincular tarefa ao produto',
       'ceo.noProduct': 'Sem produto',
