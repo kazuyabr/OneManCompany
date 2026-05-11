@@ -67,6 +67,7 @@ const I18N = {
     'settings.textSize': 'Tamanho do texto',
     'settings.apiConnections': '🔑 Conexões de API',
     'common.send': 'Enviar',
+    'common.cancel': 'Cancelar',
     'employee.uploadAvatar': 'Enviar avatar',
     'employee.nameLabel': 'Nome',
     'employee.nicknameLabel': 'Apelido',

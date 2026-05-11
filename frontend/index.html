@@ -344,9 +344,9 @@
           <!-- Center: Task Board -->
           <div class="emp-detail-col emp-detail-center">
             <div class="emp-detail-section emp-detail-fill-section">
-              <div class="emp-detail-section-title">Task Board</div>
+              <div class="emp-detail-section-title" data-i18n="employee.taskBoardLabel">Quadro de tarefas</div>
               <div class="emp-detail-section-content" id="emp-detail-taskboard">
-                <span class="empty-hint">No tasks</span>
+                <span class="empty-hint" data-i18n="employee.noTasksLabel">Sem tarefas</span>
               </div>
             </div>
           </div>
@@ -354,15 +354,15 @@
           <!-- Right: Execution Log + Work History -->
           <div class="emp-detail-col emp-detail-right">
             <div class="emp-detail-section emp-detail-fill-section">
-              <div class="emp-detail-section-title">Execution Log</div>
+              <div class="emp-detail-section-title" data-i18n="employee.executionLogLabel">Registro de execução</div>
               <div class="emp-detail-section-content emp-log-viewer" id="emp-detail-logs">
-                <span class="empty-hint">No logs</span>
+                <span class="empty-hint" data-i18n="employee.noLogsLabel">Sem logs</span>
               </div>
             </div>
             <div class="emp-detail-section" style="max-height:150px;overflow-y:auto;margin-top:4px">
-              <div class="emp-detail-section-title">Work History</div>
+              <div class="emp-detail-section-title" data-i18n="employee.workHistoryLabel">Histórico de trabalho</div>
               <div class="emp-detail-section-content" id="emp-detail-progress">
-                <span class="empty-hint">No work history</span>
+                <span class="empty-hint" data-i18n="employee.noWorkHistoryLabel">Sem histórico de trabalho</span>
               </div>
             </div>
           </div>
@@ -375,21 +375,21 @@
   <div id="workflow-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128203; Company Rules â€” Workflows</h3>
+        <h3 class="pixel-title" data-i18n="workflow.title">&#128203; Company Rules — Workflows</h3>
         <button id="workflow-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body">
         <div id="workflow-list" class="workflow-sidebar"></div>
         <div id="workflow-editor" class="workflow-main">
-          <div id="workflow-placeholder" class="workflow-placeholder">&#8592; Select a workflow to view</div>
+          <div id="workflow-placeholder" class="workflow-placeholder" data-i18n="workflow.selectPrompt">&#8592; Select a workflow to view</div>
           <div id="workflow-rendered" class="workflow-rendered hidden"></div>
           <textarea id="workflow-content" class="workflow-textarea hidden" rows="20" aria-label="Workflow content"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="workflow-edit-btn" class="pixel-btn" disabled>&#9998; Edit</button>
-        <button id="workflow-save-btn" class="pixel-btn hidden" disabled>&#128190; Save Changes</button>
-        <button id="workflow-cancel-btn" class="pixel-btn secondary">Cancel</button>
+        <button id="workflow-edit-btn" class="pixel-btn" disabled data-i18n="workflow.edit">&#9998; Edit</button>
+        <button id="workflow-save-btn" class="pixel-btn hidden" disabled data-i18n="workflow.saveChanges">&#128190; Save Changes</button>
+        <button id="workflow-cancel-btn" class="pixel-btn secondary" data-i18n="common.cancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -398,10 +398,10 @@
   <div id="meeting-modal" class="modal-overlay hidden">
     <div class="modal-content meeting-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title" id="meeting-modal-title">&#127970; Meeting Room</h3>
+        <h3 class="pixel-title" id="meeting-modal-title" data-i18n="meeting.roomTitle">&#127970; Meeting Room</h3>
         <div class="meeting-modal-status">
           <span id="meeting-modal-status-led" class="status-led free"></span>
-          <span id="meeting-modal-status-text" class="status-text">Available</span>
+          <span id="meeting-modal-status-text" class="status-text" data-i18n="meeting.available">Available</span>
         </div>
         <button id="meeting-close-btn" class="modal-close">&#10005;</button>
       </div>
@@ -409,21 +409,21 @@
         <!-- Left: Room info + participants -->
         <div id="meeting-info-panel" class="meeting-info">
           <div class="meeting-info-block">
-            <div class="meeting-info-label">Capacity</div>
-            <div id="meeting-capacity" class="meeting-info-value">6 people</div>
+            <div class="meeting-info-label" data-i18n="meeting.capacityLabel">Capacity</div>
+            <div id="meeting-capacity" class="meeting-info-value" data-i18n="meeting.capacity">6 people</div>
           </div>
           <div class="meeting-info-block">
-            <div class="meeting-info-label">Participants</div>
-            <div id="meeting-participants" class="meeting-participants-list">None</div>
+            <div class="meeting-info-label" data-i18n="meeting.participantsLabel">Participants</div>
+            <div id="meeting-participants" class="meeting-participants-list" data-i18n="meeting.noParticipants">No participants</div>
           </div>
         </div>
         <!-- Right: Chat panel -->
         <div id="meeting-chat-panel" class="meeting-chat">
-          <div class="meeting-chat-header">Live Meeting Log</div>
+          <div class="meeting-chat-header" data-i18n="meeting.liveLog">Live Meeting Log</div>
           <div id="meeting-chat-messages" class="meeting-chat-messages"></div>
         </div>
         <div id="meeting-ceo-input-area" class="chat-input-area hidden">
-          <textarea id="meeting-ceo-input" class="chat-textarea" placeholder="Send a message to this meeting..." rows="1"></textarea>
+          <textarea id="meeting-ceo-input" class="chat-textarea" placeholder="Send a message to this meeting..." rows="1" data-i18n-placeholder="meeting.messagePlaceholder"></textarea>
           <button id="meeting-ceo-send-btn" class="chat-send-btn">&#9654;</button>
         </div>
       </div>
@@ -653,8 +653,8 @@
 
   <!-- Code update banner -->
   <div id="code-update-banner" class="code-update-banner hidden">
-    <span id="code-update-text">&#128260; Code updated</span>
-    <button id="code-update-apply-btn" class="pixel-btn small">Apply</button>
+    <span id="code-update-text" data-i18n="banner.codeUpdated">&#128260; Code updated</span>
+    <button id="code-update-apply-btn" class="pixel-btn small" data-i18n="banner.apply">Apply</button>
     <button id="code-update-dismiss-btn" class="dismiss-btn">&times;</button>
   </div>
 
@@ -667,14 +667,14 @@
   <div id="bg-tasks-modal" class="modal-overlay hidden">
     <div class="modal-content bg-tasks-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#9608; BACKGROUND TASKS</h3>
+        <h3 class="pixel-title" data-i18n="bgTasks.title">&#9608; BACKGROUND TASKS</h3>
         <span id="bg-tasks-slots" class="bg-tasks-slots"></span>
         <button id="bg-tasks-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body bg-tasks-body">
         <div id="bg-tasks-list" class="bg-tasks-list"></div>
         <div id="bg-tasks-detail" class="bg-tasks-detail">
-          <div class="bg-tasks-detail-empty">Select a task</div>
+          <div class="bg-tasks-detail-empty" data-i18n="bgTasks.selectTask">Select a task</div>
         </div>
       </div>
     </div>
@@ -684,31 +684,31 @@
   <div id="create-product-modal" class="modal-overlay hidden">
     <div class="modal-content" style="max-width: 420px;">
       <div class="modal-header">
-        <h3 class="pixel-title">NEW PRODUCT</h3>
+        <h3 class="pixel-title" data-i18n="createProduct.title">NEW PRODUCT</h3>
         <button class="modal-close" data-modal="create-product-modal">&times;</button>
       </div>
       <div class="modal-body" style="flex-direction:column;padding:12px;">
         <div class="form-group">
-          <label class="form-label">Name</label>
-          <input type="text" id="create-product-name" class="form-input" placeholder="e.g. OneManCompanyå®˜ç½‘" />
+          <label class="form-label" data-i18n="createProduct.nameLabel">Name</label>
+          <input type="text" id="create-product-name" class="form-input" placeholder="e.g. OneManCompany site" data-i18n-placeholder="createProduct.namePlaceholder" />
         </div>
         <div class="form-group">
-          <label class="form-label">Objective</label>
-          <textarea id="create-product-desc" class="form-input" rows="2" placeholder="Product goal / objective"></textarea>
+          <label class="form-label" data-i18n="createProduct.objectiveLabel">Objective</label>
+          <textarea id="create-product-desc" class="form-input" rows="2" placeholder="Product goal / objective" data-i18n-placeholder="createProduct.objectivePlaceholder"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Owner</label>
+          <label class="form-label" data-i18n="createProduct.ownerLabel">Owner</label>
           <select id="create-product-owner" class="form-input" aria-label="Create product owner">
-            <option value="">Select owner...</option>
+            <option value="" data-i18n="createProduct.selectOwner">Select owner...</option>
           </select>
         </div>
         <div id="create-product-krs">
-          <label class="form-label">Key Results</label>
+          <label class="form-label" data-i18n="createProduct.keyResultsLabel">Key Results</label>
           <div id="kr-list"></div>
-          <button id="add-kr-btn" class="btn-small">+ Add KR</button>
+          <button id="add-kr-btn" class="btn-small" data-i18n="createProduct.addKr">+ Add KR</button>
         </div>
         <div class="form-actions">
-          <button id="submit-create-product" class="btn-primary">Create</button>
+          <button id="submit-create-product" class="btn-primary" data-i18n="createProduct.create">Create</button>
         </div>
       </div>
     </div>
