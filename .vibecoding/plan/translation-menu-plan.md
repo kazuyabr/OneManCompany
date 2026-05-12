@@ -1,51 +1,93 @@
 # Objetivo
-Migrar a camada de traduções client-side do OneManCompany de um único arquivo JavaScript para uma pasta dedicada [`.i18n`](frontend/i18n/:1), com um arquivo JSON por idioma e um carregador central em JavaScript, preservando o comportamento atual e a separação correta entre idiomas.
+Migrar a camada de traduções client-side do OneManCompany de [`frontend/i18n.js`](frontend/i18n.js:1) para [`frontend/i18n/`](frontend/i18n/), com um arquivo JSON por idioma e um loader central em JavaScript, sem alterar o comportamento atual da UI.
 
 # Contexto
-A UI já usa i18n client-side, com preferência persistida em `localStorage`, aplicação inicial no carregamento e cobertura visível do painel do CEO já estabilizada em [`frontend/index.html`](frontend/index.html:84), [`frontend/app.js`](frontend/app.js:134) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:24). O próximo passo é organizar as traduções por idioma para facilitar replicação e manutenção, sem quebrar o fluxo atual.
+A aplicação já usa i18n no cliente, com preferência persistida em `localStorage`, aplicação automática no carregamento e consumo por [`frontend/app.js`](frontend/app.js:134), [`frontend/index.html`](frontend/index.html:753) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:28). O painel do CEO e os rótulos visíveis já foram estabilizados; a migração agora precisa preservar a separação correta entre idiomas e reduzir acoplamento.
 
 # Decisões aplicadas
 - A tradução continua **client-side**.
-- As traduções sairão de [`frontend/i18n.js`](frontend/i18n.js:1) e passarão para arquivos JSON por idioma.
-- A pasta dedicada será [`frontend/i18n/`](frontend/i18n/), com arquivos como [`frontend/i18n/en.json`](frontend/i18n/en.json:1) e [`frontend/i18n/pt-BR.json`](frontend/i18n/pt-BR.json:1).
-- O carregador central permanecerá em JavaScript e será responsável por:
-  - carregar o JSON do idioma atual;
-  - manter fallback seguro para o idioma padrão;
-  - expor `t()`, `setLanguage()`, `getLanguage()` e `applyTo()`;
-  - preservar a aplicação automática em elementos com `data-i18n`, `data-i18n-title` e placeholders.
-- A preferência de idioma continua persistida em `localStorage`.
-- Emojis e símbolos continuam fora do escopo de tradução.
-- O contrato textual entre idiomas deve permanecer separado: inglês em `en.json`, português em `pt-BR.json`.
+- A fonte de verdade permanece em [`frontend/i18n.js`](frontend/i18n.js:1) até a migração ser concluída.
+- A nova estrutura será [`frontend/i18n/`](frontend/i18n/) com, no mínimo:
+  - [`frontend/i18n/en.json`](frontend/i18n/en.json:1)
+  - [`frontend/i18n/pt-BR.json`](frontend/i18n/pt-BR.json:1)
+  - um loader central em JavaScript, por exemplo [`frontend/i18n-loader.js`](frontend/i18n-loader.js:1)
+- O formato dos JSONs será **plano**: chaves string → valores string.
+- O loader central deve manter a API pública atual consumida por [`frontend/app.js`](frontend/app.js:134) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:28):
+  - `getLanguage()`
+  - `setLanguage(lang)`
+  - `getLanguages()`
+  - `t(key, fallback = '', vars = {})`
+  - `format(template, vars = {})`
+  - `applyTo(root = document)`
+  - `STORAGE_KEY`
+  - `DEFAULT_LANGUAGE`
+- O loader deve persistir a seleção em `localStorage` e validar idioma suportado antes de aplicar.
+- O loader deve aplicar fallback seguro para `DEFAULT_LANGUAGE` e, em último caso, para o texto recebido como `fallback`.
+- A aplicação de texto em DOM deve continuar cobrindo `data-i18n`, `data-i18n-title`, `placeholder` e `aria-label` quando aplicável.
+- Emojis e símbolos não entram no escopo de tradução.
+
+# Contrato dos JSONs
+Cada arquivo de idioma deve seguir o mesmo contrato:
+
+- Codificação: UTF-8
+- Raiz: objeto JSON simples
+- Valores: strings somente
+- Interpolação: usando placeholders no formato `{name}`
+- Nenhuma lógica, função ou metadado de runtime dentro dos JSONs
+- As mesmas chaves devem existir em todos os idiomas suportados, mesmo quando o texto seja idêntico ou vazio por decisão explícita
+
+Exemplo de formato:
+
+```json
+{
+  "nav.products": "PRODUCTS",
+  "ceo.chatWithEA": "Chat with EA",
+  "meeting.roomTitle": "🏢 {name}"
+}
+```
+
+# Contrato do loader central
+O loader será o único ponto de orquestração de idioma no cliente.
+
+Responsabilidades:
+- carregar o JSON do idioma ativo;
+- aplicar fallback para o idioma padrão quando o idioma salvo não existir;
+- manter uma cache interna dos textos carregados para evitar recomputação excessiva;
+- expor a mesma superfície pública usada hoje por [`frontend/app.js`](frontend/app.js:134);
+- preservar o comportamento atual de `window.OMC_I18N` para não quebrar a UI existente.
+
+Comportamento esperado:
+- `getLanguage()` retorna o idioma efetivo atual;
+- `setLanguage(lang)` normaliza para um idioma suportado, persiste a escolha e retorna o idioma efetivo;
+- `t()` resolve a chave no idioma atual, depois no idioma padrão, depois no fallback fornecido;
+- `applyTo()` atualiza textos estáticos do DOM sem tocar em nós com conteúdo composto;
+- falhas de carregamento não devem bloquear renderização nem quebrar o boot.
 
 # Estratégia
-1. Extrair as traduções atuais para arquivos JSON por idioma, mantendo as chaves existentes.
-2. Criar um loader central pequeno para buscar o JSON do idioma escolhido e aplicar fallback ao padrão.
-3. Ajustar [`frontend/app.js`](frontend/app.js:134) para inicializar o novo loader sem alterar o fluxo de UI.
-4. Ajustar [`frontend/index.html`](frontend/index.html:84) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:24) apenas se houver necessidade de leitura adicional do loader ou refresh de textos localizados.
-5. Manter a migração incremental: primeiro arquitetura de carregamento, depois organização dos dados, depois limpeza do arquivo antigo.
+1. Extrair o conteúdo atual de [`frontend/i18n.js`](frontend/i18n.js:1) para JSONs por idioma, preservando as chaves existentes.
+2. Introduzir o loader central com cache, fallback e API compatível.
+3. Atualizar [`frontend/index.html`](frontend/index.html:752) para carregar o loader novo antes de [`frontend/app.js`](frontend/app.js:1).
+4. Atualizar [`frontend/app.js`](frontend/app.js:134) apenas para continuar consumindo `window.OMC_I18N` sem depender do formato antigo interno.
+5. Ajustar [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:28) somente se algum refresh de texto localizado precisar ser acionado por contrato novo.
+6. Desativar o arquivo monolítico antigo apenas quando a nova estrutura estiver estável e validada.
 
 # Etapas
-1. Definir o formato dos JSONs por idioma, incluindo estrutura plana de chave/valor e codificação UTF-8.
-2. Criar a pasta [`frontend/i18n/`](frontend/i18n/) e os arquivos [`frontend/i18n/en.json`](frontend/i18n/en.json:1) e [`frontend/i18n/pt-BR.json`](frontend/i18n/pt-BR.json:1).
-3. Implementar um loader central em JavaScript para:
-   - descobrir o idioma atual;
-   - carregar o JSON correspondente;
-   - manter fallback em inglês ou no idioma padrão;
-   - sinalizar erro de carga sem quebrar a UI.
-4. Atualizar [`frontend/app.js`](frontend/app.js:134) para usar o novo loader ao inicializar e ao trocar idioma.
-5. Validar que os elementos do CEO, do topo e dos painéis ainda recebem textos corretos após a troca de idioma.
-6. Remover ou desativar a dependência direta do objeto grande `TRANSLATIONS` em [`frontend/i18n.js`](frontend/i18n.js:1) somente quando a nova estrutura estiver estável.
-7. Registrar qualquer ajuste adicional no contexto antes de ampliar a migração para outras áreas.
+1. Definir os arquivos finais da nova estrutura e o contrato JSON exato.
+2. Mapear todas as chaves existentes para garantir paridade entre idiomas.
+3. Implementar o loader central com fallback, persistência e interpolação.
+4. Atualizar os pontos de boot em [`frontend/index.html`](frontend/index.html:752) e [`frontend/app.js`](frontend/app.js:134).
+5. Validar o refresh de textos em [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:28) e em rotas do chrome localizadas.
+6. Remover a dependência direta da constante `TRANSLATIONS` apenas após a migração estar estável.
 
 # Riscos
-- Falta de fallback pode deixar a UI com textos vazios durante falhas de leitura dos JSONs.
-- Migrar tudo de uma vez pode introduzir regressões de idioma ou de encoding.
-- Se o carregador central não respeitar o estado do `localStorage`, a troca de idioma pode ficar inconsistente.
-- Arquivos JSON muito grandes ainda podem concentrar manutenção, então a divisão por idioma precisa ser mantida limpa.
-- Mudanças no carregamento assíncrono podem exigir um pequeno refresh após a troca de idioma para atualizar textos já renderizados.
+- Falha no carregamento assíncrono pode deixar textos vazios se o fallback não for robusto.
+- Alterar a ordem de boot em [`frontend/index.html`](frontend/index.html:752) pode quebrar a inicialização do app.
+- Se `app.js` assumir que as traduções já estão carregadas de forma síncrona, a migração pode introduzir race conditions.
+- Se os JSONs não mantiverem paridade de chaves, a UI pode ficar inconsistente entre idiomas.
+- Uma migração parcial pode gerar divergência entre o estado do seletor de idioma e o texto renderizado.
 
 # Observações
-- O escopo atual é organizacional: separar traduções por idioma, sem mudar o conteúdo textual além do necessário para manter a separação correta.
-- O carregador central deve preservar a API atual usada por [`frontend/app.js`](frontend/app.js:134) e pelos componentes que já chamam `window.OMC_I18N`.
-- A migração deve manter a compatibilidade com a cobertura já feita no painel do CEO.
-- Símbolos, emojis e marcadores visuais permanecem intactos.
+- O escopo permanece incremental e conservador.
+- O carregador novo deve preservar a compatibilidade observada em [`frontend/app.js`](frontend/app.js:134), [`frontend/index.html`](frontend/index.html:145) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:28).
+- Emojis, símbolos e marcadores visuais permanecem intactos.
+- A migração deve priorizar estabilidade da UI sobre limpeza imediata do arquivo antigo.
