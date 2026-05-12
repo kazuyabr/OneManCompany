@@ -328,7 +328,7 @@
       'createProduct.namePlaceholder': 'ex.: OneManCompany site',
       'createProduct.objectivePlaceholder': 'Objetivo do produto',
       'ceo.messagePlaceholder': '$ Digite uma mensagem, / para comandos (Enter para enviar)',
-      'ceo.chatWithEA': '💬 Chat com EA',
+      'ceo.chatWithEA': '💬 Converse com EA',
       'ceo.toggleProjectList': 'Alternar lista de projetos',
       'ceo.youLabel': '👑 VOCÊ',
       'ceo.newTask': 'Nova tarefa',
