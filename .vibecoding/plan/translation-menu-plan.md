@@ -1,43 +1,51 @@
 # Objetivo
-Definir a próxima rodada incremental de traduções client-side da UI do OneManCompany, com mudança mínima, sem traduzir emojis nem símbolos, mantendo a fonte de verdade em [`.vibecoding/`](.vibecoding/) e evitando novo crescimento de escopo.
+Migrar a camada de traduções client-side do OneManCompany de um único arquivo JavaScript para uma pasta dedicada [`.i18n`](frontend/i18n/:1), com um arquivo JSON por idioma e um carregador central em JavaScript, preservando o comportamento atual e a separação correta entre idiomas.
 
 # Contexto
-A base de i18n client-side já está estabelecida em [`frontend/i18n.js`](frontend/i18n.js:1). O seletor de idioma já existe, a preferência em `localStorage` foi validada e a tradução do topo/console já foi concluída. O foco agora é mapear os próximos pontos visíveis de chrome/UI, começando pelos labels e controles já identificados, com atenção para evitar novos blocos grandes.
+A UI já usa i18n client-side, com preferência persistida em `localStorage`, aplicação inicial no carregamento e cobertura visível do painel do CEO já estabilizada em [`frontend/index.html`](frontend/index.html:84), [`frontend/app.js`](frontend/app.js:134) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:24). O próximo passo é organizar as traduções por idioma para facilitar replicação e manutenção, sem quebrar o fluxo atual.
 
 # Decisões aplicadas
-- A tradução continua **client-side** e sem depender de API key para o fluxo principal.
-- [`frontend/i18n.js`](frontend/i18n.js:1) permanece como base da infraestrutura de i18n desta fase.
-- A preferência de idioma continua persistida em `localStorage` e restaurada no carregamento.
-- A cobertura permanece focada em chrome/UI visível, com fallback seguro para o idioma original quando faltar chave.
-- Não traduzir emojis nem símbolos; apenas texto natural de labels, títulos, placeholders e controles.
-- A seção de API settings e áreas correlatas serão tratadas como frentes incrementais, sem tentativa de cobertura ampla em uma única passagem.
-- **Regra operacional:** avançar com **uma label/controle por vez** e **uma microtarefa por vez**; não expandir o escopo no meio da execução.
+- A tradução continua **client-side**.
+- As traduções sairão de [`frontend/i18n.js`](frontend/i18n.js:1) e passarão para arquivos JSON por idioma.
+- A pasta dedicada será [`frontend/i18n/`](frontend/i18n/), com arquivos como [`frontend/i18n/en.json`](frontend/i18n/en.json:1) e [`frontend/i18n/pt-BR.json`](frontend/i18n/pt-BR.json:1).
+- O carregador central permanecerá em JavaScript e será responsável por:
+  - carregar o JSON do idioma atual;
+  - manter fallback seguro para o idioma padrão;
+  - expor `t()`, `setLanguage()`, `getLanguage()` e `applyTo()`;
+  - preservar a aplicação automática em elementos com `data-i18n`, `data-i18n-title` e placeholders.
+- A preferência de idioma continua persistida em `localStorage`.
+- Emojis e símbolos continuam fora do escopo de tradução.
+- O contrato textual entre idiomas deve permanecer separado: inglês em `en.json`, português em `pt-BR.json`.
 
 # Estratégia
-Seguir a trilha já validada e manter a implementação em incrementos muito pequenos:
-1. estabilizar as labels/controles já traduzidos;
-2. mapear os próximos alvos imediatos de UI visível no `frontend/index.html` e `frontend/app.js`;
-3. priorizar a seção de API settings e controles adjacentes em passos mínimos;
-4. revisar impacto visual e consistência apenas no elemento alvo da vez;
-5. registrar qualquer nova lacuna no plano antes de ampliar cobertura.
+1. Extrair as traduções atuais para arquivos JSON por idioma, mantendo as chaves existentes.
+2. Criar um loader central pequeno para buscar o JSON do idioma escolhido e aplicar fallback ao padrão.
+3. Ajustar [`frontend/app.js`](frontend/app.js:134) para inicializar o novo loader sem alterar o fluxo de UI.
+4. Ajustar [`frontend/index.html`](frontend/index.html:84) e [`frontend/ceo-terminal.js`](frontend/ceo-terminal.js:24) apenas se houver necessidade de leitura adicional do loader ou refresh de textos localizados.
+5. Manter a migração incremental: primeiro arquitetura de carregamento, depois organização dos dados, depois limpeza do arquivo antigo.
 
 # Etapas
-1. Considerar concluído o núcleo de i18n em [`frontend/i18n.js`](frontend/i18n.js:1), incluindo seletor, persistência e aplicação inicial.
-2. Tratar o topo e o console como cobertura já concluída, sem reabrir esse escopo.
-3. Listar os próximos pontos visíveis de tradução por bloco pequeno, começando por labels, botões, tooltips e placeholders já expostos na UI.
-4. Avançar a seção de API settings e controles adjacentes em microtarefas pequenas, uma label/controle por vez, validando o texto após cada ajuste.
-5. Mapear apenas o próximo alvo imediato quando a label atual estiver estável.
-6. Evitar abrir novos blocos de tradução até que a seção atual esteja consistente.
-7. Se surgir um novo agrupamento de textos, registrar primeiro no contexto em [`.vibecoding/`](.vibecoding/) antes de executar a próxima rodada.
+1. Definir o formato dos JSONs por idioma, incluindo estrutura plana de chave/valor e codificação UTF-8.
+2. Criar a pasta [`frontend/i18n/`](frontend/i18n/) e os arquivos [`frontend/i18n/en.json`](frontend/i18n/en.json:1) e [`frontend/i18n/pt-BR.json`](frontend/i18n/pt-BR.json:1).
+3. Implementar um loader central em JavaScript para:
+   - descobrir o idioma atual;
+   - carregar o JSON correspondente;
+   - manter fallback em inglês ou no idioma padrão;
+   - sinalizar erro de carga sem quebrar a UI.
+4. Atualizar [`frontend/app.js`](frontend/app.js:134) para usar o novo loader ao inicializar e ao trocar idioma.
+5. Validar que os elementos do CEO, do topo e dos painéis ainda recebem textos corretos após a troca de idioma.
+6. Remover ou desativar a dependência direta do objeto grande `TRANSLATIONS` em [`frontend/i18n.js`](frontend/i18n.js:1) somente quando a nova estrutura estiver estável.
+7. Registrar qualquer ajuste adicional no contexto antes de ampliar a migração para outras áreas.
 
 # Riscos
-- O escopo da API settings pode crescer rapidamente e reintroduzir o ciclo de “traduzir tudo de uma vez”.
-- Cobertura parcial de labels pode deixar estados mistos de idioma se a próxima microtarefa não for aplicada no mesmo bloco visual.
-- Textos dinâmicos, placeholders e tooltips podem exigir chaves adicionais fora da label principal.
-- Símbolos, emojis e atalhos visuais não devem entrar no fluxo de tradução.
-- Duplicação de lógica entre arquivos de frontend pode confundir a fonte de verdade se o plano voltar a misturar prioridades.
+- Falta de fallback pode deixar a UI com textos vazios durante falhas de leitura dos JSONs.
+- Migrar tudo de uma vez pode introduzir regressões de idioma ou de encoding.
+- Se o carregador central não respeitar o estado do `localStorage`, a troca de idioma pode ficar inconsistente.
+- Arquivos JSON muito grandes ainda podem concentrar manutenção, então a divisão por idioma precisa ser mantida limpa.
+- Mudanças no carregamento assíncrono podem exigir um pequeno refresh após a troca de idioma para atualizar textos já renderizados.
 
 # Observações
-- O plano deve permanecer como guia de execução incremental, não como inventário completo de tradução.
-- Arquivos de referência principal nesta fase: [`frontend/i18n.js`](frontend/i18n.js:1), [`frontend/app.js`](frontend/app.js:1), [`frontend/index.html`](frontend/index.html:1) e [`frontend/style.css`](frontend/style.css:1).
-- A próxima execução deve respeitar a regra de menor mudança possível, parar assim que o bloco atual estiver traduzido e consistente, e não incluir símbolos/emoji no escopo.
+- O escopo atual é organizacional: separar traduções por idioma, sem mudar o conteúdo textual além do necessário para manter a separação correta.
+- O carregador central deve preservar a API atual usada por [`frontend/app.js`](frontend/app.js:134) e pelos componentes que já chamam `window.OMC_I18N`.
+- A migração deve manter a compatibilidade com a cobertura já feita no painel do CEO.
+- Símbolos, emojis e marcadores visuais permanecem intactos.
