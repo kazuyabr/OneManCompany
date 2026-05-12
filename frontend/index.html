@@ -84,26 +84,29 @@
       <div id="ceo-body" class="collapsible-body collapsible-flex">
         <div id="ceo-avatar-area">
           <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="CEO avatar" onerror="this.style.display='none'" />
-          <span class="ceo-label" data-i18n="ceo.youLabel">&#128081; VOCÊ</span>
-          <button id="dnd-toggle-btn" class="toolbar-icon-btn" title="Não perturbe" aria-label="Não perturbe">&#127769;</button>
-          <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" title="Tarefas em segundo plano" aria-label="Tarefas em segundo plano">&#9641;</button>
-          <button id="screenshot-toolbar-btn" class="toolbar-icon-btn" title="Exportar captura SVG" aria-label="Exportar captura SVG">&#128247;</button>
-          <button id="abort-all-toolbar-btn" class="toolbar-icon-btn" title="Parar todas as tarefas" aria-label="Parar todas as tarefas" style="color: #ff4444;">&#9888;</button>
-          <button id="reload-toolbar-btn" class="reload-btn" title="Recarregar todos os dados do disco" aria-label="Recarregar todos os dados do disco">&#128260;</button>
+          <span class="ceo-label" data-i18n="ceo.youLabel">&#128081; YOU</span>
+          <button id="dnd-toggle-btn" class="toolbar-icon-btn" title="Do Not Disturb" aria-label="Do Not Disturb">&#127769;</button>
+          <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" title="Background Tasks" aria-label="Background Tasks">&#9641;</button>
+          <button id="screenshot-toolbar-btn" class="toolbar-icon-btn" title="Export SVG Screenshot" aria-label="Export SVG Screenshot">&#128247;</button>
+          <button id="abort-all-toolbar-btn" class="toolbar-icon-btn" title="Stop All Tasks" aria-label="Stop All Tasks" style="color: #ff4444;">&#9888;</button>
+          <button id="reload-toolbar-btn" class="reload-btn" title="Force reload all data from disk" aria-label="Force reload all data from disk">&#128260;</button>
         </div>
         <div id="ceo-split">
           <div id="ceo-project-list">
-            <div id="ceo-chat-btn" class="ceo-nav-btn active" title="Converse com EA" data-i18n="ceo.chatWithEA">&#128172; Chat</div>
-            <div class="ceo-section-header" data-i18n="ceo.projects">PROJETOS</div>
+            <div id="ceo-chat-btn" class="ceo-nav-btn active" title="Chat with EA">
+              <span class="ceo-nav-icon">&#128172;</span>
+              <span data-i18n="ceo.chatWithEA">Chat with EA</span>
+            </div>
+            <div class="ceo-section-header" data-i18n="ceo.projects">PROJECTS</div>
             <div id="ceo-projects-section"></div>
             <div id="ceo-oneonone-section">
               <div class="ceo-section-header" id="ceo-oneonone-toggle" data-i18n="ceo.oneOnOne">
-                <span class="ceo-section-arrow">&#9660;</span> 1-a-1
+                <span class="ceo-section-arrow">&#9660;</span> 1-on-1
               </div>
               <div id="ceo-oneonone-items"></div>
             </div>
           </div>
-          <div id="ceo-list-toggle" title="Alternar lista de projetos" data-i18n-title="ceo.toggleProjectList">&#9664;</div>
+          <div id="ceo-list-toggle" title="Toggle project list" data-i18n-title="ceo.toggleProjectList">&#9664;</div>
           <div id="ceo-conv-panel">
             <div id="ceo-conv-messages"></div>
             <div id="ceo-typing-indicator" class="hidden">
@@ -113,12 +116,12 @@
             </div>
             <div id="ceo-conv-input-area">
               <div id="ceo-product-row">
-                <select id="ceo-product-select" title="Vincular tarefa ao produto" data-i18n="ceo.linkTaskToProduct">
-                  <option value="">Sem produto</option>
+                <select id="ceo-product-select" title="Link task to product" data-i18n="ceo.linkTaskToProduct">
+                  <option value="">No Product</option>
                 </select>
               </div>
               <div id="ceo-conv-input-row">
-                <textarea id="ceo-conv-input" placeholder="$ Digite a mensagem, / para comandos (Enter para enviar)" aria-label="Mensagem do CEO" data-i18n-placeholder="ceo.messagePlaceholder"></textarea>
+                <textarea id="ceo-conv-input" placeholder="$ Type message, / for commands (Enter to send)" aria-label="CEO message input" data-i18n-placeholder="ceo.messagePlaceholder"></textarea>
                 <input type="file" id="ceo-file-input" multiple hidden />
               </div>
               <div id="ceo-slash-menu" class="hidden"></div>

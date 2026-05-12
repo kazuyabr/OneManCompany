@@ -144,6 +144,7 @@ class AppController {
         this._uiLanguage = window.OMC_I18N.setLanguage(select.value);
         window.OMC_I18N.applyTo(document);
         this._syncLocalizedChrome();
+        this._ceoTerm?.refreshLocalizedText?.();
         select.value = this._uiLanguage;
       });
     }

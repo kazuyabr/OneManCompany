@@ -25,13 +25,25 @@ class CeoTerminal {
     // No-op — DOM doesn't need fitting. Kept for API compat with app.js calls.
   }
 
+  refreshLocalizedText() {
+    if (this._currentProjectId) {
+      this.showChat(this._currentProjectId, this._history);
+    } else {
+      this._showWelcome();
+    }
+  }
+
+  _t(key, fallback = '', vars = {}) {
+    return window.OMC_I18N?.t(key, fallback, vars) || fallback;
+  }
+
   _showWelcome() {
     this._container.innerHTML = '';
     const el = document.createElement('div');
     el.className = 'ceo-msg--system';
     el.style.color = '#71717a';
     el.style.padding = '8px 0';
-    el.textContent = '  Select a project to start';
+    el.textContent = `  ${this._t('ceo.selectProjectToStart', 'Select a project to start')}`;
     this._container.appendChild(el);
   }
 
@@ -43,8 +55,8 @@ class CeoTerminal {
 
     // Header
     const name = projectId === '_ea_chat'
-      ? 'Chat with EA'
-      : (projectId ? projectId.split('/')[0] : 'New Task');
+      ? this._t('ceo.chatWithEA', 'Chat with EA')
+      : (projectId ? projectId.split('/')[0] : this._t('ceo.newTask', 'New Task'));
     const displayName = name.length > 25 ? name.substring(0, 25) + '\u2026' : name;
     const header = document.createElement('div');
     header.className = 'ceo-conv-header';
@@ -61,7 +73,7 @@ class CeoTerminal {
       const empty = document.createElement('div');
       empty.style.color = '#71717a';
       empty.style.padding = '4px 0';
-      empty.textContent = '  No messages yet.';
+      empty.textContent = `  ${this._t('ceo.noMessagesYet', 'No messages yet.')}`;
       this._container.appendChild(empty);
     }
 
@@ -69,10 +81,13 @@ class CeoTerminal {
   }
 
   appendMessage(msg) {
-    // Remove "No messages yet" placeholder if present
+    // Remove localized placeholder if present
     const placeholder = this._container.querySelector('div[style*="71717a"]');
-    if (placeholder && placeholder.textContent.includes('No messages yet')) {
-      placeholder.remove();
+    if (placeholder) {
+      const text = placeholder.textContent || '';
+      if (text.includes('No messages yet') || text.includes('Nenhuma mensagem ainda')) {
+        placeholder.remove();
+      }
     }
     this._renderMsg(msg);
     this._addDivider();
