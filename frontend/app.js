@@ -185,6 +185,9 @@ class AppController {
     setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Dashboard');
     setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Announcements');
     setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Settings');
+    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Chat with EA');
+    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Toggle project list');
+    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Link task to product');
     setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Do Not Disturb');
     setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Background Tasks');
     setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Export SVG Screenshot');
