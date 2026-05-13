@@ -87,51 +87,51 @@ class AppController {
       if (el.getAttribute('aria-label') != null) el.setAttribute('aria-label', t(key, fallback, vars));
     };
 
-    setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconnecting...');
+    setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconectando...');
 
-    setTitle('#create-product-btn', 'toolbar.newProduct', 'New Product');
-    setTitle('#import-product-btn', 'toolbar.importProduct', 'Import Product');
-    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Ex-Employee Wall');
-    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Company Culture');
-    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Company Direction');
-    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Dashboard');
-    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Announcements');
-    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Settings');
-    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Chat with EA');
-    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Toggle project list');
-    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Link task to product');
-    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Do Not Disturb');
-    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Background Tasks');
-    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Export SVG Screenshot');
-    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Stop All Tasks');
-    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Force reload all data from disk');
+    setTitle('#create-product-btn', 'toolbar.newProduct', 'Novo Produto');
+    setTitle('#import-product-btn', 'toolbar.importProduct', 'Importar Produto');
+    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Mural de Ex-funcionários');
+    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Cultura da Empresa');
+    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Direção da Empresa');
+    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Painel');
+    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Anúncios');
+    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Configurações');
+    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Converse com EA');
+    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Alternar lista de projetos');
+    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Vincular tarefa ao produto');
+    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Não Perturbe');
+    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Tarefas em Segundo Plano');
+    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Exportar captura SVG');
+    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Parar todas as tarefas');
+    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Recarregar todos os dados do disco');
 
-    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Live Meeting Log');
-    setText('#emp-modal-title', 'employee.detailsTitle', 'Employee Details');
-    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Select a workflow to view');
-    setText('#hiring-request-approve', 'common.approve', 'Approve');
-    setText('#hiring-request-reject', 'common.reject', 'Reject');
-    setText('#interview-modal-title', 'interview.title', '🎤 Interview');
+    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Registro ao vivo da reunião');
+    setText('#emp-modal-title', 'employee.detailsTitle', 'Detalhes do funcionário');
+    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Selecione um workflow para ver');
+    setText('#hiring-request-approve', 'common.approve', 'Aprovar');
+    setText('#hiring-request-reject', 'common.reject', 'Rejeitar');
+    setText('#interview-modal-title', 'interview.title', '🎤 Entrevista');
     setText('#onboarding-toggle-btn', 'onboarding.toggle', '▼');
     setText('#onboarding-done-btn', 'common.close', '✕');
     setText('#ex-employee-close-btn', 'common.close', '✕');
     setText('#dashboard-close-btn', 'common.close', '✕');
     setText('#company-culture-close-btn', 'common.close', '✕');
     setText('#project-close-btn', 'common.close', '✕');
-    setText('#product-modal-title', 'product.detailTitle', 'Product Detail');
+    setText('#product-modal-title', 'product.detailTitle', 'Detalhe do produto');
     setText('#company-direction-close-btn', 'common.close', '✕');
-    setText('#generic-popup-title', 'common.notification', 'Notification');
+    setText('#generic-popup-title', 'common.notification', 'Notificação');
     setText('#bg-tasks-close-btn', 'common.close', '✕');
-    setText('#trace-modal-title', 'traceViewer.title', 'TRACE VIEWER');
+    setText('#trace-modal-title', 'traceViewer.title', 'VISUALIZADOR DE TRACE');
 
-    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'e.g. We focus on AI-driven creative tools for indie creators...');
-    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Add a new culture entry...');
-    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'e.g. OneManCompany官网');
-    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Product goal / objective');
-    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Type message, / for commands (Enter to send)');
-    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Type a message...');
-    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Send a message to this meeting...');
-    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Type a message...');
+    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'ex.: Focamos em ferramentas criativas com IA para criadores independentes...');
+    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Adicione uma nova entrada de cultura...');
+    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'ex.: OneManCompany site');
+    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Objetivo do produto');
+    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Digite a mensagem, / para comandos (Enter para enviar)');
+    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
+    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Envie uma mensagem para esta reunião...');
+    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
   }
 
   // ===== WebSocket =====
@@ -1190,11 +1190,11 @@ class AppController {
             if (data.status === 'ok') {
                 console.log('Abort all result:', data);
             } else {
-                this._showToast(data.detail || data.message || 'Failed to abort all tasks', 'error');
+                this._showToast(data.detail || data.message || window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
             }
         } catch (e) {
             console.error('Abort all failed:', e);
-            this._showToast('Failed to abort all tasks', 'error');
+            this._showToast(window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
         }
     });
 
@@ -2031,7 +2031,7 @@ class AppController {
 
     const xterm = new XTermLog(feedPanel, { fontSize: 11 });
     this._traceXterm = xterm;
-    xterm.writeln(`${ANSI.gray}Loading trace...${ANSI.reset}`);
+    xterm.writeln(`${ANSI.gray}${window.OMC_I18N?.t('traceViewer.loading', 'Carregando trace...') || 'Carregando trace...'}${ANSI.reset}`);
 
     fetch(`/api/projects/${projectId}/tree`)
       .then(r => r.json())
@@ -2041,10 +2041,10 @@ class AppController {
         await traceLoadAllNodeLogs(nodes);
         xterm.clear();
         xterm.renderTraceFeed(nodes, data.root_id);
-        metaEl.textContent = `${Object.keys(nodes).length} nodes`;
+        metaEl.textContent = window.OMC_I18N?.t('traceViewer.nodes', '{count} nós', { count: Object.keys(nodes).length }) || `${Object.keys(nodes).length} nós`;
       })
       .catch(e => {
-        xterm.writeln(`${ANSI.red}Error: ${e.message}${ANSI.reset}`);
+        xterm.writeln(`${ANSI.red}${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${e.message}${ANSI.reset}`);
       });
   }
 
@@ -2120,7 +2120,7 @@ class AppController {
   }
 
   async _cancelCron(empId, cronName) {
-    if (!confirm(`Stop scheduled job "${cronName}"? Its pending tasks will also be cancelled.`)) return;
+    if (!confirm(window.OMC_I18N?.t('cron.stopPrompt', 'Parar a tarefa agendada "{name}"? As tarefas pendentes também serão canceladas.', { name: cronName }) || `Parar a tarefa agendada "${cronName}"? As tarefas pendentes também serão canceladas.`)) return;
     try {
       const resp = await fetch(`/api/automations/${empId}/cron/${encodeURIComponent(cronName)}/stop`, {
         method: 'POST',
@@ -2129,16 +2129,16 @@ class AppController {
       if (data.status === 'ok') {
         this._fetchCronList(empId);
       } else {
-        this._showToast(data.detail || data.message || 'Failed to stop cron', 'error');
+        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
       }
     } catch (err) {
       console.error('Failed to cancel cron:', err);
-      this._showToast('Failed to stop cron job', 'error');
+      this._showToast(window.OMC_I18N?.t('cron.stopJobFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
     }
   }
 
   async _stopAllCrons(empId) {
-    if (!confirm('Stop ALL scheduled jobs for this employee?')) return;
+    if (!confirm(window.OMC_I18N?.t('cron.stopAllPrompt', 'Parar TODAS as tarefas agendadas deste funcionário?') || 'Parar TODAS as tarefas agendadas deste funcionário?')) return;
     try {
       const resp = await fetch(`/api/automations/${empId}/crons/stop-all`, {
         method: 'POST',
@@ -2147,11 +2147,11 @@ class AppController {
       if (data.status === 'ok') {
         this._fetchCronList(empId);
       } else {
-        this._showToast(data.detail || data.message || 'Failed to stop all crons', 'error');
+        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
       }
     } catch (err) {
       console.error('Failed to stop all crons:', err);
-      this._showToast('Failed to stop all cron jobs', 'error');
+      this._showToast(window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
     }
   }
 
@@ -3259,7 +3259,7 @@ class AppController {
 
   async _loadModelOrApiKeySection(empId) {
     const container = document.getElementById('emp-settings-container');
-    container.innerHTML = '<div style="color:var(--text-dim);font-size:6px;padding:4px;">Loading settings...</div>';
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:6px;padding:4px;">${window.OMC_I18N?.t('settings.loadingSettings', 'Carregando configurações...') || 'Carregando configurações...'}</div>`;
 
     try {
       const empResp = await fetch(`/api/employee/${empId}?_t=${Date.now()}`).then(r => r.json());
@@ -3311,7 +3311,7 @@ class AppController {
       }
     } catch (err) {
       console.error('Failed to load employee settings:', err);
-      container.innerHTML = '<div style="color:var(--pixel-red);font-size:6px;">Load failed</div>';
+      container.innerHTML = `<div style="color:var(--pixel-red);font-size:6px;">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</div>`;
     }
   }
 
@@ -3338,14 +3338,14 @@ class AppController {
       const isSet = field.key === 'api_key' ? empData.api_key_set : !!empData[`${field.key}_set`];
       const preview = field.key === 'api_key' ? empData.api_key_preview : empData[`${field.key}_preview`];
       input.placeholder = isSet
-        ? `Set (${preview || '****'})`
-        : 'Not set...';
+        ? window.OMC_I18N?.t('settings.setWithPreview', 'Definido ({preview})', { preview: preview || '****' }) || `Definido (${preview || '****'})`
+        : window.OMC_I18N?.t('settings.notSet', 'Não definido...') || 'Não definido...';
       input.value = '';
       row.appendChild(input);
       // Status indicator
       const status = document.createElement('span');
       status.style.cssText = `font-size:6px;color:${isSet ? 'var(--pixel-green)' : 'var(--pixel-red,#f44)'};white-space:nowrap;`;
-      status.textContent = isSet ? 'Set' : 'None';
+      status.textContent = isSet ? window.OMC_I18N?.t('settings.set', 'Definido') || 'Definido' : window.OMC_I18N?.t('settings.none', 'Nenhum') || 'Nenhum';
       row.appendChild(status);
     } else if (field.type === 'number') {
       const input = document.createElement('input');
@@ -3462,7 +3462,7 @@ class AppController {
         select.appendChild(opt);
       }
     } catch (err) {
-      select.innerHTML = '<option value="">Load failed</option>';
+      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</option>`;
     }
   }
 
@@ -3541,7 +3541,7 @@ class AppController {
       this.logEntry('SYSTEM', `Save failed: ${err.message}`, 'system');
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = 'Save';
+      saveBtn.textContent = window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar';
     }
   }
 
@@ -3611,20 +3611,20 @@ class AppController {
     section.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
     section.innerHTML = `
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Agent Family</span>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.agentFamily', 'Família do agente') || 'Família do agente'}</span>
         <span style="font-size:6px;color:var(--pixel-cyan);">Claude Session</span>
       </div>
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Model</span>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</span>
         <select id="emp-self-hosted-model" class="emp-model-select" style="flex:1;">
           ${claudeModels.map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.label}</option>`).join('')}
         </select>
       </div>
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Status</span>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('settings.status', 'Status') || 'Status'}</span>
         <span style="font-size:6px;color:${statusColor};">${statusText}</span>
       </div>
-      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} session(s)</div>` : ''}
+      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} ${window.OMC_I18N?.t('common.sessions', 'sessão(ões)') || 'sessão(ões)'}</div>` : ''}
     `;
     container.appendChild(section);
 
@@ -3654,17 +3654,17 @@ class AppController {
     section.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
     section.innerHTML = `
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">Provider</span>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">${window.OMC_I18N?.t('employee.providerLabel', 'Fornecedor') || 'Fornecedor'}</span>
         <select id="emp-detail-provider" class="emp-model-select" style="flex:1;">
-          <option value="">Loading...</option>
+          <option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option>
         </select>
       </div>
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">Model</span>
-        <select id="emp-detail-model" class="emp-model-select" style="flex:1;"><option value="">Loading...</option></select>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</span>
+        <select id="emp-detail-model" class="emp-model-select" style="flex:1;"><option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option></select>
       </div>
       <div style="display:flex;gap:4px;justify-content:flex-end;">
-        <button id="emp-model-save-btn" class="pixel-btn small" disabled>Save</button>
+        <button id="emp-model-save-btn" class="pixel-btn small" disabled>${window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar'}</button>
       </div>
     `;
     container.appendChild(section);
@@ -3685,7 +3685,7 @@ class AppController {
       const provider = e.target.value;
       const saveBtn = document.getElementById('emp-model-save-btn');
       saveBtn.disabled = true;
-      saveBtn.textContent = 'Switching...';
+      saveBtn.textContent = window.OMC_I18N?.t('common.applying', 'Aplicando...') || 'Aplicando...';
 
       try {
         // For now, just apply the provider change (API key can be set separately)
@@ -3701,16 +3701,16 @@ class AppController {
         });
         const data = await resp.json();
         if (data.error) {
-          this.logEntry('SYSTEM', `Provider switch failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `Switched to ${provider}`, 'ceo');
+          this.logEntry('CEO', `${window.OMC_I18N?.t('settings.setAsDefault', 'Definir como padrão') || 'Definir como padrão'}: ${provider}`, 'ceo');
           this._loadModelOrApiKeySection(empId);
         }
       } catch (err) {
-        this.logEntry('SYSTEM', `Switch failed: ${err.message}`, 'system');
+        this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${err.message}`, 'system');
       } finally {
         saveBtn.disabled = false;
-        saveBtn.textContent = 'Save';
+        saveBtn.textContent = window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar';
       }
     });
 
@@ -3724,7 +3724,7 @@ class AppController {
     const select = document.getElementById('emp-detail-model');
     const saveBtn = document.getElementById('emp-model-save-btn');
     if (!select || !saveBtn) return;
-    select.innerHTML = '<option value="">Loading...</option>';
+    select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option>`;
     saveBtn.disabled = true;
 
     try {
@@ -3744,7 +3744,7 @@ class AppController {
       }
       saveBtn.disabled = false;
     } catch (err) {
-      select.innerHTML = '<option value="">Load failed</option>';
+      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</option>`;
       console.error('Model list error:', err);
     }
   }
@@ -4786,7 +4786,7 @@ class AppController {
   loadProjectList() {
     const listEl = document.getElementById('project-list');
     const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
-    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
+    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Carregando...')}</div>`;
     listEl.classList.remove('hidden');
     document.getElementById('project-detail').classList.add('hidden');
 
@@ -4795,7 +4795,7 @@ class AppController {
       .then(data => {
         const projects = this._sortProjectsNewestFirst(data.projects || []);
         if (projects.length === 0) {
-          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'No project records')}</div>`;
+          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'Nenhum registro de projeto')}</div>`;
           return;
         }
         listEl.innerHTML = '';
@@ -4825,7 +4825,7 @@ class AppController {
         }
       })
       .catch(err => {
-        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">Load failed: ${this._escHtml(err.message)}</div>`;
+        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">${t('project.loadFailed', 'Falha ao carregar: {message}', { message: this._escHtml(err.message) })}</div>`;
       });
   }
 
@@ -4860,7 +4860,7 @@ class AppController {
 
     listEl.classList.add('hidden');
     detailEl.classList.remove('hidden');
-    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
+    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Carregando...')}</div>`;
 
     fetch(`/api/projects/${encodeURIComponent(projectId)}`)
       .then(r => r.json())
@@ -4871,14 +4871,14 @@ class AppController {
         }
         let html = `<h4 style="color:var(--pixel-yellow);font-size:8px;margin:6px 0;">${doc.task || ''}</h4>`;
         html += `<div style="font-size:6px;color:var(--text-dim);margin-bottom:8px;">`;
-        html += `Status: ${doc.status} | Routed to: ${doc.routed_to} | Created: ${(doc.created_at || '').substring(0, 19)}`;
-        if (doc.completed_at) html += ` | Completed: ${doc.completed_at.substring(0, 19)}`;
+        html += `${t('project.detailStatusLabel', 'Status:')} ${doc.status} | ${t('project.detailRoutedToLabel', 'Routed to:')} ${doc.routed_to} | ${t('project.detailCreatedLabel', 'Created:')} ${(doc.created_at || '').substring(0, 19)}`;
+        if (doc.completed_at) html += ` | ${t('project.detailCompletedLabel', 'Completed:')} ${doc.completed_at.substring(0, 19)}`;
         html += `</div>`;
 
         // Timeline
         const timeline = doc.timeline || [];
         if (timeline.length > 0) {
-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 4px;">Timeline (${timeline.length} entries):</div>`;
+          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 4px;">${t('project.detailTimelineLabel', 'Timeline')} (${t('project.detailEntriesLabel', '{count} entries', { count: timeline.length })})</div>`;
           for (const entry of timeline) {
             const time = (entry.time || '').substring(11, 19);
             html += `<div style="font-size:6px;line-height:1.8;border-left:2px solid var(--border);padding-left:6px;margin:2px 0;">`;
@@ -4895,7 +4895,7 @@ class AppController {
         // Cost & Budget
         const cost = doc.cost || {};
         if (cost.actual_cost_usd > 0 || cost.budget_estimate_usd > 0) {
-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Cost & Budget: <span style="font-size:5px;color:var(--text-dim);">(estimated)</span></div>`;
+          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${t('project.detailCostBudgetLabel', 'Cost & Budget')} <span style="font-size:5px;color:var(--text-dim);">${t('project.detailEstimatedLabel', '(estimated)')}</span></div>`;
           const actual = cost.actual_cost_usd || 0;
           const budget = cost.budget_estimate_usd || 0;
           const tokens = cost.token_usage || {};
@@ -4911,7 +4911,7 @@ class AppController {
           const breakdown = cost.breakdown || [];
           if (breakdown.length > 0) {
             html += `<table style="font-size:5px;width:100%;border-collapse:collapse;margin-top:4px;">`;
-            html += `<tr style="color:var(--text-dim);"><th style="text-align:left;">Employee</th><th>Model</th><th>Tokens</th><th>Cost</th></tr>`;
+            html += `<tr style="color:var(--text-dim);"><th style="text-align:left;">${window.OMC_I18N?.t('employee.nameLabel', 'Nome') || 'Nome'}</th><th>${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</th><th>${window.OMC_I18N?.t('dashboard.tokens', 'Tokens') || 'Tokens'}</th><th>${window.OMC_I18N?.t('employee.costLabel', 'Custo') || 'Custo'}</th></tr>`;
             for (const b of breakdown) {
               html += `<tr><td>${b.employee_id}</td><td>${(b.model||'').split('/').pop()}</td><td>${(b.total_tokens||0).toLocaleString()}</td><td>$${(b.cost_usd||0).toFixed(4)}</td></tr>`;
             }
@@ -4921,14 +4921,14 @@ class AppController {
 
         // Output
         if (doc.output) {
-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Final Output:</div>`;
+          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${window.OMC_I18N?.t('project.outputLabel', 'Saída final:') || 'Saída final:'}</div>`;
           html += `<div style="font-size:6px;color:var(--pixel-white);background:var(--bg-dark);padding:6px;border:1px solid var(--border);">${doc.output}</div>`;
         }
 
         // Documents — lazy tree (click to expand directories)
         html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${t('project.documentsLabel', 'Documents')}</div>`;
         html += `<div class="lazy-file-tree" data-project-id="${this._escHtml(projectId)}" data-path="" style="font-size:6px;">
-          <div style="color:var(--text-dim);">${t('common.loading', 'Loading...')}</div>
+          <div style="color:var(--text-dim);">${t('common.loading', 'Carregando...')}</div>
         </div>`;
 
         contentEl.innerHTML = html;
@@ -5707,21 +5707,21 @@ class AppController {
             </div>
             <div id="${bodyId}" class="api-card-body collapsed">
               ${oauthSection}
-              <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
-              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Enter model ID...')}" />
+              <label class="api-field-label">${t('settings.apiKey', 'Chave de API')}</label>
+              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Informar ID do modelo...')}" />
               <div class="api-card-actions">
-                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Start')}</button>
-                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Save')}</button>
+                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Iniciar')}</button>
+                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Salvar')}</button>
                 <span id="api-${providerId}-result" class="api-test-result"></span>
               </div>
               <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">
-                <label class="api-field-label">${t('settings.defaultModel', 'Default Model')}</label>
+                <label class="api-field-label">${t('settings.defaultModel', 'Modelo padrão')}</label>
                 <select id="api-${providerId}-model" class="emp-model-select" style="font-size:6px;width:100%;padding:3px 4px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);">
-                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Select model...')}</option>`}
+                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Selecionar modelo...')}</option>`}
                 </select>
                 <div class="api-card-actions" style="margin-top:4px;">
                   <button class="pixel-btn small${isDefault ? '' : ' api-test-btn'}" onclick="app._setDefaultProvider('${providerId}')"
-                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Save API key first')}"` : ''}>${isDefault ? t('settings.saveModel', 'Save Model') : t('settings.setAsDefault', 'Set as Default')}</button>
+                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Salve a chave de API primeiro')}"` : ''}>${isDefault ? t('settings.saveModel', 'Salvar modelo') : t('settings.setAsDefault', 'Definir como padrão')}</button>
                   <span id="api-${providerId}-default-result" class="api-test-result"></span>
                 </div>
               </div>

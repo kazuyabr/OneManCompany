@@ -684,7 +684,7 @@ class OfficeRenderer {
     ctx.fillStyle = '#4a2e18';
     ctx.font = 'bold 7px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(`\u{1F4CB} ${window.OMC_I18N?.t('office.bulletinBoardLabel', 'Rules') || 'Rules'}`, bx + TILE * 1.5, by + TILE + 4);
+    ctx.fillText(`\u{1F4CB} ${window.OMC_I18N?.t('office.bulletinBoardLabel', 'Regras') || 'Regras'}`, bx + TILE * 1.5, by + TILE + 4);
     ctx.textAlign = 'left';
   }
 
@@ -744,7 +744,7 @@ class OfficeRenderer {
     ctx.fillStyle = '#0d2a1a';
     ctx.font = 'bold 7px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(`\u{1F4CA} ${window.OMC_I18N?.t('office.projectWallLabel', 'Projects') || 'Projects'}`, bx + TILE * 1.5, by + TILE + 4);
+    ctx.fillText(`\u{1F4CA} ${window.OMC_I18N?.t('office.projectWallLabel', 'Projetos') || 'Projetos'}`, bx + TILE * 1.5, by + TILE + 4);
     ctx.textAlign = 'left';
   }
 
@@ -1088,7 +1088,7 @@ class OfficeRenderer {
     }
 
     // Room label (auto-wrap)
-    const fullLabel = roomData.name || 'Meeting';
+    const fullLabel = roomData.name || window.OMC_I18N?.t('office.meetingLabel', 'Reunião') || 'Reunião';
     ctx.font = '7px monospace';
     const maxW = TILE * 2 + 4;
     const lines = [];
@@ -1223,10 +1223,10 @@ class OfficeRenderer {
     }
 
     const LEVEL_NAMES = {
-      1: window.OMC_I18N?.t('office.levelJunior', 'Junior'),
-      2: window.OMC_I18N?.t('office.levelMid', 'Mid'),
-      3: window.OMC_I18N?.t('office.levelSenior', 'Senior'),
-      4: window.OMC_I18N?.t('office.levelFounding', 'Founding'),
+      1: window.OMC_I18N?.t('office.levelJunior', 'Júnior'),
+      2: window.OMC_I18N?.t('office.levelMid', 'Pleno'),
+      3: window.OMC_I18N?.t('office.levelSenior', 'Sênior'),
+      4: window.OMC_I18N?.t('office.levelFounding', 'Fundador'),
       5: window.OMC_I18N?.t('office.levelCEO', 'CEO'),
     };
     for (const emp of (this.state.employees || [])) {
@@ -1238,11 +1238,11 @@ class OfficeRenderer {
         const title = emp.title || `${lvl}${emp.role}`;
         const hist = emp.performance_history || [];
         const latestScore = hist.length > 0 ? hist[hist.length - 1].score : '-';
-        tooltipText = `${emp.name}${nn}\n${title}\n${window.OMC_I18N?.t('office.employeeTooltipSkills', 'Skills:')} ${(emp.skills || []).join(', ')}\n${window.OMC_I18N?.t('office.employeeTooltipPerformance', 'Performance:')} ${latestScore}`;
-        if (emp.needs_setup) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipNeedsSetup', '🔑 Needs API setup')}`;
+        tooltipText = `${emp.name}${nn}\n${title}\n${window.OMC_I18N?.t('office.employeeTooltipSkills', 'Habilidades:')} ${(emp.skills || []).join(', ')}\n${window.OMC_I18N?.t('office.employeeTooltipPerformance', 'Desempenho:')} ${latestScore}`;
+        if (emp.needs_setup) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipNeedsSetup', '🔑 Precisa de configuração de API')}`;
         else if (emp.api_online === false) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipApiOffline', '🔴 API offline')}`;
-        if (emp.is_listening) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipInMeeting', '📖 In 1-on-1 meeting...')}`;
-        tooltipText += `\n\n${window.OMC_I18N?.t('office.employeeTooltipClickDetails', '(Click for details)')}`;
+        if (emp.is_listening) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipInMeeting', '📖 Em reunião 1-pra-1...')}`;
+        tooltipText += `\n\n${window.OMC_I18N?.t('office.employeeTooltipClickDetails', '(Clique para detalhes)')}`;
         break;
       }
     }
@@ -1261,10 +1261,10 @@ class OfficeRenderer {
     for (const room of (this.state.meeting_rooms || [])) {
       const [rx, ry] = room.position || [0, 0];
       if (x >= rx && x <= rx + 1 && y >= ry + WALL_ROWS && y <= ry + WALL_ROWS + 2) {
-        const status = room.is_booked ? window.OMC_I18N?.t('office.roomStatusInUse', '🔴 In Use') : window.OMC_I18N?.t('office.roomStatusAvailable', '🟢 Available');
-        tooltipText = `🏢 ${room.name}\n${room.description}\n${window.OMC_I18N?.t('office.roomTooltipCapacity', 'Capacity:')} ${room.capacity}\n${window.OMC_I18N?.t('office.roomTooltipStatus', 'Status:')} ${status}`;
+        const status = room.is_booked ? window.OMC_I18N?.t('office.roomStatusInUse', '🔴 Em uso') : window.OMC_I18N?.t('office.roomStatusAvailable', '🟢 Disponível');
+        tooltipText = `🏢 ${room.name}\n${room.description}\n${window.OMC_I18N?.t('office.roomTooltipCapacity', 'Capacidade:')} ${room.capacity}\n${window.OMC_I18N?.t('office.roomTooltipStatus', 'Status:')} ${status}`;
         if (room.is_booked && room.participants?.length > 0) {
-          tooltipText += `\n${window.OMC_I18N?.t('office.roomTooltipParticipants', 'Participants:')} ${room.participants.join(', ')}`;
+          tooltipText += `\n${window.OMC_I18N?.t('office.roomTooltipParticipants', 'Participantes:')} ${room.participants.join(', ')}`;
         }
         break;
       }
