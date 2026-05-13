@@ -819,12 +819,13 @@ class AppController {
     const levels = [...new Set(employees.map(e => e.level))].sort((a, b) => a - b);
 
     const LEVEL_NAMES = {1: 'Junior', 2: 'Mid', 3: 'Senior', 4: 'Founding', 5: 'CEO'};
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
 
-    roleSelect.innerHTML = '<option value="">All Roles</option>' +
+    roleSelect.innerHTML = `<option value="">${t('common.allRoles', 'All Roles')}</option>` +
       roles.map(r => `<option value="${r}"${r === curRole ? ' selected' : ''}>${r}</option>`).join('');
-    deptSelect.innerHTML = '<option value="">All Departments</option>' +
+    deptSelect.innerHTML = `<option value="">${t('common.allDepartments', 'All Departments')}</option>` +
       depts.map(d => `<option value="${d}"${d === curDept ? ' selected' : ''}>${d}</option>`).join('');
-    levelSelect.innerHTML = '<option value="">All Levels</option>' +
+    levelSelect.innerHTML = `<option value="">${t('common.allLevels', 'All Levels')}</option>` +
       levels.map(l => `<option value="${l}"${String(l) === curLevel ? ' selected' : ''}>${LEVEL_NAMES[l] || 'Lv.' + l}</option>`).join('');
   }
 
@@ -1317,7 +1318,8 @@ class AppController {
   updateOneononeDropdown(employees) {
     const select = document.getElementById('oneonone-target');
     const currentVal = select.value;
-    select.innerHTML = '<option value="">-- Select Employee --</option>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    select.innerHTML = `<option value="">${t('common.selectEmployee', 'Select Employee')}</option>`;
     for (const emp of employees) {
       const opt = document.createElement('option');
       opt.value = emp.id;
@@ -1943,12 +1945,12 @@ class AppController {
         return `<button onclick="app._taskBoardFilter='${val}';app._fetchTaskBoard('${empId}','${val}')" style="background:transparent;color:#ccc;border:none;cursor:pointer;padding:2px 6px;font-size:10px;${active}">${label}(${cnt})</button>`;
       };
       tabs = `<div style="display:flex;gap:2px;margin-bottom:4px;border-bottom:1px solid #333;padding-bottom:2px">
-        ${btn('All','',counts.total)}${btn('Active','active',counts.active)}${btn('Done','completed',counts.completed)}${counts.failed ? btn('Failed','failed',counts.failed) : ''}
+        ${btn(t('common.all', 'All'),'',counts.total)}${btn(t('common.active', 'Active'),'active',counts.active)}${btn(t('common.done', 'Done'),'completed',counts.completed)}${counts.failed ? btn(t('common.failed', 'Failed'),'failed',counts.failed) : ''}
       </div>`;
     }
 
     if (!tasks || tasks.length === 0) {
-      el.innerHTML = tabs + '<span class="empty-hint">No tasks</span>';
+      el.innerHTML = tabs + `<span class="empty-hint">${t('employee.noTasksLabel', 'No tasks')}</span>`;
       return;
     }
 
@@ -2158,7 +2160,8 @@ class AppController {
   _fetchEmployeeProjects(employeeId) {
     const container = document.getElementById('emp-detail-projects');
     if (!container) return;
-    container.innerHTML = '<span class="empty-hint">Loading...</span>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    container.innerHTML = `<span class="empty-hint">${t('common.loading', 'Loading...')}</span>`;
 
     fetch(`/api/employees/${employeeId}/projects`)
       .then(r => r.json())
@@ -2965,12 +2968,13 @@ class AppController {
     // Filter to active only
     convs = convs.filter(c => c.phase === 'active');
 
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     container.innerHTML = '';
     if (!convs.length) {
       const empty = document.createElement('div');
       empty.className = 'ceo-section-header';
       empty.style.fontStyle = 'italic';
-      empty.textContent = 'No active sessions';
+      empty.textContent = t('ceo.noActiveSessions', 'No active sessions');
       container.appendChild(empty);
       return;
     }
@@ -2981,7 +2985,7 @@ class AppController {
       item.className = 'ceo-oneonone-item' + (this._currentConvId === conv.id ? ' active' : '');
       item.dataset.convId = conv.id;
       item.textContent = empName;
-      item.title = `1-on-1 with ${empName}`;
+      item.title = t('ceo.oneOnOneWith', '1-on-1 with {name}', { name: empName });
       item.addEventListener('click', () => this._openOneononeInTerminal(conv));
       container.appendChild(item);
     }
@@ -3271,7 +3275,7 @@ class AppController {
         if (empResp.level >= 4) {
           const notice = document.createElement('div');
           notice.style.cssText = 'font-size:5px;color:var(--pixel-yellow);padding:2px 4px;margin-bottom:3px;opacity:0.7;';
-          notice.textContent = '⚠ Settings changes will trigger a server reload. Use when no tasks are running.';
+          notice.textContent = window.OMC_I18N?.t('common.settingsReloadNotice', '⚠ Settings changes will trigger a server reload. Use when no tasks are running.') || '⚠ Settings changes will trigger a server reload. Use when no tasks are running.';
           container.appendChild(notice);
         }
         // Deduplicate sections by id (first occurrence wins)
@@ -3361,7 +3365,7 @@ class AppController {
       select.style.cssText = 'flex:1;';
       select.dataset.fieldKey = field.key;
       select.dataset.fieldType = 'select';
-      select.innerHTML = '<option value="">Loading...</option>';
+      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</option>`;
       row.appendChild(select);
       // Async load models
       this._populateModelSelect(select, currentValue);
@@ -3487,7 +3491,7 @@ class AppController {
     // Map to existing API endpoints
     const saveBtn = document.getElementById('emp-manifest-save-btn');
     saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
+    saveBtn.textContent = window.OMC_I18N?.t('common.saving', 'Saving...') || 'Saving...';
 
     try {
       // Save hosting (agent family) via hosting endpoint — hot-swap, no restart
@@ -3592,9 +3596,10 @@ class AppController {
 
   _renderSelfHostedSection(empId, empData, container) {
     const sessions = empData.sessions || [];
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     const hasActive = sessions.some(s => s.status === 'running');
     const statusColor = hasActive ? 'var(--pixel-green)' : 'var(--pixel-yellow)';
-    const statusText = hasActive ? 'Active' : (sessions.length > 0 ? 'Idle' : 'No sessions');
+    const statusText = hasActive ? t('common.active', 'Active') : (sessions.length > 0 ? t('common.idle', 'Idle') : t('common.noSessions', 'No sessions'));
     const currentModel = empData.llm_model || 'opus';
     const claudeModels = [
       { id: 'opus', label: 'Claude Opus' },
@@ -4023,6 +4028,7 @@ class AppController {
     this._candidateRoles = payload.roles || [];
     this._selectedCandidates = new Map(); // candidateId -> {candidate, role}
     this._interviewingCandidate = null;
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
 
     // If no roles structure, wrap flat candidates into a single role group
     if (!this._candidateRoles.length && this._candidateList.length) {
@@ -4043,7 +4049,7 @@ class AppController {
     const rolesEl = document.getElementById('candidate-roles');
 
     // JD sidebar
-    jdEl.innerHTML = '<div style="font-size:7px;color:var(--pixel-yellow);margin-bottom:4px;">JD — Job Description</div>' +
+    jdEl.innerHTML = `<div style="font-size:7px;color:var(--pixel-yellow);margin-bottom:4px;">${t('candidate.jdLabel', 'JD — Job Description')}</div>` +
       (payload.jd || '').replace(/\n/g, '<br>');
 
     // Render role groups
@@ -4114,16 +4120,16 @@ class AppController {
               <div class="card-hosting">${hostingLabel}</div>
             </div>
             <div class="card-back">
-              <div class="card-detail-title">Skills</div>
+              <div class="card-detail-title">${t('employee.skillsLabel', 'Skills')}</div>
               <div class="card-detail-text">${esc(skills) || 'N/A'}</div>
-              <div class="card-detail-title">Tools</div>
+              <div class="card-detail-title">${t('employee.toolsLabel', 'Tools')}</div>
               <div class="card-detail-text">${esc(tools) || 'N/A'}</div>
-              <div class="card-detail-title">LLM</div>
+              <div class="card-detail-title">${t('employee.llmLabel', 'LLM')}</div>
               <div class="card-detail-text">${esc(llmModel)} (${esc(c.api_provider || 'openrouter')})</div>
-              <div class="card-detail-title">Cost</div>
-              <div class="card-detail-text">${costPer1m} | Fee: ${hiringFee}</div>
-              <div class="card-detail-title">Agent Family</div>
-              <div class="card-detail-text">${hostingLabel} | Auth: ${authLabel}</div>
+              <div class="card-detail-title">${t('employee.costLabel', 'Cost')}</div>
+              <div class="card-detail-text">${costPer1m} | ${t('employee.feeLabel', 'Fee')}: ${hiringFee}</div>
+              <div class="card-detail-title">${t('employee.agentFamily', 'Agent Family')}</div>
+              <div class="card-detail-text">${hostingLabel} | ${t('employee.authLabel', 'Auth')}: ${authLabel}</div>
             </div>
           </div>
         `;
@@ -4211,22 +4217,22 @@ class AppController {
         </div>
         <div class="detail-score" style="border-color:${scoreColor}">
           <span style="color:${scoreColor}">${scorePct}%</span>
-          <small>match</small>
+          <small>${t('common.match', 'match')}</small>
         </div>
       </div>
-      ${reasoning ? `<div class="detail-section"><div class="detail-label">Match Reasoning</div><div class="detail-text">${esc(reasoning)}</div></div>` : ''}
-      ${tags ? `<div class="detail-section"><div class="detail-label">Personality</div><div class="detail-tags-list">${tags}</div></div>` : ''}
-      <div class="detail-section"><div class="detail-label">Skills</div><div class="detail-skills-list">${skills || '<em>N/A</em>'}</div></div>
-      ${tools ? `<div class="detail-section"><div class="detail-label">Tools</div><div class="detail-tools-list">${tools}</div></div>` : ''}
+      ${reasoning ? `<div class="detail-section"><div class="detail-label">${t('candidate.matchReasoning', 'Match Reasoning')}</div><div class="detail-text">${esc(reasoning)}</div></div>` : ''}
+      ${tags ? `<div class="detail-section"><div class="detail-label">${t('employee.personalityLabel', 'Personality')}</div><div class="detail-tags-list">${tags}</div></div>` : ''}
+      <div class="detail-section"><div class="detail-label">${t('employee.skillsLabel', 'Skills')}</div><div class="detail-skills-list">${skills || '<em>N/A</em>'}</div></div>
+      ${tools ? `<div class="detail-section"><div class="detail-label">${t('employee.toolsLabel', 'Tools')}</div><div class="detail-tools-list">${tools}</div></div>` : ''}
       <div class="detail-section detail-grid">
-        <div><div class="detail-label">LLM Model</div><div class="detail-text">🤖 ${esc(llmModel)}</div></div>
-        <div><div class="detail-label">Provider</div><div class="detail-text">${esc(c.api_provider || 'openrouter')}</div></div>
-        <div><div class="detail-label">Cost</div><div class="detail-text">${costPer1m}</div></div>
-        <div><div class="detail-label">Hiring Fee</div><div class="detail-text">${hiringFee}</div></div>
-        <div><div class="detail-label">Agent Family</div><div class="detail-text">${hostingLabel}</div></div>
-        <div><div class="detail-label">Auth</div><div class="detail-text">${authLabel}</div></div>
+        <div><div class="detail-label">${t('employee.llmModelLabel', 'LLM Model')}</div><div class="detail-text">🤖 ${esc(llmModel)}</div></div>
+        <div><div class="detail-label">${t('employee.providerLabel', 'Provider')}</div><div class="detail-text">${esc(c.api_provider || 'openrouter')}</div></div>
+        <div><div class="detail-label">${t('employee.costLabel', 'Cost')}</div><div class="detail-text">${costPer1m}</div></div>
+        <div><div class="detail-label">${t('employee.hiringFeeLabel', 'Hiring Fee')}</div><div class="detail-text">${hiringFee}</div></div>
+        <div><div class="detail-label">${t('employee.agentFamily', 'Agent Family')}</div><div class="detail-text">${hostingLabel}</div></div>
+        <div><div class="detail-label">${t('employee.authLabel', 'Auth')}</div><div class="detail-text">${authLabel}</div></div>
       </div>
-      ${c.description_md ? `<div class="detail-section"><div class="detail-label">Description</div><div class="detail-description md-rendered">${this._renderMarkdown(c.description_md)}</div></div>` : ''}
+      ${c.description_md ? `<div class="detail-section"><div class="detail-label">${t('employee.descriptionLabel', 'Description')}</div><div class="detail-description md-rendered">${this._renderMarkdown(c.description_md)}</div></div>` : ''}
     `;
 
     // Wire up panel buttons
@@ -4780,7 +4786,7 @@ class AppController {
   loadProjectList() {
     const listEl = document.getElementById('project-list');
     const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
-    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('settings.loading', 'Loading...')}</div>`;
+    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
     listEl.classList.remove('hidden');
     document.getElementById('project-detail').classList.add('hidden');
 
@@ -4828,9 +4834,10 @@ class AppController {
     const listEl = document.getElementById('project-list');
     const detailEl = document.getElementById('project-detail');
     const contentEl = document.getElementById('project-detail-content');
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     listEl.classList.add('hidden');
     detailEl.classList.remove('hidden');
-    contentEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
+    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
 
     fetch(`/api/projects/named/${encodeURIComponent(projectId)}`)
       .then(r => r.json())
@@ -4853,7 +4860,7 @@ class AppController {
 
     listEl.classList.add('hidden');
     detailEl.classList.remove('hidden');
-    contentEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
+    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
 
     fetch(`/api/projects/${encodeURIComponent(projectId)}`)
       .then(r => r.json())
@@ -4919,9 +4926,9 @@ class AppController {
         }
 
         // Documents — lazy tree (click to expand directories)
-        html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Documents:</div>`;
+        html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${t('project.documentsLabel', 'Documents')}</div>`;
         html += `<div class="lazy-file-tree" data-project-id="${this._escHtml(projectId)}" data-path="" style="font-size:6px;">
-          <div style="color:var(--text-dim);">Loading files...</div>
+          <div style="color:var(--text-dim);">${t('common.loading', 'Loading...')}</div>
         </div>`;
 
         contentEl.innerHTML = html;
@@ -5500,7 +5507,8 @@ class AppController {
 
   loadExEmployees() {
     const listEl = document.getElementById('ex-employee-list');
-    listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
 
     // Use state data if available, otherwise fetch
     const exEmps = window.officeRenderer?.state?.ex_employees || [];
@@ -5514,7 +5522,7 @@ class AppController {
       .then(data => {
         const list = data.ex_employees || [];
         if (list.length === 0) {
-          listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No ex-employees</div>';
+          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('exEmployees.empty', 'No ex-employees')}</div>`;
           return;
         }
         this._renderExEmployees(list);
@@ -5526,8 +5534,9 @@ class AppController {
 
   _renderExEmployees(exEmps) {
     const listEl = document.getElementById('ex-employee-list');
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     if (exEmps.length === 0) {
-      listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No ex-employees</div>';
+      listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('exEmployees.empty', 'No ex-employees')}</div>`;
       return;
     }
     listEl.innerHTML = '';
@@ -5676,7 +5685,7 @@ class AppController {
                   <div id="oauth-code-input" style="display:none;margin-top:4px;">
                     <label style="font-size:5.5px;color:var(--pixel-yellow);">${t('settings.pasteAnthropicCode', 'Paste the code from Anthropic:')}</label>
                     <div style="display:flex;gap:4px;margin-top:2px;">
-                      <input id="oauth-code-field" type="text" placeholder="code#state" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
+                      <input id="oauth-code-field" type="text" placeholder="${t('settings.oauthCodePlaceholder', 'code#state')}" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
                       <button class="pixel-btn small" onclick="app._submitOAuthCode()">${t('settings.submit', 'Submit')}</button>
                     </div>
                   </div>
@@ -5933,7 +5942,7 @@ class AppController {
         select.replaceWith(input);
       }
     } catch {
-      select.innerHTML = `<option value="${this._escAttr(currentValue)}">${currentValue || 'Error loading'}</option>`;
+      select.innerHTML = `<option value="${this._escAttr(currentValue)}">${currentValue || window.OMC_I18N?.t('common.errorLoading', 'Error loading') || 'Error loading'}</option>`;
     }
   }
 
@@ -5941,18 +5950,19 @@ class AppController {
   async _renderSystemCrons() {
     const container = document.getElementById('system-crons-content');
     if (!container) return;
-    container.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:6px;">Loading...</div>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:6px;">${t('common.loading', 'Loading...')}</div>`;
     try {
       const resp = await fetch('/api/system/crons');
       const crons = await resp.json();
 
       if (!crons.length) {
-        container.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:6px;">No system crons registered.</div>';
+        container.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:6px;">${t('systemCrons.empty', 'No system crons registered.')}</div>`;
         return;
       }
 
       let html = '<table class="pixel-table" style="width:100%;font-size:6.5px;"><thead><tr>';
-      html += '<th>Name</th><th>Interval</th><th>Description</th><th>Runs</th><th>Status</th><th></th>';
+      html += `<th>${t('systemCrons.name', 'Name')}</th><th>${t('systemCrons.interval', 'Interval')}</th><th>${t('systemCrons.description', 'Description')}</th><th>${t('systemCrons.runs', 'Runs')}</th><th>${t('systemCrons.status', 'Status')}</th><th></th>`;
       html += '</tr></thead><tbody>';
 
       for (const c of crons) {
@@ -6261,7 +6271,7 @@ class AppController {
               <div class="company-culture-card-content">${this._escapeHtml(item.content)}</div>
               <div class="company-culture-card-meta">
                 <span class="company-culture-card-date">${date}</span>
-                <button class="company-culture-delete-btn" data-index="${idx}" title="Delete">✕</button>
+                <button class="company-culture-delete-btn" data-index="${idx}" title="${t('project.deleteTooltip', 'Delete')}">✕</button>
               </div>
             </div>`;
         }).join('');
@@ -6308,7 +6318,7 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `Delete failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', data.error), 'system');
         } else {
           this.logEntry('CEO', `Company culture removed: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
           // State will be refreshed via WebSocket push
@@ -6557,8 +6567,8 @@ class AppController {
           <div style="margin-bottom:4px;color:#888;font-size:6px;">
             <code>${esc(s.client_id_env)}</code> / <code>${esc(s.client_secret_env)}</code>
           </div>
-          <input type="text" id="tool-oauth-client-id" placeholder="Client ID" class="tool-oauth-input" />
-          <input type="password" id="tool-oauth-client-secret" placeholder="Client Secret" class="tool-oauth-input" />
+            <input type="text" id="tool-oauth-client-id" placeholder="${t('tool.oauthClientId', 'Client ID')}" class="tool-oauth-input" />
+            <input type="password" id="tool-oauth-client-secret" placeholder="${t('tool.oauthClientSecret', 'Client Secret')}" class="tool-oauth-input" />
           <button class="pixel-btn small" onclick="window.app._toolAction('credentials','${esc(toolId)}')">Save</button>
         </div>`;
 
@@ -6724,13 +6734,14 @@ class AppController {
   async openToolList() {
     const modal = document.getElementById('tool-list-modal');
     const body = document.getElementById('tool-list-body');
-    body.innerHTML = '<span class="empty-hint">Loading...</span>';
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    body.innerHTML = `<span class="empty-hint">${t('common.loading', 'Loading...')}</span>`;
     modal.classList.remove('hidden');
 
     try {
       const tools = await fetch('/api/tools').then(r => r.json());
       if (tools.length === 0) {
-        body.innerHTML = '<span class="empty-hint">No tools registered</span>';
+        body.innerHTML = `<span class="empty-hint">${t('toolList.empty', 'No tools registered')}</span>`;
       } else {
         body.innerHTML = tools.map(t => `
           <div class="tool-list-item" onclick="window.app.openToolDetail('${this._escapeHtml(t.id)}')">
@@ -6870,7 +6881,7 @@ class AppController {
     const res = await fetch(`/api/tools/${esc(toolId)}/templates/${esc(filename)}`, { method: 'DELETE' });
     const data = await res.json();
     if (data.status === 'ok') this.openToolDetail(toolId);
-    else this._showToast(data.message || 'Delete failed', 'error');
+    else this._showToast(data.message || t('common.deleteFailed', 'Delete failed'), 'error');
   }
 
   _templateNew(toolId, templatesDir) {
@@ -7233,7 +7244,7 @@ class AppController {
   }
 
   async _loadLazyDir(container, projectId, dirPath) {
-    container.innerHTML = '<div style="color:var(--text-dim);">Loading...</div>';
+    container.innerHTML = `<div style="color:var(--text-dim);">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>`;
     try {
       // Encode each path segment individually to preserve '/' separators (e.g. slug/iter_001)
       const encodedId = projectId.split('/').map(encodeURIComponent).join('/');
@@ -7395,7 +7406,8 @@ class AppController {
       const sel = document.getElementById('ceo-product-select');
       if (!sel) return;
       const current = sel.value || '';
-      sel.innerHTML = '<option value="">No Product</option>';
+      const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+      sel.innerHTML = `<option value="">${t('common.noProduct', 'No Product')}</option>`;
       for (const p of data) {
         const opt = document.createElement('option');
         opt.value = p.id;
@@ -7496,12 +7508,12 @@ class AppController {
     if (!list) return;
     const row = document.createElement('div');
     row.className = 'kr-form-row';
-    row.innerHTML = `
-      <input type="text" class="kr-title-input form-input" placeholder="KR title" />
-      <input type="number" class="kr-target-input form-input" placeholder="Target" style="width:70px" />
-      <input type="text" class="kr-unit-input form-input" placeholder="Unit" style="width:60px" />
-      <button class="kr-remove-btn" title="Remove">&times;</button>
-    `;
+        row.innerHTML = `
+          <input type="text" class="kr-title-input form-input" placeholder="${t('kr.titlePlaceholder', 'KR title')}" />
+          <input type="number" class="kr-target-input form-input" placeholder="${t('kr.targetPlaceholder', 'Target')}" style="width:70px" />
+          <input type="text" class="kr-unit-input form-input" placeholder="${t('kr.unitPlaceholder', 'Unit')}" style="width:60px" />
+          <button class="kr-remove-btn" title="Remove">&times;</button>
+        `;
     row.querySelector('.kr-remove-btn').addEventListener('click', () => row.remove());
     list.appendChild(row);
   }
@@ -7509,7 +7521,7 @@ class AppController {
   _populateProductOwnerDropdown() {
     const sel = document.getElementById('create-product-owner');
     if (!sel) return;
-    sel.innerHTML = '<option value="">Select owner...</option>';
+    sel.innerHTML = `<option value="">${window.OMC_I18N?.t('common.selectOwner', 'Select owner...') || 'Select owner...'}</option>`;
     for (const emp of (this._cachedEmployees || [])) {
       const opt = document.createElement('option');
       opt.value = emp.id;
@@ -7792,9 +7804,9 @@ class AppController {
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn-small btn-danger';
     deleteBtn.style.marginLeft = '4px';
-    deleteBtn.textContent = 'Delete';
+    deleteBtn.textContent = t('common.delete', 'Delete');
     deleteBtn.addEventListener('click', async () => {
-      if (!confirm(`Delete product "${product.name}" and ALL its data? This cannot be undone.`)) return;
+      if (!confirm(t('project.deleteProductConfirm', `Delete product "${product.name}" and ALL its data? This cannot be undone.`))) return;
       try {
         const res = await fetch(`/api/product/${encodeURIComponent(slug)}`, { method: 'DELETE' });
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
@@ -7803,7 +7815,7 @@ class AppController {
         this._refreshProductSelector();
       } catch (err) {
         console.error('Delete failed:', err);
-        this._showToast('Delete failed: ' + err.message, 'error');
+        this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error');
       }
     });
     header.appendChild(deleteBtn);
@@ -7893,9 +7905,9 @@ class AppController {
       const delKrBtn = document.createElement('button');
       delKrBtn.className = 'kr-remove-btn';
       delKrBtn.innerHTML = '&times;';
-      delKrBtn.title = 'Delete KR';
+      delKrBtn.title = t('project.deleteKrTooltip', 'Delete KR');
       delKrBtn.addEventListener('click', async () => {
-        if (!confirm(`Delete KR "${kr.title}"?`)) return;
+        if (!confirm(t('project.deleteKrConfirm', `Delete KR "${kr.title}"?`))) return;
         try {
           const r = await fetch(`/api/product/${encodeURIComponent(slug)}/kr/${encodeURIComponent(kr.id)}`, { method: 'DELETE' });
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -8097,13 +8109,13 @@ class AppController {
     if (container.querySelector('.kr-inline-add')) return;
     const row = document.createElement('div');
     row.className = 'kr-inline-add kr-form-row';
-    row.innerHTML = `
-      <input type="text" class="kr-title-input form-input" placeholder="KR title" />
-      <input type="number" class="kr-target-input form-input" placeholder="Target" style="width:70px" />
-      <input type="text" class="kr-unit-input form-input" placeholder="Unit" style="width:60px" />
-      <button class="btn-small kr-save-btn">Save</button>
-      <button class="kr-remove-btn">&times;</button>
-    `;
+        row.innerHTML = `
+          <input type="text" class="kr-title-input form-input" placeholder="${t('kr.titlePlaceholder', 'KR title')}" />
+          <input type="number" class="kr-target-input form-input" placeholder="${t('kr.targetPlaceholder', 'Target')}" style="width:70px" />
+          <input type="text" class="kr-unit-input form-input" placeholder="${t('kr.unitPlaceholder', 'Unit')}" style="width:60px" />
+          <button class="btn-small kr-save-btn">Save</button>
+          <button class="kr-remove-btn">&times;</button>
+        `;
     row.querySelector('.kr-remove-btn').addEventListener('click', () => row.remove());
     row.querySelector('.kr-save-btn').addEventListener('click', async () => {
       const title = row.querySelector('.kr-title-input').value.trim();
@@ -8367,16 +8379,16 @@ class AppController {
     deleteRow.style.borderTop = '1px solid rgba(255,255,255,0.05)';
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'issue-delete-btn';
-    deleteBtn.textContent = 'Delete Issue';
+    deleteBtn.textContent = t('issue.deleteButtonLabel', 'Delete Issue');
     deleteBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (!confirm(`Delete issue "${issue.title}"?`)) return;
+      if (!confirm(t('issue.deleteConfirm', `Delete issue "${issue.title}"?`))) return;
       try {
         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}`, { method: 'DELETE' });
         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
         this._showToast('Issue deleted', 'success');
         this._openProductDetail(slug);
-      } catch (err) { this._showToast(`Delete failed: ${err.message}`, 'error'); }
+      } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
     });
     deleteRow.appendChild(deleteBtn);
     body.appendChild(deleteRow);
@@ -8552,16 +8564,16 @@ class AppController {
     const row = document.createElement('div');
     row.className = 'issue-inline-add';
     row.innerHTML = `
-      <input type="text" class="form-input issue-new-title" placeholder="Issue title" />
-      <textarea class="form-input issue-new-desc" rows="2" placeholder="Description (optional)"></textarea>
+      <input type="text" class="form-input issue-new-title" placeholder="${t('issue.titlePlaceholder', 'Issue title')}" />
+      <textarea class="form-input issue-new-desc" rows="2" placeholder="${t('issue.descriptionPlaceholder', 'Description (optional)')}"></textarea>
       <div class="issue-new-row">
         <select class="form-input issue-new-priority" style="width:auto">
           <option value="P0">P0</option><option value="P1">P1</option>
           <option value="P2" selected>P2</option><option value="P3">P3</option>
         </select>
-        <input type="number" class="form-input issue-new-sp" placeholder="Story pts" style="width:60px" />
+        <input type="number" class="form-input issue-new-sp" placeholder="${t('issue.storyPointsPlaceholder', 'Story pts')}" style="width:60px" />
         <select class="form-input issue-new-sprint" style="width:auto">
-          <option value="">No Sprint</option>
+          <option value="">${t('issue.sprintSelectPlaceholder', 'No Sprint')}</option>
         </select>
         <button class="btn-small issue-new-save">Create</button>
         <button class="kr-remove-btn issue-new-cancel">&times;</button>
@@ -8799,15 +8811,15 @@ class AppController {
               actions.appendChild(startBtn);
               const delBtn = document.createElement('button');
               delBtn.className = 'sprint-action-btn danger';
-              delBtn.textContent = 'Delete';
+              delBtn.textContent = t('sprint.deleteButtonLabel', 'Delete');
               delBtn.addEventListener('click', async () => {
-                if (!confirm(`Delete sprint "${s.name}"?`)) return;
+                if (!confirm(t('sprint.deleteConfirm', `Delete sprint "${s.name}"?`))) return;
                 try {
                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}`, { method: 'DELETE' });
                   if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-                  this._showToast('Sprint deleted', 'success');
+                  this._showToast(t('sprint.deleted', 'Sprint deleted'), 'success');
                   this._renderProductRoadmap(slug, container);
-                } catch (err) { this._showToast(`Delete failed: ${err.message}`, 'error'); }
+                } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
               });
               actions.appendChild(delBtn);
             } else if (s.status === 'active') {
@@ -8926,16 +8938,16 @@ class AppController {
     const form = document.createElement('div');
     form.className = 'sprint-inline-add';
     form.innerHTML = `
-      <input type="text" class="form-input sprint-new-name" placeholder="Sprint name" />
-      <input type="text" class="form-input sprint-new-goal" placeholder="Goal (optional)" />
+      <input type="text" class="form-input sprint-new-name" placeholder="${t('sprint.namePlaceholder', 'Sprint name')}" />
+      <input type="text" class="form-input sprint-new-goal" placeholder="${t('sprint.goalPlaceholder', 'Goal (optional)')}" />
       <div class="sprint-form-row">
-        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">Start:</label>
+        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">${t('sprint.startLabel', 'Start:')}</label>
         <input type="date" class="form-input sprint-new-start" style="width:auto" />
-        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">End:</label>
+        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">${t('sprint.endLabel', 'End:')}</label>
         <input type="date" class="form-input sprint-new-end" style="width:auto" />
       </div>
       <div class="sprint-form-row">
-        <input type="number" class="form-input sprint-new-capacity" placeholder="Capacity (pts)" style="width:80px" />
+        <input type="number" class="form-input sprint-new-capacity" placeholder="${t('sprint.capacityPlaceholder', 'Capacity (pts)')}" style="width:80px" />
         <span class="sprint-suggested-capacity" style="color:var(--text-dim);font-size:calc(5px + var(--font-boost));margin-left:4px"></span>
         <button class="btn-small sprint-save-btn">Create</button>
         <button class="kr-remove-btn sprint-cancel-btn">&times;</button>
@@ -8949,7 +8961,7 @@ class AppController {
           const hint = form.querySelector('.sprint-suggested-capacity');
           hint.textContent = `(suggested: ${d.suggested_capacity} pts)`;
           hint.style.cursor = 'pointer';
-          hint.title = 'Click to use suggested capacity';
+          hint.title = t('sprint.useSuggestedCapacity', 'Click to use suggested capacity');
           hint.addEventListener('click', () => {
             form.querySelector('.sprint-new-capacity').value = d.suggested_capacity;
           });
@@ -8966,10 +8978,10 @@ class AppController {
     form.querySelector('.sprint-cancel-btn').addEventListener('click', () => form.remove());
     form.querySelector('.sprint-save-btn').addEventListener('click', async () => {
       const name = form.querySelector('.sprint-new-name').value.trim();
-      if (!name) { this._showToast('Sprint name is required', 'warning'); return; }
+      if (!name) { this._showToast(t('sprint.nameRequired', 'Sprint name is required'), 'warning'); return; }
       const start_date = form.querySelector('.sprint-new-start').value;
       const end_date = form.querySelector('.sprint-new-end').value;
-      if (!start_date || !end_date) { this._showToast('Dates are required', 'warning'); return; }
+      if (!start_date || !end_date) { this._showToast(t('sprint.datesRequired', 'Dates are required'), 'warning'); return; }
       const goal = form.querySelector('.sprint-new-goal').value.trim();
       const capacity = parseInt(form.querySelector('.sprint-new-capacity').value) || null;
       try {
@@ -9019,7 +9031,7 @@ class AppController {
       };
       const cap = parseInt(form.querySelector('.sprint-edit-capacity').value);
       if (!isNaN(cap)) updates.capacity = cap;
-      if (!updates.name) { this._showToast('Sprint name is required', 'warning'); return; }
+      if (!updates.name) { this._showToast(t('sprint.nameRequired', 'Sprint name is required'), 'warning'); return; }
       try {
         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(sprint.id)}`, {
           method: 'PUT',
@@ -9613,12 +9625,12 @@ class AppController {
 
         // Cancel button for active tasks
         if (!isTerminal && t.project_id) {
-          progressHtml += `<button class="proj-cancel-btn" data-pid="${this._escHtml(t.project_id)}" title="Cancel">&#10005;</button>`;
+          progressHtml += `<button class="proj-cancel-btn" data-pid="${this._escHtml(t.project_id)}" title="${t('project.cancelTooltip', 'Cancel')}">&#10005;</button>`;
         }
 
         // Trace button
         if (t.project_id) {
-          progressHtml += `<button class="proj-trace-btn" data-pid="${this._escHtml(t.project_id)}" data-task="${this._escHtml(t.task.substring(0, 40))}" title="Trace">T</button>`;
+          progressHtml += `<button class="proj-trace-btn" data-pid="${this._escHtml(t.project_id)}" data-task="${this._escHtml(t.task.substring(0, 40))}" title="${t('project.traceTooltip', 'Trace')}">T</button>`;
         }
 
         if (progressHtml) {
@@ -9662,7 +9674,7 @@ class AppController {
     detailEl.classList.remove('hidden');
     // Render directly into contentEl — no split wrapper needed
     contentEl.innerHTML = `<div id="project-iter-detail" style="width:100%;height:100%;overflow-y:auto;">
-      <div style="color:var(--text-dim);font-size:6px;">Loading...</div>
+      <div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>
     </div>`;
     this._loadIterationDetail(projectId, projectId, nodeId);
   }
@@ -9689,11 +9701,11 @@ class AppController {
   _renderProjectDetail(projectId, proj, contentEl) {
     const totalCost = proj.total_cost_usd || 0;
     let headerHtml = `<div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-      <span class="project-name-editable" data-project-id="${this._escHtml(projectId)}" title="Click to rename" style="color:var(--pixel-cyan);font-size:8px;cursor:pointer;border-bottom:1px dashed var(--text-dim);">${this._escHtml(proj.name || projectId)}</span>
+      <span class="project-name-editable" data-project-id="${this._escHtml(projectId)}" title="${t('project.renameTooltip', 'Click to rename')}" style="color:var(--pixel-cyan);font-size:8px;cursor:pointer;border-bottom:1px dashed var(--text-dim);">${this._escHtml(proj.name || projectId)}</span>
       <span style="color:var(--text-dim);font-size:6px;">${proj.status}</span>
       ${totalCost > 0 ? `<span style="color:var(--pixel-yellow);font-size:6px;">$${totalCost.toFixed(4)}</span>` : ''}
       <button onclick="app.openTraceViewer('${this._escHtml(projectId)}','${this._escHtml(proj.name || projectId)}')" style="margin-left:auto;background:#1a1a1a;color:#4af;border:1px solid #333;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace">TRACE</button>
-      <button onclick="app._deleteProject('${this._escHtml(projectId)}')" style="background:#1a1a1a;color:var(--pixel-red);border:1px solid #500;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace" title="Delete project and all data">DELETE</button>
+      <button onclick="app._deleteProject('${this._escHtml(projectId)}')" style="background:#1a1a1a;color:var(--pixel-red);border:1px solid #500;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace" title="${t('project.deleteProjectTooltip', 'Delete project and all data')}">DELETE</button>
     </div>`;
 
     // Build split layout: iteration list (left) + detail (right)
@@ -9783,7 +9795,7 @@ class AppController {
   _loadIterationDetail(projectId, iterationId) {
     const panel = document.getElementById('project-iter-detail');
     if (!panel) return;
-    panel.innerHTML = '<div style="color:var(--text-dim);font-size:6px;">Loading...</div>';
+    panel.innerHTML = `<div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>`;
 
     // Use qualified iteration ID (projectId/iterationId) for unambiguous lookup
     const qualifiedId = (projectId && iterationId && projectId !== iterationId)
@@ -9814,8 +9826,8 @@ class AppController {
 
         // Tab bar — "Detail" + "Task Tree" fixed + dynamic plugin tabs
         const plugins = window.pluginLoader.getPlugins();
-        let tabBarHtml = `<div class="project-tabs"><button class="project-tab active" data-tab="detail">Detail</button>`;
-        tabBarHtml += `<button class="project-tab" data-tab="task-tree">\uD83C\uDF33 Task Tree</button>`;
+        let tabBarHtml = `<div class="project-tabs"><button class="project-tab active" data-tab="detail">${t('project.detailTab', 'Detail')}</button>`;
+        tabBarHtml += `<button class="project-tab" data-tab="task-tree">\uD83C\uDF33 ${t('project.taskTreeTab', 'Task Tree')}</button>`;
         for (const p of plugins) {
           tabBarHtml += `<button class="project-tab" data-tab="plugin-${p.id}">${p.icon ? p.icon + ' ' : ''}${p.name}</button>`;
         }
@@ -9859,23 +9871,23 @@ class AppController {
 
         // Follow-up button (always available)
         detailHtml += `<div class="task-followup-section">
-          <button class="pixel-btn" id="followup-btn" style="font-size:6px;padding:4px 10px;">+ Follow-up Task</button>
+          <button class="pixel-btn" id="followup-btn" style="font-size:6px;padding:4px 10px;">${t('followup.addButton', '+ Follow-up Task')}</button>
           <div id="followup-input-area" class="hidden" style="margin-top:6px;">
-            <textarea id="followup-instructions" class="followup-textarea" placeholder="Enter follow-up instructions..." rows="3"></textarea>
+            <textarea id="followup-instructions" class="followup-textarea" placeholder="${t('followup.instructionsPlaceholder', 'Enter follow-up instructions...')}" rows="3"></textarea>
             <div style="margin-top:4px;display:flex;gap:4px;">
-              <button class="pixel-btn" id="followup-submit" style="font-size:6px;padding:3px 8px;">Send</button>
-              <button class="pixel-btn secondary" id="followup-cancel" style="font-size:6px;padding:3px 8px;">Cancel</button>
+              <button class="pixel-btn" id="followup-submit" style="font-size:6px;padding:3px 8px;">${t('common.send', 'Send')}</button>
+              <button class="pixel-btn secondary" id="followup-cancel" style="font-size:6px;padding:3px 8px;">${t('common.cancel', 'Cancel')}</button>
             </div>
           </div>
         </div>`;
 
         const downloadUrl = `/api/projects/${qualifiedPath}/download`;
         detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 3px;display:flex;justify-content:space-between;align-items:center;">
-          <span>Documents</span>
-          <a href="${downloadUrl}" style="font-size:5px;color:var(--pixel-green);text-decoration:none;border:1px solid var(--border);padding:1px 6px;cursor:pointer;">Download ZIP</a>
+          <span>${t('project.documentsLabel', 'Documents')}</span>
+          <a href="${downloadUrl}" style="font-size:5px;color:var(--pixel-green);text-decoration:none;border:1px solid var(--border);padding:1px 6px;cursor:pointer;">${t('project.downloadZip', 'Download ZIP')}</a>
         </div>`;
         detailHtml += `<div class="lazy-file-tree" data-project-id="${this._escHtml(qualifiedPath)}" data-path="" style="font-size:6px;">
-          <div style="color:var(--text-dim);">Loading files...</div>
+          <div style="color:var(--text-dim);">${t('common.loading', 'Loading...')}</div>
         </div>`;
 
         // CEO Report (stored when project completion report is submitted)
@@ -9970,7 +9982,7 @@ class AppController {
           </div>
         </div>`;
         for (const p of plugins) {
-          fullHtml += `<div class="project-tab-content" data-tab="plugin-${p.id}" style="display:none;"><div style="color:var(--text-dim);font-size:6px;">Loading...</div></div>`;
+          fullHtml += `<div class="project-tab-content" data-tab="plugin-${p.id}" style="display:none;"><div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div></div>`;
         }
         panel.innerHTML = fullHtml;
 
@@ -10210,7 +10222,7 @@ class AppController {
   }
 
   _deleteProject(projectId) {
-    if (!confirm(`Delete project "${projectId}" and ALL its data? This cannot be undone.`)) return;
+    if (!confirm(t('project.deleteProjectConfirm', `Delete project "${projectId}" and ALL its data? This cannot be undone.`))) return;
     fetch(`/api/projects/${encodeURIComponent(projectId)}`, { method: 'DELETE' })
       .then(r => {
         if (!r.ok) throw new Error(`Server error: ${r.status}`);
