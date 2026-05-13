@@ -155,7 +155,7 @@ class AppController {
       if (banner) {
         banner.classList.add('hidden');
         const applyBtn = document.getElementById('code-update-apply-btn');
-        if (applyBtn) { applyBtn.textContent = 'Apply'; applyBtn.disabled = false; }
+        if (applyBtn) { applyBtn.textContent = window.OMC_I18N?.t('banner.apply', 'Apply') || 'Apply'; applyBtn.disabled = false; }
       }
       this.bootstrap();
     };
@@ -415,7 +415,7 @@ class AppController {
         if (this._currentConvId === p.conv_id && this._ceoTerm) {
           this._ceoTerm.appendMessage({
             role: 'system',
-            text: '1-on-1 session ended.',
+            text: window.OMC_I18N?.t('meeting.sessionEnded', '1-on-1 session ended.'),
             source: 'system',
           });
           this._currentConvId = null;
@@ -431,57 +431,57 @@ class AppController {
       'state_snapshot':     () => {
         const now = new Date().toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const el = document.getElementById('last-sync-time');
-        if (el) el.textContent = `Sync ${now}`;
+        if (el) el.textContent = window.OMC_I18N?.t('status.sync', 'Sync {time}', { time: now }) || `Sync ${now}`;
         return null;
       },
-      'ceo_task_submitted': (p) => ({ text: `📋 Task: ${p.task}`, cls: 'ceo', agent: 'CEO' }),
-      'agent_thinking':     (p) => ({ text: `💭 ${p.message}`, cls: (msg.agent || '').toLowerCase(), agent: msg.agent }),
-      'agent_done':         (p) => { this._hideCeoTyping(); return { text: `✅ ${p.role} done: ${p.summary}`, cls: (p.role || '').toLowerCase(), agent: p.role }; },
-      'employee_hired':     (p) => ({ text: `🎉 New hire: ${p.name} (${p.role})`, cls: 'hr', agent: 'HR' }),
-      'employee_fired':     (p) => ({ text: `🚪 Departure: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
-      'employee_rehired':   (p) => ({ text: `🔄 Rehired: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
-      'employee_reviewed':  (p) => ({ text: `📊 Quarterly review: ${p.id} — Score: ${p.score}`, cls: 'hr', agent: 'HR' }),
-      'okr_updated':        (p) => ({ text: `🎯 OKRs updated for #${p.employee_id}`, cls: 'hr', agent: 'HR' }),
-      'onboarding_started': (p) => ({ text: `📋 Onboarding started: ${p.name}`, cls: 'hr', agent: 'HR' }),
-      'onboarding_completed': (p) => ({ text: `✅ Onboarding completed: ${p.name}`, cls: 'hr', agent: 'HR' }),
+      'ceo_task_submitted': (p) => ({ text: window.OMC_I18N?.t('log.taskSubmitted', '📋 Task: {task}', { task: p.task }) || `📋 Task: ${p.task}`, cls: 'ceo', agent: 'CEO' }),
+      'agent_thinking':     (p) => ({ text: window.OMC_I18N?.t('log.agentThinking', '💭 {message}', { message: p.message }) || `💭 ${p.message}`, cls: (msg.agent || '').toLowerCase(), agent: msg.agent }),
+      'agent_done':         (p) => { this._hideCeoTyping(); return { text: window.OMC_I18N?.t('log.agentDone', '✅ {role} done: {summary}', { role: p.role, summary: p.summary }) || `✅ ${p.role} done: ${p.summary}`, cls: (p.role || '').toLowerCase(), agent: p.role }; },
+      'employee_hired':     (p) => ({ text: window.OMC_I18N?.t('log.newHire', '🎉 New hire: {name} ({role})', { name: p.name, role: p.role }) || `🎉 New hire: ${p.name} (${p.role})`, cls: 'hr', agent: 'HR' }),
+      'employee_fired':     (p) => ({ text: window.OMC_I18N?.t('log.departure', '🚪 Departure: {name}{nickname} — {reason}', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', reason: p.reason || '' }) || `🚪 Departure: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
+      'employee_rehired':   (p) => ({ text: window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', role: p.role }) || `🔄 Rehired: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
+      'employee_reviewed':  (p) => ({ text: window.OMC_I18N?.t('log.quarterlyReview', '📊 Quarterly review: {id} — Score: {score}', { id: p.id, score: p.score }) || `📊 Quarterly review: ${p.id} — Score: ${p.score}`, cls: 'hr', agent: 'HR' }),
+      'okr_updated':        (p) => ({ text: window.OMC_I18N?.t('log.okrsUpdated', '🎯 OKRs updated for #{employee_id}', { employee_id: p.employee_id }) || `🎯 OKRs updated for #${p.employee_id}`, cls: 'hr', agent: 'HR' }),
+      'onboarding_started': (p) => ({ text: window.OMC_I18N?.t('log.onboardingStarted', '📋 Onboarding started: {name}', { name: p.name }) || `📋 Onboarding started: ${p.name}`, cls: 'hr', agent: 'HR' }),
+      'onboarding_completed': (p) => ({ text: window.OMC_I18N?.t('log.onboardingCompleted', '✅ Onboarding completed: {name}', { name: p.name }) || `✅ Onboarding completed: ${p.name}`, cls: 'hr', agent: 'HR' }),
       'talent_profile_error': (p) => {
         const fields = (p.missing_fields || []).join(', ');
         const lines = [];
-        lines.push(`${ANSI.red}${ANSI.bold}Talent Profile Error${ANSI.reset}`);
+        lines.push(`${ANSI.red}${ANSI.bold}${window.OMC_I18N?.t('talent.profileErrorTitle', 'Talent Profile Error') || 'Talent Profile Error'}${ANSI.reset}`);
         lines.push('');
         lines.push(`${ANSI.cyan}Talent:${ANSI.reset}  ${p.talent_id || 'unknown'}`);
         if (fields) lines.push(`${ANSI.cyan}Missing:${ANSI.reset} ${ANSI.yellow}${fields}${ANSI.reset}`);
         if (p.talent_link) lines.push(`${ANSI.cyan}Repo:${ANSI.reset}    ${p.talent_link}`);
         lines.push('');
-        lines.push(`${ANSI.dim}Please contact the talent uploader to fix this issue.${ANSI.reset}`);
-        if (p.talent_link) lines.push(`${ANSI.dim}You can file an issue on the talent repo.${ANSI.reset}`);
-        this._showXtermAlert('Talent Profile Error', lines);
+        lines.push(`${ANSI.dim}${window.OMC_I18N?.t('talent.profileErrorContact', 'Please contact the talent uploader to fix this issue.')}${ANSI.reset}`);
+        if (p.talent_link) lines.push(`${ANSI.dim}${window.OMC_I18N?.t('talent.profileErrorRepo', 'You can file an issue on the talent repo.')}${ANSI.reset}`);
+        this._showXtermAlert(window.OMC_I18N?.t('talent.profileErrorTitle', 'Talent Profile Error') || 'Talent Profile Error', lines);
         return { text: `Talent profile error: ${p.talent_id}`, cls: 'hr', agent: 'HR' };
       },
-      'probation_review':   (p) => ({ text: `📋 Probation review: #${p.id} — ${p.passed ? 'Passed' : 'Failed'}`, cls: 'hr', agent: 'HR' }),
-      'pip_started':        (p) => ({ text: `⚠️ PIP started for #${p.id}`, cls: 'hr', agent: 'HR' }),
-      'pip_resolved':       (p) => ({ text: `✅ PIP resolved for #${p.id}`, cls: 'hr', agent: 'HR' }),
-      'exit_interview_started': (p) => ({ text: `🚪 Exit interview: ${p.name}`, cls: 'hr', agent: 'HR' }),
-      'exit_interview_completed': (p) => ({ text: `📄 Exit interview done: ${p.name}`, cls: 'hr', agent: 'HR' }),
-      'tool_added':         (p) => ({ text: `🔧 New tool: ${p.name}`, cls: 'coo', agent: 'COO' }),
-      'guidance_start':     (p) => ({ text: `📖 ${p.name} is in a 1-on-1 meeting...`, cls: 'guidance', agent: 'CEO' }),
-      'guidance_noted':     (p) => ({ text: `🎓 ${p.name}: ${p.acknowledgment}`, cls: 'guidance', agent: p.name }),
-      'guidance_end':       (p) => ({ text: `📖 ${p.name}'s 1-on-1 meeting concluded`, cls: 'guidance', agent: 'CEO' }),
+      'probation_review':   (p) => ({ text: window.OMC_I18N?.t('log.probationReview', '📋 Probation review: #{id} — {result}', { id: p.id, result: p.passed ? 'Passed' : 'Failed' }) || `📋 Probation review: #${p.id} — ${p.passed ? 'Passed' : 'Failed'}`, cls: 'hr', agent: 'HR' }),
+      'pip_started':        (p) => ({ text: window.OMC_I18N?.t('log.pipStarted', '⚠️ PIP started for #{id}', { id: p.id }) || `⚠️ PIP started for #${p.id}`, cls: 'hr', agent: 'HR' }),
+      'pip_resolved':       (p) => ({ text: window.OMC_I18N?.t('log.pipResolved', '✅ PIP resolved for #{id}', { id: p.id }) || `✅ PIP resolved for #${p.id}`, cls: 'hr', agent: 'HR' }),
+      'exit_interview_started': (p) => ({ text: window.OMC_I18N?.t('log.exitInterviewStarted', '🚪 Exit interview: {name}', { name: p.name }) || `🚪 Exit interview: ${p.name}`, cls: 'hr', agent: 'HR' }),
+      'exit_interview_completed': (p) => ({ text: window.OMC_I18N?.t('log.exitInterviewCompleted', '📄 Exit interview done: {name}', { name: p.name }) || `📄 Exit interview done: ${p.name}`, cls: 'hr', agent: 'HR' }),
+      'tool_added':         (p) => ({ text: window.OMC_I18N?.t('log.newTool', '🔧 New tool: {name}', { name: p.name }) || `🔧 New tool: ${p.name}`, cls: 'coo', agent: 'COO' }),
+      'guidance_start':     (p) => ({ text: window.OMC_I18N?.t('log.guidanceStart', '📖 {name} is in a 1-on-1 meeting...', { name: p.name }) || `📖 ${p.name} is in a 1-on-1 meeting...`, cls: 'guidance', agent: 'CEO' }),
+      'guidance_noted':     (p) => ({ text: window.OMC_I18N?.t('log.guidanceNoted', '🎓 {name}: {acknowledgment}', { name: p.name, acknowledgment: p.acknowledgment }) || `🎓 ${p.name}: ${p.acknowledgment}`, cls: 'guidance', agent: p.name }),
+      'guidance_end':       (p) => ({ text: window.OMC_I18N?.t('log.guidanceEnd', "📖 {name}'s 1-on-1 meeting concluded", { name: p.name }) || `📖 ${p.name}'s 1-on-1 meeting concluded`, cls: 'guidance', agent: 'CEO' }),
       'meeting_booked':     (p) => {
-        return { text: `🏢 Room booked: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
+        return { text: window.OMC_I18N?.t('log.roomBooked', '🏢 Room booked: {room_name}', { room_name: p.room_name || '' }) || `🏢 Room booked: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
       },
       'meeting_released':   (p) => {
         // Keep chat history for viewing after meeting ends
-        return { text: `🏢 Room released: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
+        return { text: window.OMC_I18N?.t('log.roomReleased', '🏢 Room released: {room_name}', { room_name: p.room_name || '' }) || `🏢 Room released: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
       },
-      'meeting_denied':     (p) => ({ text: `🚫 Room request denied: no rooms available`, cls: 'coo', agent: 'COO' }),
-      'routine_phase':      (p) => ({ text: `🔄 ${p.phase}: ${p.message}`, cls: 'system', agent: 'ROUTINE' }),
+      'meeting_denied':     (p) => ({ text: window.OMC_I18N?.t('log.roomDenied', '🚫 Room request denied: no rooms available') || '🚫 Room request denied: no rooms available', cls: 'coo', agent: 'COO' }),
+      'routine_phase':      (p) => ({ text: window.OMC_I18N?.t('log.routinePhase', '🔄 {phase}: {message}', { phase: p.phase, message: p.message }) || `🔄 ${p.phase}: ${p.message}`, cls: 'system', agent: 'ROUTINE' }),
       'meeting_report_ready': (p) => {
         // Legacy event — no longer enqueues for CEO review (EA handles approval)
-        return { text: `📄 Meeting report ready (EA reviewed)`, cls: 'system', agent: 'EA' };
+        return { text: window.OMC_I18N?.t('log.meetingReportReady', '📄 Meeting report ready (EA reviewed)') || '📄 Meeting report ready (EA reviewed)', cls: 'system', agent: 'EA' };
       },
       'meeting_report_complete': (p) => {
-        return { text: `📄 Meeting report complete (EA approved)`, cls: 'system', agent: 'EA' };
+        return { text: window.OMC_I18N?.t('log.meetingReportComplete', '📄 Meeting report complete (EA approved)') || '📄 Meeting report complete (EA approved)', cls: 'system', agent: 'EA' };
       },
       'recurring_action_items': (p) => {
         const items = (p.items || []).map(i => `  - ${i}`).join('\n');
@@ -921,12 +921,12 @@ class AppController {
     document.getElementById('code-update-apply-btn').addEventListener('click', () => {
       const btn = document.getElementById('code-update-apply-btn');
       btn.disabled = true;
-      btn.textContent = 'Applying...';
+      btn.textContent = window.OMC_I18N?.t('banner.applying', 'Applying...') || 'Applying...';
       fetch('/api/admin/apply-code-update', { method: 'POST' })
         .then(r => r.json())
         .then(data => {
           if (data.status === 'deferred') {
-            btn.textContent = 'Waiting for tasks...';
+            btn.textContent = window.OMC_I18N?.t('banner.waitingTasks', 'Waiting for tasks...') || 'Waiting for tasks...';
             // Will auto-restart when tasks complete; reconnect logic handles the rest
           }
         })
@@ -1572,7 +1572,7 @@ class AppController {
 
     const endBtn = document.getElementById('oneonone-end-btn');
     endBtn.disabled = true;
-    this._addOneononeSystemMsg('Ending meeting... reflecting on conversation...');
+    this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endingReflection', 'Ending meeting... reflecting on conversation...'));
 
     fetch('/api/oneonone/end', {
       method: 'POST',
@@ -1591,10 +1591,10 @@ class AppController {
           this._addOneononeSystemMsg(`Error: ${data.error}`);
         } else {
           if (data.principles_updated) {
-            this._addOneononeSystemMsg('Meeting concluded. Work principles have been updated based on the conversation.');
+            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endedPrinciplesUpdated', 'Meeting concluded. Work principles have been updated based on the conversation.'));
             this.logEntry('CEO', `🎓 1-on-1 ended — principles updated`, 'guidance');
           } else {
-            this._addOneononeSystemMsg('Meeting concluded. No principle updates needed.');
+            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endedNoUpdate', 'Meeting concluded. No principle updates needed.'));
             this.logEntry('CEO', `🎓 1-on-1 ended — casual chat`, 'guidance');
           }
         }
@@ -1614,7 +1614,7 @@ class AppController {
     endBtn.disabled = true;
     const sendBtn = document.getElementById('oneonone-send-btn');
     sendBtn.disabled = true;
-    this._addOneononeSystemMsg('Ending meeting... EA is summarizing action points...');
+    this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endingEaSummarizing', 'Ending meeting... EA is summarizing action points...'));
 
     try {
       const data = await fetch('/api/meeting/end', {
@@ -1627,12 +1627,12 @@ class AppController {
       } else {
         const ap = data.action_points || [];
         if (ap.length > 0) {
-          this._addOneononeSystemMsg(`Meeting concluded. ${ap.length} action point(s):`);
+          this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.concludedActionPoints', 'Meeting concluded. {count} action point(s):', { count: ap.length }));
           for (const point of ap) {
             this._addOneononeSystemMsg(`  • ${point}`);
           }
           if (data.project_id) {
-            this._addOneononeSystemMsg(`Project created: ${data.project_id}`);
+            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.projectCreated', 'Project created: {projectId}', { projectId: data.project_id }));
           }
           this.logEntry('CEO', `🎓 Meeting ended — ${ap.length} action points → project created`, 'guidance');
         } else {
@@ -1757,7 +1757,7 @@ class AppController {
       principlesEl.innerHTML = `<div class="md-rendered">${this._renderMarkdown(principles)}</div>`;
       principlesEl.classList.remove('empty-hint');
     } else {
-      principlesEl.innerHTML = '<span class="empty-hint">No work principles yet</span>';
+      principlesEl.innerHTML = `<span class="empty-hint">${t('employee.noWorkPrinciplesLabel', 'No work principles yet')}</span>`;
     }
 
     // Guidance notes (rendered as Markdown)
@@ -1772,7 +1772,7 @@ class AppController {
         guidanceEl.appendChild(item);
       }
     } else {
-      guidanceEl.innerHTML = '<span class="empty-hint">No 1-on-1 notes yet</span>';
+      guidanceEl.innerHTML = `<span class="empty-hint">${t('employee.noOneOnOneNotesLabel', 'No 1-on-1 notes yet')}</span>`;
     }
 
     // 1-on-1 button
@@ -1892,7 +1892,7 @@ class AppController {
         }
         this._empXterm.renderLogs(data.logs);
       } else {
-        el.innerHTML = '<span class="empty-hint">No logs</span>';
+        el.innerHTML = `<span class="empty-hint">${t('employee.noLogsLabel', 'No logs')}</span>`;
       }
     } catch (err) {
       console.error('Execution logs fetch error:', err);
@@ -1926,7 +1926,7 @@ class AppController {
           }
         }
       } else {
-        el.innerHTML = '<span class="empty-hint">No work history</span>';
+        el.innerHTML = `<span class="empty-hint">${t('employee.noWorkHistoryLabel', 'No work history')}</span>`;
       }
     } catch (err) {
       console.error('Progress log fetch error:', err);
@@ -2061,7 +2061,7 @@ class AppController {
 
       section.style.display = '';
       if (crons.length === 0) {
-        container.innerHTML = '<span class="empty-hint">No scheduled jobs</span>';
+        container.innerHTML = `<span class="empty-hint">${t('employee.noScheduledJobsLabel', 'No scheduled jobs')}</span>`;
         const stopAllBtn = document.getElementById('emp-cron-stop-all-btn');
         if (stopAllBtn) stopAllBtn.style.display = 'none';
         return;
@@ -2091,7 +2091,7 @@ class AppController {
         info.className = 'emp-cron-info';
         const taskCount = (cron.dispatched_task_ids || []).length;
         const taskCountHtml = taskCount > 0
-          ? `<span class="cron-task-count">${taskCount} tasks</span>`
+          ? `<span class="cron-task-count">${taskCount} ${t('common.tasks', 'tasks')}</span>`
           : '';
         info.innerHTML = `
           ${statusDot}
@@ -2106,7 +2106,7 @@ class AppController {
 
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'emp-cron-cancel-btn';
-        cancelBtn.textContent = 'STOP';
+        cancelBtn.textContent = t('employee.stopAllLabel', 'Stop All');
         cancelBtn.onclick = () => this._cancelCron(empId, cron.name);
 
         item.appendChild(info);
@@ -2835,13 +2835,13 @@ class AppController {
         });
         const data = await resp.json();
         dndBtn.classList.toggle('active', data.dnd);
-        dndBtn.title = data.dnd ? 'Do Not Disturb (ON)' : 'Do Not Disturb';
+        dndBtn.title = data.dnd ? window.OMC_I18N?.t('toolbar.doNotDisturbOn', 'Do Not Disturb (ON)') : window.OMC_I18N?.t('toolbar.doNotDisturb', 'Do Not Disturb');
       } catch (e) { console.error('DND toggle failed:', e); }
     });
     // Load initial state
     fetch('/api/ceo/dnd').then(r => r.json()).then(data => {
       dndBtn.classList.toggle('active', data.dnd);
-      if (data.dnd) dndBtn.title = 'Do Not Disturb (ON)';
+      if (data.dnd) dndBtn.title = window.OMC_I18N?.t('toolbar.doNotDisturbOn', 'Do Not Disturb (ON)');
     }).catch(err => console.warn('[dnd] state load failed:', err));
   }
 
@@ -3194,8 +3194,8 @@ class AppController {
     const convId = this._currentConvId;
     if (!convId) return;
 
-    this._ceoTerm?.appendMessage({ role: 'system', text: 'Ending 1-on-1... employee is reflecting on the conversation...', source: 'system' });
-    this.logEntry('SYSTEM', 'Ending 1-on-1... employee is reflecting on the conversation...', 'system');
+    this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), source: 'system' });
+    this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), 'system');
 
     try {
       const resp = await fetch(`/api/conversation/${convId}/close?wait_hooks=true`, {
@@ -3206,15 +3206,15 @@ class AppController {
         const hr = resp.hook_result;
         const empName = this._resolveEmployeeNickname(resp.employee_id || this._currentConvEmployeeId || '');
         if (hr.principles_updated) {
-          this._ceoTerm?.appendMessage({ role: 'system', text: `${empName} updated their work principles based on the meeting.`, source: 'system' });
-          this.logEntry('SYSTEM', `${empName} updated their work principles based on the meeting.`, 'system');
+          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), source: 'system' });
+          this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), 'system');
         }
         if (hr.note_saved) {
-          this._ceoTerm?.appendMessage({ role: 'system', text: `1-on-1 note saved to ${empName}'s guidance record.`, source: 'system' });
-          this.logEntry('SYSTEM', `1-on-1 note saved to ${empName}'s guidance record.`, 'system');
+          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), source: 'system' });
+          this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), 'system');
         }
         if (!hr.principles_updated && !hr.note_saved) {
-          this._ceoTerm?.appendMessage({ role: 'system', text: `1-on-1 ended (no reflection generated).`, source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.endedNoReflection', '1-on-1 ended (no reflection generated).'), source: 'system' });
         }
       } else {
         this._ceoTerm?.appendMessage({ role: 'system', text: '1-on-1 ended.', source: 'system' });
@@ -4997,7 +4997,7 @@ class AppController {
     const body = document.getElementById('generic-popup-body');
     const footer = document.getElementById('generic-popup-footer');
 
-    title.textContent = opts.title || 'Notification';
+    title.textContent = opts.title || window.OMC_I18N?.t('common.notification', 'Notification') || 'Notification';
     body.innerHTML = '';
     footer.innerHTML = '';
     footer.style.display = 'none';
@@ -5017,7 +5017,7 @@ class AppController {
       const urlBox = document.createElement('div');
       urlBox.className = 'popup-url-box';
       urlBox.textContent = opts.url;
-      urlBox.title = 'Click to open';
+      urlBox.title = window.OMC_I18N?.t('common.clickToOpen', 'Click to open') || 'Click to open';
       urlBox.onclick = () => window.open(opts.url, '_blank');
       body.appendChild(urlBox);
     }
@@ -5028,7 +5028,7 @@ class AppController {
       actions.className = 'popup-actions';
       const openBtn = document.createElement('button');
       openBtn.className = 'pixel-btn';
-      openBtn.textContent = 'Authorize';
+      openBtn.textContent = window.OMC_I18N?.t('common.authorize', 'Authorize') || 'Authorize';
       openBtn.onclick = () => {
         const w = 600, h = 700;
         const left = (screen.width - w) / 2, top = (screen.height - h) / 2;
@@ -5200,7 +5200,7 @@ class AppController {
       rendered.innerHTML = '<div class="md-rendered">' + this._renderMarkdown(textarea.value) + '</div>';
       textarea.classList.add('hidden');
       rendered.classList.remove('hidden');
-      editBtn.textContent = '✎ Edit';
+      editBtn.textContent = window.OMC_I18N?.t('workflow.edit', 'Edit') || 'Edit';
       saveBtn.classList.add('hidden');
     }
   }
@@ -5225,7 +5225,7 @@ class AppController {
           rendered.innerHTML = '<div class="md-rendered">' + this._renderMarkdown(content) + '</div>';
           document.getElementById('workflow-content').classList.add('hidden');
           rendered.classList.remove('hidden');
-          document.getElementById('workflow-edit-btn').textContent = '✎ Edit';
+          document.getElementById('workflow-edit-btn').textContent = window.OMC_I18N?.t('workflow.edit', 'Edit') || 'Edit';
           document.getElementById('workflow-save-btn').classList.add('hidden');
         }
       })
@@ -5528,7 +5528,7 @@ class AppController {
         this._renderExEmployees(list);
       })
       .catch(err => {
-        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">Load failed: ${this._escHtml(err.message)}</div>`;
+        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">${t('exEmployees.loadFailed', 'Load failed')}: ${this._escHtml(err.message)}</div>`;
       });
   }
 
@@ -5552,7 +5552,7 @@ class AppController {
           <div class="ex-emp-role">${emp.title || emp.role} — ${emp.department || ''}</div>
           <div class="ex-emp-skills">${skills}</div>
         </div>
-        <button class="pixel-btn small rehire-btn" data-id="${emp.id}">🔄 Rehire</button>
+        <button class="pixel-btn small rehire-btn" data-id="${emp.id}">${t('exEmployees.rehireButton', '🔄 Rehire')}</button>
       `;
       card.querySelector('.rehire-btn').addEventListener('click', () => this.rehireEmployee(emp));
       listEl.appendChild(card);
@@ -5560,7 +5560,8 @@ class AppController {
   }
 
   rehireEmployee(emp) {
-    if (!confirm(`Confirm rehire ${emp.name}${emp.nickname ? '(' + emp.nickname + ')' : ''}? Will restart from Lv.1.`)) return;
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+    if (!confirm(t('exEmployees.rehireConfirm', 'Confirm rehire {name}{nickname}? Will restart from Lv.1.', { name: emp.name, nickname: emp.nickname ? `(${emp.nickname})` : '' }))) return;
 
     fetch(`/api/ex-employees/${encodeURIComponent(emp.id)}/rehire`, {
       method: 'POST',
@@ -5569,9 +5570,9 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `Rehire failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${t('exEmployees.rehireFailed', 'Rehire failed')}: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `🔄 Rehired: ${data.name}`, 'ceo');
+          this.logEntry('CEO', window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: data.name, nickname: data.nickname ? `(${data.nickname})` : '', role: data.role || '' }) || `🔄 Rehired: ${data.name}`, 'ceo');
           this.bootstrap();
           this.loadExEmployees(); // Refresh the list
         }
@@ -5888,7 +5889,7 @@ class AppController {
     const model = modelInput ? modelInput.value.trim() : '';
 
     if (!model) {
-      if (resultEl) { resultEl.textContent = 'Enter model'; resultEl.className = 'api-test-result fail'; }
+      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.enterModel', 'Enter model') || 'Enter model'; resultEl.className = 'api-test-result fail'; }
       return;
     }
 
@@ -5904,10 +5905,10 @@ class AppController {
         this._settingsLoaded = false;
         this._renderApiSettings();
       } else {
-        if (resultEl) { resultEl.textContent = data.error || 'Error'; resultEl.className = 'api-test-result fail'; }
+        if (resultEl) { resultEl.textContent = data.error || window.OMC_I18N?.t('common.errorLoading', 'Error') || 'Error'; resultEl.className = 'api-test-result fail'; }
       }
     } catch (e) {
-      if (resultEl) { resultEl.textContent = 'Error'; resultEl.className = 'api-test-result fail'; }
+      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('common.errorLoading', 'Error') || 'Error'; resultEl.className = 'api-test-result fail'; }
     }
   }
 
@@ -5916,13 +5917,13 @@ class AppController {
     if (!select || select.dataset.loaded) return;
 
     const currentValue = select.value;
-    select.innerHTML = '<option value="">Loading models...</option>';
+    select.innerHTML = `<option value="">${window.OMC_I18N?.t('settings.loadingModels', 'Loading models...') || 'Loading models...'}</option>`;
 
     try {
       const resp = await fetch(`/api/models?provider=${providerId}`);
       const data = await resp.json();
       if (data.models && data.models.length > 0) {
-        let html = '<option value="">Select model...</option>';
+        let html = `<option value="">${window.OMC_I18N?.t('settings.selectModel', 'Select model...') || 'Select model...'}</option>`;
         for (const m of data.models) {
           const selected = m.id === currentValue ? ' selected' : '';
           const label = m.name && m.name !== m.id ? `${m.id}  (${m.name})` : m.id;
@@ -5937,7 +5938,7 @@ class AppController {
         input.id = select.id;
         input.className = 'api-key-input';
         input.style.cssText = 'font-size:6px;';
-        input.placeholder = data.error || 'Enter model ID...';
+        input.placeholder = data.error || window.OMC_I18N?.t('settings.enterModelId', 'Enter model ID...') || 'Enter model ID...';
         input.value = currentValue;
         select.replaceWith(input);
       }
@@ -6050,9 +6051,9 @@ class AppController {
     const field = document.getElementById('oauth-code-field');
     const resultEl = document.getElementById('api-oauth-result');
     const code = (field?.value || '').trim();
-    if (!code) { if (resultEl) resultEl.textContent = 'Paste the code first'; return; }
+    if (!code) { if (resultEl) resultEl.textContent = window.OMC_I18N?.t('oauth.pasteCodeFirst', 'Paste the code first') || 'Paste the code first'; return; }
 
-    if (resultEl) resultEl.textContent = 'Exchanging...';
+    if (resultEl) resultEl.textContent = window.OMC_I18N?.t('oauth.exchanging', 'Exchanging...') || 'Exchanging...';
     try {
       const resp = await fetch('/api/settings/api/oauth/exchange', {
         method: 'POST',
@@ -6061,7 +6062,7 @@ class AppController {
       });
       const data = await resp.json();
       if (data.status === 'ok') {
-        if (resultEl) { resultEl.textContent = '✓ Login successful'; resultEl.style.color = 'var(--pixel-green)'; }
+        if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('oauth.loginSuccessful', 'Login successful') || 'Login successful'; resultEl.style.color = 'var(--pixel-green)'; }
         this.logEntry('CEO', 'Anthropic OAuth login successful', 'ceo');
         document.getElementById('oauth-code-input').style.display = 'none';
         field.value = '';
@@ -6291,6 +6292,7 @@ class AppController {
     const content = input.value.trim();
     if (!content) return;
 
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     const btn = document.getElementById('company-culture-add-btn');
     btn.disabled = true;
 
@@ -6302,9 +6304,9 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `Add failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${t('common.add', 'Add')} failed: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `Company culture added: ${content.slice(0, 40)}`, 'ceo');
+          this.logEntry('CEO', `${t('companyCulture.added', 'Company culture added')}: ${content.slice(0, 40)}`, 'ceo');
           input.value = '';
           // State will be refreshed via WebSocket push
         }
@@ -6314,13 +6316,14 @@ class AppController {
   }
 
   removeCultureItem(index) {
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     fetch(`/api/company-culture/${index}`, { method: 'DELETE' })
       .then(r => r.json())
       .then(data => {
         if (data.error) {
           this.logEntry('SYSTEM', t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', data.error), 'system');
         } else {
-          this.logEntry('CEO', `Company culture removed: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
+          this.logEntry('CEO', `${t('companyCulture.removed', 'Company culture removed')}: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
           // State will be refreshed via WebSocket push
         }
       })
@@ -6339,7 +6342,7 @@ class AppController {
         input.value = data.direction || '';
         this._renderCurrentDirection(data.direction || '');
       })
-      .catch(err => { console.error('[addCultureItem] failed:', err); input.value = ''; });
+      .catch(err => { console.error('[companyDirection] failed:', err); input.value = ''; });
   }
 
   closeCompanyDirection() {
@@ -6347,6 +6350,7 @@ class AppController {
   }
 
   saveCompanyDirection() {
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     const input = document.getElementById('company-direction-input');
     const direction = input.value.trim();
     const btn = document.getElementById('company-direction-save-btn');
@@ -6360,9 +6364,9 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `Save failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${t('companyDirection.saveFailed', 'Save failed')}: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `Company direction updated`, 'ceo');
+          this.logEntry('CEO', t('companyDirection.updated', 'Company direction updated'), 'ceo');
           this._renderCurrentDirection(direction);
         }
       })
@@ -6375,12 +6379,12 @@ class AppController {
     const draft = input.value.trim();
     const btn = document.getElementById('company-direction-enrich-btn');
     if (!draft) {
-      this.logEntry('SYSTEM', 'Please write a draft direction first.', 'system');
+      this.logEntry('SYSTEM', t('companyDirection.draftFirst', 'Please write a draft direction first.'), 'system');
       return;
     }
     if (!this._checkCooldown('enrichDirection')) return;
     btn.disabled = true;
-    btn.textContent = '⏳ Sending...';
+    btn.textContent = t('companyDirection.sending', '⏳ Sending...');
 
     const task = `The CEO has drafted a company direction statement. Please polish and expand it into a complete corporate positioning description, preserving the core message while adding strategic vision, target market, core competencies, and other dimensions. Once polished, dispatch to COO to save via deposit_company_knowledge(category="direction").\n\nDraft content:\n${draft}`;
 
@@ -6393,15 +6397,15 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `Enrich failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${t('companyDirection.enrichFailed', 'Enrich failed')}: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `Direction polish task sent to EA`, 'ceo');
+          this.logEntry('CEO', t('companyDirection.taskSent', 'Direction polish task sent to EA'), 'ceo');
         }
       })
       .catch(err => this.logEntry('SYSTEM', `Error: ${err.message}`, 'system'))
       .finally(() => {
         btn.disabled = false;
-        btn.innerHTML = '&#10024; Polish / Enrich';
+        btn.innerHTML = t('companyDirection.enrichButton', '✨ Polish / Enrich');
       });
   }
 
@@ -7090,7 +7094,7 @@ class AppController {
     if (!this._chatPanel || !convId) return;
     if (this._chatPanel.getConvType() !== 'oneonone') return;
 
-    const confirmed = confirm('Clear all 1-on-1 history for this employee? This cannot be undone.');
+    const confirmed = confirm(window.OMC_I18N?.t('meeting.clearHistoryConfirm', 'Clear all 1-on-1 history for this employee? This cannot be undone.'));
     if (!confirmed) return;
 
     try {
@@ -7105,9 +7109,9 @@ class AppController {
       this._chatPanel.showTyping(false);
 
       const empName = this._resolveEmployeeName(data.employee_id || '');
-      this.logEntry('SYSTEM', `🧹 Cleared 1-on-1 history for ${empName}.`, 'system');
+      this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.clearedHistory', 'Cleared 1-on-1 history for {name}.', { name: empName }) || `🧹 Cleared 1-on-1 history for ${empName}.`, 'system');
     } catch (err) {
-      this._showToast(`Failed to clear history: ${err.message}`, 'error');
+      this._showToast(window.OMC_I18N?.t('meeting.clearHistoryFailed', 'Failed to clear history: {message}', { message: err.message }), 'error');
     }
   }
 
@@ -7119,7 +7123,7 @@ class AppController {
     // Show reflection status for 1-on-1
     if (waitHooks) {
       this._chatPanel.setInputEnabled(false);
-      this.logEntry('SYSTEM', 'Ending 1-on-1... employee is reflecting on the conversation...', 'system');
+      this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), 'system');
     }
 
     const resp = await fetch(`/api/conversation/${convId}/close?wait_hooks=${waitHooks}`, {
@@ -7131,13 +7135,13 @@ class AppController {
       const hr = resp.hook_result;
       const empName = this._resolveEmployeeName(resp.employee_id || '');
       if (hr.principles_updated) {
-        this.logEntry('SYSTEM', `${empName} updated their work principles based on the meeting.`, 'system');
+        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), 'system');
       }
       if (hr.note_saved) {
-        this.logEntry('SYSTEM', `1-on-1 note saved to ${empName}'s guidance record.`, 'system');
+        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), 'system');
       }
       if (!hr.principles_updated && !hr.note_saved) {
-        this.logEntry('SYSTEM', `1-on-1 with ${empName} ended (no reflection generated).`, 'system');
+        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.endedNoReflection', '1-on-1 ended (no reflection generated).'), 'system');
       }
     }
 
@@ -9849,23 +9853,23 @@ class AppController {
           }
           if (ar) {
             const arIcon = ar.accepted ? '\u2705' : '\u274C';
-            const arLabel = ar.accepted ? 'Passed' : 'Failed';
+            const arLabel = ar.accepted ? window.OMC_I18N?.t('common.passed', 'Passed') || 'Passed' : window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed';
             const arNotes = ar.notes ? ` — ${this._escHtml(ar.notes)}` : '';
-            detailHtml += `<div style="font-size:6px;color:${ar.accepted ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:4px 0;">${arIcon} Acceptance Result: ${arLabel}${arNotes}</div>`;
+            detailHtml += `<div style="font-size:6px;color:${ar.accepted ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:4px 0;">${arIcon} ${window.OMC_I18N?.t('common.acceptanceResult', 'Acceptance Result:')} ${arLabel}${arNotes}</div>`;
           }
           const ear = doc.ea_review_result;
           if (ear) {
             const earIcon = ear.approved ? '\u2705' : '\u274C';
-            const earLabel = ear.approved ? 'Approved' : 'Rejected';
+            const earLabel = ear.approved ? window.OMC_I18N?.t('common.approved', 'Approved') || 'Approved' : window.OMC_I18N?.t('common.rejected', 'Rejected') || 'Rejected';
             const earNotes = ear.notes ? ` — ${this._escHtml(ear.notes)}` : '';
-            detailHtml += `<div style="font-size:6px;color:${ear.approved ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:2px 0;">EA Review: ${earIcon} ${earLabel}${earNotes}</div>`;
+            detailHtml += `<div style="font-size:6px;color:${ear.approved ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:2px 0;">${window.OMC_I18N?.t('common.eaReview', 'EA Review:')} ${earIcon} ${earLabel}${earNotes}</div>`;
           }
         }
 
         if (doc.status !== 'completed' && doc.status !== 'pending_confirmation') {
           detailHtml += `<div style="margin:8px 0;display:flex;gap:6px;">`;
-          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 Continue Current Iteration</button>`;
-          detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ Stop All Tasks</button>`;
+          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continue Current Iteration')}</button>`;
+          detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ ${window.OMC_I18N?.t('toolbar.stopAllTasks', 'Stop All Tasks')}</button>`;
           detailHtml += `</div>`;
         }
 

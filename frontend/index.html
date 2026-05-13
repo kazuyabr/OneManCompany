@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,14 +11,14 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="e72ced7e-c551-40a9-b60e-18bb7db0592f"></script>
 </head>
 <body>
-  <div id="app" role="application" aria-label="One Man Company CEO Console">
+  <div id="app" role="application" aria-label="Painel do CEO da One Man Company">
     <!-- Left top: Products & Projects -->
-    <aside id="left-top-panel" aria-label="Products">
+    <aside id="left-top-panel" aria-label="Produtos">
       <div class="collapsible-header" data-target="projects-panel-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title" data-i18n="nav.products">PRODUCTS</h3>
-        <button id="create-product-btn" class="panel-add-btn" data-i18n-title="toolbar.newProduct" title="New Product" aria-label="New Product">+</button>
-        <button id="import-product-btn" class="panel-add-btn" data-i18n-title="toolbar.importProduct" title="Import Product" aria-label="Import Product">&#8593;</button>
+        <h3 class="pixel-title" data-i18n="nav.products">PRODUTOS</h3>
+        <button id="create-product-btn" class="panel-add-btn" data-i18n-title="toolbar.newProduct" title="Novo Produto" data-i18n-aria-label="toolbar.newProduct" aria-label="Novo Produto">+</button>
+        <button id="import-product-btn" class="panel-add-btn" data-i18n-title="toolbar.importProduct" title="Importar Produto" data-i18n-aria-label="toolbar.importProduct" aria-label="Importar Produto">&#8593;</button>
       </div>
       <div id="projects-panel-body" class="collapsible-body">
         <div id="projects-panel-list"></div>
@@ -26,10 +26,10 @@
     </aside>
 
     <!-- Left bottom: Activity Log -->
-    <aside id="left-bottom-panel" aria-label="Activity Log">
+    <aside id="left-bottom-panel" aria-label="Log de atividade">
       <div class="collapsible-header" data-target="activity-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title" data-i18n="nav.activity">ACTIVITY LOG</h3>
+        <h3 class="pixel-title" data-i18n="nav.activity">LOG DE ATIVIDADE</h3>
       </div>
       <div id="activity-body" class="collapsible-body collapsible-flex">
         <div id="activity-log" style="background:#0a0a0a;flex:1"></div>
@@ -39,37 +39,37 @@
     <!-- Center top: Office Canvas -->
     <main id="office-panel">
       <div class="panel-header">
-        <h1 class="pixel-title" data-i18n="nav.ceoConsole">&#127970; ONE MAN COMPANY <span id="app-version" class="version-badge"></span></h1>
+        <h1 class="pixel-title" data-i18n="nav.ceoConsole">&#127970; PAINEL DO CEO <span id="app-version" class="version-badge"></span></h1>
         <div id="status-bar">
           <span class="status-item" id="employee-count" data-i18n="status.employeeCount">&#128101; 2</span>
           <span class="status-item status-clickable" id="tool-count" onclick="window.app.openToolList()" data-i18n="status.toolCount">&#128295; 0</span>
           <span class="status-item" id="room-count" data-i18n="status.roomCount">&#127970; 0/0</span>
           <!-- Meeting moved to /meeting slash command in CEO console -->
-          <button id="ex-employee-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.exEmployeeWall" title="Ex-Employee Wall" aria-label="Ex-Employee Wall">&#128220;</button>
-          <button id="company-culture-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.companyCulture" title="Company Culture" aria-label="Company Culture">&#127988;</button>
-          <button id="company-direction-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.companyDirection" title="Company Direction" aria-label="Company Direction">&#127919;</button>
-          <button id="dashboard-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.dashboard" title="Dashboard" aria-label="Dashboard">&#128202;</button>
-          <button id="announcements-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.announcements" title="Announcements" aria-label="Announcements" style="position:relative;">&#128276;<span id="announcements-badge" class="announcement-badge hidden"></span></button>
-          <button id="settings-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.settings" title="Settings" aria-label="Settings">&#9881;</button>
+          <button id="ex-employee-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.exEmployeeWall" title="Mural de Ex-funcionários" data-i18n-aria-label="toolbar.exEmployeeWall" aria-label="Mural de Ex-funcionários">&#128220;</button>
+          <button id="company-culture-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.companyCulture" title="Cultura da Empresa" data-i18n-aria-label="toolbar.companyCulture" aria-label="Cultura da Empresa">&#127988;</button>
+          <button id="company-direction-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.companyDirection" title="Direção da Empresa" data-i18n-aria-label="toolbar.companyDirection" aria-label="Direção da Empresa">&#127919;</button>
+          <button id="dashboard-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.dashboard" title="Painel" data-i18n-aria-label="toolbar.dashboard" aria-label="Painel">&#128202;</button>
+          <button id="announcements-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.announcements" title="Anúncios" data-i18n-aria-label="toolbar.announcements" aria-label="Anúncios" style="position:relative;">&#128276;<span id="announcements-badge" class="announcement-badge hidden"></span></button>
+          <button id="settings-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.settings" title="Configurações" data-i18n-aria-label="toolbar.settings" aria-label="Configurações">&#9881;</button>
           <span class="status-item" id="connection-status" role="status" aria-live="polite" data-i18n="status.offline">&#9679; OFFLINE</span>
           <span class="status-item" id="last-sync-time"></span>
         </div>
       </div>
-      <canvas id="office-canvas" width="640" height="480" aria-label="Office floor plan" role="img"></canvas>
+      <canvas id="office-canvas" width="640" height="480" aria-label="Planta do escritório" role="img"></canvas>
       <div id="tooltip" class="tooltip hidden"></div>
     </main>
 
     <!-- Right top: Team Roster -->
-    <aside id="roster-panel" aria-label="Team Roster">
+    <aside id="roster-panel" aria-label="Team Roster" data-i18n-aria-label="nav.teamRoster">
       <div class="collapsible-header" data-target="roster-body">
         <span class="collapse-arrow">&#9660;</span>
-        <h3 class="pixel-title" data-i18n="nav.teamRoster">TEAM ROSTER</h3>
+        <h3 class="pixel-title" data-i18n="nav.teamRoster">EQUIPE</h3>
       </div>
       <div id="roster-body" class="collapsible-body">
         <div id="roster-filters" class="roster-filters">
-          <select id="roster-filter-role" class="roster-filter-select" aria-label="All Roles"><option value="" data-i18n="common.allRoles">All Roles</option></select>
-          <select id="roster-filter-dept" class="roster-filter-select" aria-label="All Departments"><option value="" data-i18n="common.allDepartments">All Departments</option></select>
-          <select id="roster-filter-level" class="roster-filter-select" aria-label="All Levels"><option value="" data-i18n="common.allLevels">All Levels</option></select>
+          <select id="roster-filter-role" class="roster-filter-select" aria-label="Todas as funções" data-i18n-aria-label="common.allRoles"><option value="" data-i18n="common.allRoles">Todas as funções</option></select>
+          <select id="roster-filter-dept" class="roster-filter-select" aria-label="Todos os departamentos" data-i18n-aria-label="common.allDepartments"><option value="" data-i18n="common.allDepartments">Todos os departamentos</option></select>
+          <select id="roster-filter-level" class="roster-filter-select" aria-label="Todos os níveis" data-i18n-aria-label="common.allLevels"><option value="" data-i18n="common.allLevels">Todos os níveis</option></select>
         </div>
         <div id="roster-list"></div>
       </div>
@@ -83,30 +83,30 @@
       </div>
       <div id="ceo-body" class="collapsible-body collapsible-flex">
         <div id="ceo-avatar-area">
-          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="CEO avatar" onerror="this.style.display='none'" />
-          <span class="ceo-label" data-i18n="ceo.youLabel">&#128081; YOU</span>
-          <button id="dnd-toggle-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.doNotDisturb" title="Do Not Disturb" aria-label="Do Not Disturb">&#127769;</button>
-          <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.backgroundTasks" title="Background Tasks" aria-label="Background Tasks">&#9641;</button>
-          <button id="screenshot-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.exportScreenshot" title="Export SVG Screenshot" aria-label="Export SVG Screenshot">&#128247;</button>
-          <button id="abort-all-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.stopAllTasks" title="Stop All Tasks" aria-label="Stop All Tasks" style="color: #ff4444;">&#9888;</button>
-          <button id="reload-toolbar-btn" class="reload-btn" data-i18n-title="toolbar.forceReload" title="Force reload all data from disk" aria-label="Force reload all data from disk">&#128260;</button>
+          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="Avatar do CEO" data-i18n-alt="ceo.youLabel" onerror="this.style.display='none'" />
+          <span class="ceo-label" data-i18n="ceo.youLabel">&#128081; VOCÊ</span>
+          <button id="dnd-toggle-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.doNotDisturb" title="Não Perturbe" data-i18n-aria-label="toolbar.doNotDisturb" aria-label="Não Perturbe">&#127769;</button>
+          <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.backgroundTasks" title="Tarefas em Segundo Plano" data-i18n-aria-label="toolbar.backgroundTasks" aria-label="Tarefas em Segundo Plano">&#9641;</button>
+          <button id="screenshot-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.exportScreenshot" title="Exportar captura SVG" data-i18n-aria-label="toolbar.exportScreenshot" aria-label="Exportar captura SVG">&#128247;</button>
+          <button id="abort-all-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.stopAllTasks" title="Parar todas as tarefas" data-i18n-aria-label="toolbar.stopAllTasks" aria-label="Parar todas as tarefas" style="color: #ff4444;">&#9888;</button>
+          <button id="reload-toolbar-btn" class="reload-btn" data-i18n-title="toolbar.forceReload" title="Recarregar todos os dados do disco" data-i18n-aria-label="toolbar.forceReload" aria-label="Recarregar todos os dados do disco">&#128260;</button>
         </div>
         <div id="ceo-split">
           <div id="ceo-project-list">
-            <div id="ceo-chat-btn" class="ceo-nav-btn active" title="Chat with EA">
+            <div id="ceo-chat-btn" class="ceo-nav-btn active" title="Converse com EA">
               <span class="ceo-nav-icon">&#128172;</span>
-              <span data-i18n="ceo.chatWithEA">Chat with EA</span>
+              <span data-i18n="ceo.chatWithEA">Converse com EA</span>
             </div>
-            <div class="ceo-section-header" data-i18n="ceo.projects">PROJECTS</div>
+            <div class="ceo-section-header" data-i18n="ceo.projects">PROJETOS</div>
             <div id="ceo-projects-section"></div>
             <div id="ceo-oneonone-section">
               <div class="ceo-section-header" id="ceo-oneonone-toggle" data-i18n="ceo.oneOnOne">
-                <span class="ceo-section-arrow">&#9660;</span> 1-pra-1
+                <span class="ceo-section-arrow">&#9660;</span> <span data-i18n="ceo.oneOnOne">1-pra-1</span>
               </div>
               <div id="ceo-oneonone-items"></div>
             </div>
           </div>
-          <div id="ceo-list-toggle" title="Toggle project list" data-i18n-title="ceo.toggleProjectList">&#9664;</div>
+          <div id="ceo-list-toggle" title="Alternar lista de projetos" data-i18n-title="ceo.toggleProjectList" data-i18n-aria-label="ceo.toggleProjectList" aria-label="Alternar lista de projetos">&#9664;</div>
           <div id="ceo-conv-panel">
             <div id="ceo-conv-messages"></div>
             <div id="ceo-typing-indicator" class="hidden">
@@ -116,12 +116,12 @@
             </div>
             <div id="ceo-conv-input-area">
               <div id="ceo-product-row">
-                <select id="ceo-product-select" data-i18n="ceo.linkTaskToProduct" title="Link task to product">
+                <select id="ceo-product-select" data-i18n="ceo.linkTaskToProduct" title="Vincular tarefa ao produto" data-i18n-aria-label="ceo.linkTaskToProduct" aria-label="Vincular tarefa ao produto">
                   <option value="" data-i18n="common.noProduct">Sem produto</option>
                 </select>
               </div>
               <div id="ceo-conv-input-row">
-                <textarea id="ceo-conv-input" placeholder="$ Type message, / for commands (Enter to send)" aria-label="CEO message input" data-i18n-placeholder="ceo.messagePlaceholder"></textarea>
+                <textarea id="ceo-conv-input" placeholder="$ Digite a mensagem, / para comandos (Enter para enviar)" aria-label="Entrada de mensagem do CEO" data-i18n-placeholder="ceo.messagePlaceholder" data-i18n-aria-label="ceo.messagePlaceholder"></textarea>
                 <input type="file" id="ceo-file-input" multiple hidden />
               </div>
               <div id="ceo-slash-menu" class="hidden"></div>
@@ -138,38 +138,38 @@
   <!-- Settings Floating Panel (positioned via JS) -->
   <div id="settings-floating-panel" class="floating-panel hidden">
     <div class="floating-panel-header">
-      <span data-i18n="settings.title">&#9881; SETTINGS</span>
+      <span data-i18n="settings.title">&#9881; CONFIGURAÇÕES</span>
       <button class="floating-panel-close" onclick="document.getElementById('settings-floating-panel').classList.add('hidden')">&#10005;</button>
     </div>
     <div class="floating-panel-body">
       <div class="settings-language-row">
-        <label for="settings-language-select" data-i18n="settings.languageLabel">Language</label>
-        <select id="settings-language-select" class="settings-language-select" aria-label="Language selector" data-i18n-aria-label="settings.languageLabel"></select>
+        <label for="settings-language-select" data-i18n="settings.languageLabel">Idioma</label>
+        <select id="settings-language-select" class="settings-language-select" aria-label="Seletor de idioma" data-i18n-aria-label="settings.languageLabel"></select>
       </div>
       <div class="settings-section-header collapsed" data-target="settings-api-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title" data-i18n="settings.apiConnections">&#128273; API Connections</span>
+        <span class="settings-section-title" data-i18n="settings.apiConnections">&#128273; Conexões de API</span>
       </div>
       <div id="settings-api-body" class="settings-section-body collapsed">
         <div id="api-settings-content"></div>
       </div>
       <div class="settings-section-header collapsed" data-target="settings-crons-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title" data-i18n="settings.systemCrons">&#9200; System Crons</span>
+        <span class="settings-section-title" data-i18n="settings.systemCrons">&#9200; Tarefas agendadas</span>
       </div>
       <div id="settings-crons-body" class="settings-section-body collapsed">
         <div id="system-crons-content"></div>
       </div>
       <div class="settings-section-header collapsed" data-target="settings-display-body">
         <span class="settings-collapse-arrow">&#9654;</span>
-        <span class="settings-section-title" data-i18n="settings.display">&#128065; Display</span>
+        <span class="settings-section-title" data-i18n="settings.display">&#128065; Exibição</span>
       </div>
       <div id="settings-display-body" class="settings-section-body collapsed">
         <div style="padding: 8px;">
-          <label style="color: #aaa; font-size: 10px; display: block; margin-bottom: 6px;" data-i18n="settings.textSize">Text Size</label>
+          <label style="color: #aaa; font-size: 10px; display: block; margin-bottom: 6px;" data-i18n="settings.textSize">Tamanho do texto</label>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="color: #888; font-size: 8px;">A</span>
-            <input type="range" id="font-boost-slider" min="0" max="9" value="2" step="1" style="flex: 1; accent-color: var(--pixel-cyan);" aria-label="Text size slider" />
+            <input type="range" id="font-boost-slider" min="0" max="9" value="2" step="1" style="flex: 1; accent-color: var(--pixel-cyan);" aria-label="Controle de tamanho do texto" data-i18n-aria-label="settings.textSize" />
             <span style="color: #888; font-size: 14px; font-weight: bold;">A</span>
             <span id="font-boost-label" style="color: var(--pixel-cyan); font-size: 10px; min-width: 30px;">+2px</span>
           </div>
@@ -200,14 +200,14 @@
         </div>
         <div class="modal-body" style="flex-direction:column;padding:12px;">
           <label class="guidance-label" data-i18n="meeting.typeLabel">Tipo de reunião:</label>
-          <select id="meeting-type-select" aria-label="Meeting Type">
+          <select id="meeting-type-select" aria-label="Tipo de reunião" data-i18n-aria-label="meeting.typeLabel">
             <option value="oneonone" data-i18n="meeting.type.oneonone">Reunião 1-pra-1</option>
             <option value="all_hands" data-i18n="meeting.type.allHands">All-Hands (fala do CEO)</option>
             <option value="discussion" data-i18n="meeting.type.discussion">Discussão (abertura geral)</option>
           </select>
           <div id="oneonone-employee-select-row">
             <label class="guidance-label" style="margin-top:8px;" data-i18n="meeting.selectEmployee">Selecionar colaborador:</label>
-            <select id="oneonone-target" aria-label="Select Employee">
+            <select id="oneonone-target" aria-label="Selecionar colaborador" data-i18n-aria-label="meeting.selectEmployee">
               <option value="" data-i18n="meeting.selectEmployeePlaceholder">-- Selecionar colaborador --</option>
             </select>
           </div>
@@ -378,7 +378,7 @@
   <div id="workflow-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title" data-i18n="workflow.title">&#128203; Company Rules — Workflows</h3>
+        <h3 class="pixel-title" data-i18n="workflow.title">&#128203; Regras da Empresa — Workflows</h3>
         <button id="workflow-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body">
@@ -386,7 +386,7 @@
         <div id="workflow-editor" class="workflow-main">
           <div id="workflow-placeholder" class="workflow-placeholder" data-i18n="workflow.selectPrompt">&#8592; Selecione um workflow para ver</div>
           <div id="workflow-rendered" class="workflow-rendered hidden"></div>
-          <textarea id="workflow-content" class="workflow-textarea hidden" rows="20" aria-label="Workflow content"></textarea>
+          <textarea id="workflow-content" class="workflow-textarea hidden" rows="20" aria-label="Workflow content" data-i18n-aria-label="workflow.contentLabel"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -404,7 +404,7 @@
         <h3 class="pixel-title" id="meeting-modal-title" data-i18n="meeting.roomTitle">&#127970; Sala de reunião</h3>
         <div class="meeting-modal-status">
           <span id="meeting-modal-status-led" class="status-led free"></span>
-          <span id="meeting-modal-status-text" class="status-text" data-i18n="meeting.available">Available</span>
+          <span id="meeting-modal-status-text" class="status-text" data-i18n="meeting.available">Disponível</span>
         </div>
         <button id="meeting-close-btn" class="modal-close">&#10005;</button>
       </div>
@@ -412,12 +412,12 @@
         <!-- Left: Room info + participants -->
         <div id="meeting-info-panel" class="meeting-info">
           <div class="meeting-info-block">
-            <div class="meeting-info-label" data-i18n="meeting.capacityLabel">Capacity</div>
-            <div id="meeting-capacity" class="meeting-info-value" data-i18n="meeting.capacity">6 people</div>
+            <div class="meeting-info-label" data-i18n="meeting.capacityLabel">Capacidade</div>
+            <div id="meeting-capacity" class="meeting-info-value" data-i18n="meeting.capacity">6 pessoas</div>
           </div>
           <div class="meeting-info-block">
-            <div class="meeting-info-label" data-i18n="meeting.participantsLabel">Participants</div>
-            <div id="meeting-participants" class="meeting-participants-list" data-i18n="meeting.noParticipants">No participants</div>
+            <div class="meeting-info-label" data-i18n="meeting.participantsLabel">Participantes</div>
+            <div id="meeting-participants" class="meeting-participants-list" data-i18n="meeting.noParticipants">Nenhum participante</div>
           </div>
         </div>
         <!-- Right: Chat panel -->
@@ -426,7 +426,7 @@
           <div id="meeting-chat-messages" class="meeting-chat-messages"></div>
         </div>
         <div id="meeting-ceo-input-area" class="chat-input-area hidden">
-          <textarea id="meeting-ceo-input" class="chat-textarea" placeholder="Send a message to this meeting..." rows="1" data-i18n-placeholder="meeting.sendMessagePlaceholder"></textarea>
+          <textarea id="meeting-ceo-input" class="chat-textarea" placeholder="Envie uma mensagem para esta reunião..." rows="1" data-i18n-placeholder="meeting.sendMessagePlaceholder"></textarea>
           <button id="meeting-ceo-send-btn" class="chat-send-btn">&#9654;</button>
         </div>
       </div>
@@ -437,13 +437,13 @@
   <div id="hiring-request-modal" class="modal-overlay hidden">
     <div class="modal-content" style="max-width:320px;">
       <div class="modal-header">
-      <h3 class="pixel-title" data-i18n="hiringRequest.title">&#128188; COO Hiring Request</h3>
+      <h3 class="pixel-title" data-i18n="hiringRequest.title">💼 Solicitação de contratação do COO</h3>
         <button id="hiring-request-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body" id="hiring-request-body"></div>
       <div style="display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;">
-        <button id="hiring-request-reject" class="pixel-btn" style="background:var(--pixel-red);font-size:7px;padding:3px 8px;">Reject</button>
-        <button id="hiring-request-approve" class="pixel-btn" style="background:var(--pixel-green);font-size:7px;padding:3px 8px;">Approve</button>
+        <button id="hiring-request-reject" class="pixel-btn" style="background:var(--pixel-red);font-size:7px;padding:3px 8px;" data-i18n="common.reject">Rejeitar</button>
+        <button id="hiring-request-approve" class="pixel-btn" style="background:var(--pixel-green);font-size:7px;padding:3px 8px;" data-i18n="common.approve">Aprovar</button>
       </div>
     </div>
   </div>
@@ -452,7 +452,7 @@
   <div id="candidate-modal" class="modal-overlay hidden">
     <div class="modal-content candidate-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128100; Boss Online — Seleção de candidatos</h3>
+        <h3 class="pixel-title" data-i18n="candidate.title">👤 Boss Online — Seleção de candidatos</h3>
         <button id="candidate-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body candidate-modal-body">
@@ -464,14 +464,14 @@
           </div>
           <div id="detail-panel-content" class="detail-panel-content"></div>
           <div class="detail-panel-actions">
-            <button id="detail-interview-btn" class="pixel-btn">&#128172; Interview</button>
-            <button id="detail-select-btn" class="pixel-btn secondary">&#10004; Select</button>
+            <button id="detail-interview-btn" class="pixel-btn" data-i18n="candidate.interview">💬 Entrevista</button>
+            <button id="detail-select-btn" class="pixel-btn secondary" data-i18n="candidate.select">✔ Selecionar</button>
           </div>
         </div>
       </div>
       <div id="candidate-batch-bar" class="candidate-batch-bar hidden">
-        <span id="candidate-batch-count" class="batch-count">0 selecionados</span>
-        <button id="candidate-batch-hire-btn" class="pixel-btn batch-hire-btn" disabled>RECRUIT PARTY (0)</button>
+        <span id="candidate-batch-count" class="batch-count" data-i18n="candidate.batchSelected">0 selecionados</span>
+        <button id="candidate-batch-hire-btn" class="pixel-btn batch-hire-btn" disabled data-i18n="candidate.batchRecruit">RECRUTAR TURMA (0)</button>
       </div>
     </div>
   </div>
@@ -480,7 +480,7 @@
   <div id="talent-pool-modal" class="modal-overlay hidden">
     <div class="modal-content talent-pool-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128188; Talent Pool</h3>
+        <h3 class="pixel-title" data-i18n="talentPool.title">💼 Mercado de talentos</h3>
         <span id="talent-pool-source-badge" class="talent-pool-badge"></span>
         <button id="talent-pool-close-btn" class="modal-close">&#10005;</button>
       </div>
@@ -495,7 +495,7 @@
     <div class="modal-content interview-modal-content">
       <div class="modal-header interview-header">
         <div class="interview-header-info">
-      <h3 class="pixel-title" id="interview-modal-title" data-i18n="interview.title">&#128172; Interview</h3>
+      <h3 class="pixel-title" id="interview-modal-title" data-i18n="interview.title">&#128172; Entrevista</h3>
           <span class="interview-model-badge" id="interview-model-badge"></span>
         </div>
         <button id="interview-close-btn" class="modal-close">&#10005;</button>
@@ -509,16 +509,16 @@
       </div>
       <div id="interview-preview-bar" class="chat-preview-bar hidden"></div>
       <div class="chat-input-area">
-          <label class="chat-attach-btn" data-i18n-title="meeting.attachFile" title="Attach file or image">
+          <label class="chat-attach-btn" data-i18n-title="meeting.attachFile" title="Anexar arquivo ou imagem">
           <input type="file" id="interview-file-input" multiple hidden />
           &#128206;
         </label>
-          <textarea id="interview-question" class="chat-textarea" data-i18n-placeholder="interview.messagePlaceholder" placeholder="Type a message..." rows="1"></textarea>
-        <button id="interview-ask-btn" class="chat-send-btn" title="Send">&#9654;</button>
+          <textarea id="interview-question" class="chat-textarea" data-i18n-placeholder="interview.messagePlaceholder" placeholder="Digite uma mensagem..." rows="1"></textarea>
+        <button id="interview-ask-btn" class="chat-send-btn" title="Enviar">&#9654;</button>
       </div>
       <div class="interview-actions">
-        <button id="interview-hire-btn" class="pixel-btn">&#9989; Hire</button>
-        <button id="interview-back-btn" class="pixel-btn secondary">&#8592; Back to Candidates</button>
+        <button id="interview-hire-btn" class="pixel-btn" data-i18n="interview.hireButton">&#9989; Contratar</button>
+        <button id="interview-back-btn" class="pixel-btn secondary" data-i18n="interview.backButton">&#8592; Voltar para candidatos</button>
       </div>
     </div>
   </div>
@@ -526,7 +526,7 @@
   <!-- Onboarding Progress Toast (non-blocking, bottom-right corner) -->
   <div id="onboarding-progress-modal" class="onboarding-toast hidden">
     <div class="onboarding-toast-header">
-      <span class="onboarding-toast-title">&#128640; Onboarding</span>
+      <span class="onboarding-toast-title" data-i18n="onboarding.title">🚀 Onboarding</span>
       <button id="onboarding-toggle-btn" class="onboarding-toast-toggle">&#9660;</button>
       <button id="onboarding-done-btn" class="onboarding-toast-close hidden">&#10005;</button>
     </div>
@@ -539,7 +539,7 @@
   <div id="ex-employee-modal" class="modal-overlay hidden">
     <div class="modal-content ex-employee-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128220; Mural de ex-funcionários</h3>
+        <h3 class="pixel-title" data-i18n="exEmployees.title">&#128220; Mural de Ex-funcionários</h3>
         <button id="ex-employee-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body">
@@ -552,7 +552,7 @@
   <div id="dashboard-modal" class="modal-overlay hidden">
     <div class="modal-content dashboard-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128202; Painel</h3>
+        <h3 class="pixel-title" data-i18n="toolbar.dashboard">&#128202; Painel</h3>
         <button id="dashboard-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body">
@@ -565,13 +565,13 @@
   <div id="company-culture-modal" class="modal-overlay hidden">
     <div class="modal-content company-culture-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#127988; Cultura da Empresa</h3>
+        <h3 class="pixel-title" data-i18n="companyCulture.title">&#127988; Cultura da Empresa</h3>
         <button id="company-culture-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body company-culture-body">
         <div class="company-culture-input-area">
-          <textarea id="company-culture-input" placeholder="Add a new culture entry..." rows="2" data-i18n-placeholder="companyCulture.addEntryPlaceholder"></textarea>
-          <button id="company-culture-add-btn" class="pixel-btn">&#10010; Add</button>
+          <textarea id="company-culture-input" placeholder="Adicione uma nova entrada de cultura..." rows="2" data-i18n-placeholder="companyCulture.addEntryPlaceholder"></textarea>
+          <button id="company-culture-add-btn" class="pixel-btn" data-i18n="common.add">&#10010; Adicionar</button>
         </div>
         <div id="company-culture-list" class="company-culture-list"></div>
       </div>
@@ -582,7 +582,7 @@
   <div id="tool-list-modal" class="modal-overlay hidden">
     <div class="modal-content tool-list-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title">&#128295; LISTA DE FERRAMENTAS</h3>
+        <h3 class="pixel-title" data-i18n="toolList.title">&#128295; LISTA DE FERRAMENTAS</h3>
         <button class="modal-close" onclick="document.getElementById('tool-list-modal').classList.add('hidden')">&times;</button>
       </div>
       <div class="modal-body" style="flex-direction:column;padding:8px;overflow-y:auto;">
@@ -624,15 +624,15 @@
   <div id="company-direction-modal" class="modal-overlay hidden">
     <div class="modal-content company-direction-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title" data-i18n="toolbar.companyDirection">&#127919; Company Direction</h3>
+        <h3 class="pixel-title" data-i18n="companyDirection.title">&#127919; Direção da Empresa</h3>
         <button id="company-direction-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body company-direction-body">
-        <p style="font-size:7px;color:var(--text-dim);margin:0 0 8px;">Defina a estratégia / direção da empresa. Isso é injetado no prompt de cada funcionário.</p>
+        <p style="font-size:7px;color:var(--text-dim);margin:0 0 8px;" data-i18n="companyDirection.description">Defina a estratégia / direção da empresa. Isso é injetado no prompt de cada funcionário.</p>
           <textarea id="company-direction-input" placeholder="ex.: Focamos em ferramentas criativas com IA para criadores independentes..." rows="5" style="width:100%;background:var(--bg-dark);color:var(--pixel-white);border:2px solid var(--border);font-family:'Press Start 2P',monospace;font-size:7px;padding:6px;resize:vertical;" data-i18n-placeholder="companyDirection.inputPlaceholder"></textarea>
         <div style="margin-top:8px;display:flex;gap:6px;">
-          <button id="company-direction-enrich-btn" class="pixel-btn secondary" onclick="app.enrichCompanyDirection()">&#10024; Polir / enriquecer</button>
-          <button id="company-direction-save-btn" class="pixel-btn">&#128190; Salvar</button>
+          <button id="company-direction-enrich-btn" class="pixel-btn secondary" onclick="app.enrichCompanyDirection()" data-i18n="companyDirection.enrichButton">&#10024; Polir / enriquecer</button>
+          <button id="company-direction-save-btn" class="pixel-btn" data-i18n="common.save">&#128190; Salvar</button>
         </div>
         <div id="company-direction-current" style="margin-top:12px;padding:8px;background:var(--bg-dark);border:2px solid var(--border);border-radius:4px;font-size:7px;color:var(--text-dim);white-space:pre-wrap;max-height:120px;overflow-y:auto;display:none;">
         </div>
@@ -644,7 +644,7 @@
   <div id="generic-popup-modal" class="modal-overlay hidden">
     <div class="modal-content generic-popup-content">
       <div class="modal-header">
-        <h3 class="pixel-title" id="generic-popup-title">Notificação</h3>
+        <h3 class="pixel-title" id="generic-popup-title" data-i18n="common.notification">Notificação</h3>
         <button id="generic-popup-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body" id="generic-popup-body" style="flex-direction:column;padding:12px;">
@@ -656,28 +656,28 @@
 
   <!-- Code update banner -->
   <div id="code-update-banner" class="code-update-banner hidden">
-    <span id="code-update-text" data-i18n="banner.codeUpdated">&#128260; Code updated</span>
-    <button id="code-update-apply-btn" class="pixel-btn small" data-i18n="banner.apply">Apply</button>
+    <span id="code-update-text" data-i18n="banner.codeUpdated">&#128260; Código atualizado</span>
+    <button id="code-update-apply-btn" class="pixel-btn small" data-i18n="banner.apply">Aplicar</button>
     <button id="code-update-dismiss-btn" class="dismiss-btn">&times;</button>
   </div>
 
   <!-- Reconnecting overlay -->
   <div id="reconnecting-overlay" class="reconnecting-overlay hidden">
-    <span class="reconnecting-text">&#128260; Reconnecting...</span>
+    <span class="reconnecting-text">&#128260; Reconectando...</span>
   </div>
 
   <!-- Background Tasks Modal -->
   <div id="bg-tasks-modal" class="modal-overlay hidden">
     <div class="modal-content bg-tasks-modal-content">
       <div class="modal-header">
-        <h3 class="pixel-title" data-i18n="bgTasks.title">&#9608; BACKGROUND TASKS</h3>
+        <h3 class="pixel-title" data-i18n="bgTasks.title">&#9608; TAREFAS EM SEGUNDO PLANO</h3>
         <span id="bg-tasks-slots" class="bg-tasks-slots"></span>
         <button id="bg-tasks-close-btn" class="modal-close">&#10005;</button>
       </div>
       <div class="modal-body bg-tasks-body">
         <div id="bg-tasks-list" class="bg-tasks-list"></div>
         <div id="bg-tasks-detail" class="bg-tasks-detail">
-          <div class="bg-tasks-detail-empty" data-i18n="bgTasks.selectTask">Select a task</div>
+          <div class="bg-tasks-detail-empty" data-i18n="bgTasks.selectTask">Selecione uma tarefa</div>
         </div>
       </div>
     </div>
@@ -701,7 +701,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" data-i18n="createProduct.ownerLabel">Responsável</label>
-          <select id="create-product-owner" class="form-input" aria-label="Create product owner">
+          <select id="create-product-owner" class="form-input" aria-label="Selecionar responsável" data-i18n-aria-label="createProduct.ownerLabel">
             <option value="" data-i18n="createProduct.selectOwner">Selecionar responsável...</option>
           </select>
         </div>
@@ -723,7 +723,7 @@
       <button class="modal-close" onclick="document.getElementById('trace-modal').classList.add('hidden')">&times;</button>
       <div class="trace-container" style="height:100%">
         <div class="trace-header">
-          <span class="trace-header-title" id="trace-modal-title">TRACE VIEWER</span>
+          <span class="trace-header-title" id="trace-modal-title" data-i18n="traceViewer.title">VISUALIZADOR DE TRACE</span>
           <span class="trace-header-meta" id="trace-modal-meta"></span>
         </div>
         <div id="trace-feed-panel" style="flex:1;overflow:hidden"></div>

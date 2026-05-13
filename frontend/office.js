@@ -574,7 +574,7 @@ class OfficeRenderer {
     const execRowH = layout.exec_row_height || 2;
     const execMidX = (MAP_COLS / 2) * TILE;
     const execSignY = (execRow + execRowH + WALL_ROWS) * TILE;
-    this._drawDeptSign(execMidX, execSignY, 'Executive', '#c0b060');
+    this._drawDeptSign(execMidX, execSignY, window.OMC_I18N?.t('office.executiveLabel', 'Executive'), '#c0b060');
   }
 
   /** Draw a pixel-art garden-style sign: stake + board with label text. */
@@ -684,7 +684,7 @@ class OfficeRenderer {
     ctx.fillStyle = '#4a2e18';
     ctx.font = 'bold 7px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('\u{1F4CB} Rules', bx + TILE * 1.5, by + TILE + 4);
+    ctx.fillText(`\u{1F4CB} ${window.OMC_I18N?.t('office.bulletinBoardLabel', 'Rules') || 'Rules'}`, bx + TILE * 1.5, by + TILE + 4);
     ctx.textAlign = 'left';
   }
 
@@ -744,7 +744,7 @@ class OfficeRenderer {
     ctx.fillStyle = '#0d2a1a';
     ctx.font = 'bold 7px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('\u{1F4CA} Projects', bx + TILE * 1.5, by + TILE + 4);
+    ctx.fillText(`\u{1F4CA} ${window.OMC_I18N?.t('office.projectWallLabel', 'Projects') || 'Projects'}`, bx + TILE * 1.5, by + TILE + 4);
     ctx.textAlign = 'left';
   }
 
@@ -1001,7 +1001,7 @@ class OfficeRenderer {
     this.ctx.fillStyle = PALETTE.led1;
     this.ctx.font = '7px monospace';
     this.ctx.textAlign = 'center';
-    const label = (toolData.name || 'TOOL').substring(0, 8).toUpperCase();
+    const label = (toolData.name || window.OMC_I18N?.t('office.toolLabelFallback', 'TOOL')).substring(0, 8).toUpperCase();
     this.ctx.fillText(label, px + 16, py + 36);
     this.ctx.textAlign = 'left';
   }
@@ -1120,7 +1120,7 @@ class OfficeRenderer {
     if (roomData.is_booked) {
       ctx.fillStyle = PALETTE.meetingBooked;
       ctx.font = '6px monospace';
-      ctx.fillText('IN USE', px + TILE, ly + 8 + lines.length * lineH);
+      ctx.fillText(window.OMC_I18N?.t('office.roomInUseBadge', 'IN USE'), px + TILE, ly + 8 + lines.length * lineH);
     }
     ctx.textAlign = 'left';
 
@@ -1211,18 +1211,24 @@ class OfficeRenderer {
     let tooltipText = null;
 
     if (x >= 5 && x <= 7 && y <= 1) {
-      tooltipText = '📋 Company Rules\nClick to view and edit workflows';
+      tooltipText = window.OMC_I18N?.t('office.companyRulesTooltip', 'Company Rules\nClick to view and edit workflows');
     }
     if (x >= 12 && x <= 14 && y <= 1) {
-      tooltipText = '📋 Project Wall\nClick to view project history';
+      tooltipText = window.OMC_I18N?.t('office.projectWallTooltip', 'Project Wall\nClick to view project history');
     }
 
     const ceoCanvasRow = ((this.state.office_layout || {}).executive_row || 0) + WALL_ROWS;
     if (x === 10 && (y === ceoCanvasRow - 1 || y === ceoCanvasRow || y === ceoCanvasRow + 1)) {
-      tooltipText = 'CEO (You)\nRole: Chief Executive\nInput tasks below';
+      tooltipText = window.OMC_I18N?.t('office.ceoTooltip', 'CEO (You)\nRole: Chief Executive\nInput tasks below');
     }
 
-    const LEVEL_NAMES = { 1: 'Junior', 2: 'Mid', 3: 'Senior', 4: 'Founding', 5: 'CEO' };
+    const LEVEL_NAMES = {
+      1: window.OMC_I18N?.t('office.levelJunior', 'Junior'),
+      2: window.OMC_I18N?.t('office.levelMid', 'Mid'),
+      3: window.OMC_I18N?.t('office.levelSenior', 'Senior'),
+      4: window.OMC_I18N?.t('office.levelFounding', 'Founding'),
+      5: window.OMC_I18N?.t('office.levelCEO', 'CEO'),
+    };
     for (const emp of (this.state.employees || [])) {
       const [ex, ey] = emp.desk_position || [0, 0];
       const canvasRow = ey + WALL_ROWS;
@@ -1232,11 +1238,11 @@ class OfficeRenderer {
         const title = emp.title || `${lvl}${emp.role}`;
         const hist = emp.performance_history || [];
         const latestScore = hist.length > 0 ? hist[hist.length - 1].score : '-';
-        tooltipText = `${emp.name}${nn}\n${title}\nSkills: ${(emp.skills || []).join(', ')}\nPerformance: ${latestScore}`;
-        if (emp.needs_setup) tooltipText += '\n🔑 Needs API setup';
-        else if (emp.api_online === false) tooltipText += '\n🔴 API offline';
-        if (emp.is_listening) tooltipText += '\n📖 In 1-on-1 meeting...';
-        tooltipText += '\n\n(Click for details)';
+        tooltipText = `${emp.name}${nn}\n${title}\n${window.OMC_I18N?.t('office.employeeTooltipSkills', 'Skills:')} ${(emp.skills || []).join(', ')}\n${window.OMC_I18N?.t('office.employeeTooltipPerformance', 'Performance:')} ${latestScore}`;
+        if (emp.needs_setup) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipNeedsSetup', '🔑 Needs API setup')}`;
+        else if (emp.api_online === false) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipApiOffline', '🔴 API offline')}`;
+        if (emp.is_listening) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipInMeeting', '📖 In 1-on-1 meeting...')}`;
+        tooltipText += `\n\n${window.OMC_I18N?.t('office.employeeTooltipClickDetails', '(Click for details)')}`;
         break;
       }
     }
@@ -1255,10 +1261,10 @@ class OfficeRenderer {
     for (const room of (this.state.meeting_rooms || [])) {
       const [rx, ry] = room.position || [0, 0];
       if (x >= rx && x <= rx + 1 && y >= ry + WALL_ROWS && y <= ry + WALL_ROWS + 2) {
-        const status = room.is_booked ? '🔴 In Use' : '🟢 Available';
-        tooltipText = `🏢 ${room.name}\n${room.description}\nCapacity: ${room.capacity}\nStatus: ${status}`;
+        const status = room.is_booked ? window.OMC_I18N?.t('office.roomStatusInUse', '🔴 In Use') : window.OMC_I18N?.t('office.roomStatusAvailable', '🟢 Available');
+        tooltipText = `🏢 ${room.name}\n${room.description}\n${window.OMC_I18N?.t('office.roomTooltipCapacity', 'Capacity:')} ${room.capacity}\n${window.OMC_I18N?.t('office.roomTooltipStatus', 'Status:')} ${status}`;
         if (room.is_booked && room.participants?.length > 0) {
-          tooltipText += `\nParticipants: ${room.participants.join(', ')}`;
+          tooltipText += `\n${window.OMC_I18N?.t('office.roomTooltipParticipants', 'Participants:')} ${room.participants.join(', ')}`;
         }
         break;
       }
