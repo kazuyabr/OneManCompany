@@ -237,7 +237,7 @@ class CeoTerminal {
         el.innerHTML = `<span class="ceo-msg-sender">[${this._esc(src)}]</span>`
           + `<span class="ceo-msg-text ceo-msg-collapsed">${this._esc(preview)}</span>`
           + `<span class="ceo-msg-text ceo-msg-full" style="display:none">${this._esc(full)}</span>`
-          + `<span class="ceo-msg-toggle" onclick="this.parentElement.querySelector('.ceo-msg-collapsed').style.display=this.parentElement.querySelector('.ceo-msg-collapsed').style.display==='none'?'':'none';this.parentElement.querySelector('.ceo-msg-full').style.display=this.parentElement.querySelector('.ceo-msg-full').style.display==='none'?'':'none';this.textContent=this.textContent==='▼ Show more'?'▲ Show less':'▼ Show more'">▼ Show more</span>`;
+          + `<span class="ceo-msg-toggle" onclick="this.parentElement.querySelector('.ceo-msg-collapsed').style.display=this.parentElement.querySelector('.ceo-msg-collapsed').style.display==='none'?'':'none';this.parentElement.querySelector('.ceo-msg-full').style.display=this.parentElement.querySelector('.ceo-msg-full').style.display==='none'?'':'none';this.textContent=this.textContent===window.OMC_I18N?.t('common.showMore', 'Show more')?'▲ '+window.OMC_I18N?.t('common.showLess', 'Show less'):window.OMC_I18N?.t('common.showMore', 'Show more')">${window.OMC_I18N?.t('common.showMore', 'Show more')}</span>`;
       } else {
         el.innerHTML = `<span class="ceo-msg-sender">[${this._esc(src)}]</span>`
           + `<span class="ceo-msg-text">${this._esc(text)}</span>`;

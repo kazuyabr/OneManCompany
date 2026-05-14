@@ -1375,18 +1375,20 @@ class AppController {
     document.getElementById('oneonone-setup').classList.add('hidden');
     document.getElementById('oneonone-chat-phase').classList.remove('hidden');
 
-    const typeLabel = meetingType === 'all_hands' ? 'All-Hands' : 'Discussion';
+    const typeLabel = meetingType === 'all_hands'
+      ? window.OMC_I18N?.t('meeting.type.allHands', 'All-Hands') || 'All-Hands'
+      : window.OMC_I18N?.t('meeting.type.discussion', 'Discussion') || 'Discussion';
     document.getElementById('oneonone-chat-title').textContent = `🎓 ${typeLabel} Meeting`;
 
     const chat = document.getElementById('oneonone-chat');
     chat.innerHTML = '';
     const participantNames = res.participants.map(p => p.nickname || p.name).join(', ');
-    this._addOneononeSystemMsg(`${typeLabel} meeting started in ${res.room_name}. Participants: ${participantNames}`);
+    this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.sessionStarted', '{type} meeting started in {room}. Participants: {participants}', { type: typeLabel, room: res.room_name, participants: participantNames }) || `${typeLabel} meeting started in ${res.room_name}. Participants: ${participantNames}`);
 
     if (meetingType === 'all_hands') {
-      this._addOneononeSystemMsg('All-Hands mode: Send your address. Employees will absorb silently.');
+      this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.allHandsModeInstruction', 'All-Hands mode: Send your address. Employees will absorb silently.') || 'All-Hands mode: Send your address. Employees will absorb silently.');
     } else {
-      this._addOneononeSystemMsg('Discussion mode: Send a message to start discussion. Employees will compete to respond.');
+      this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.discussionModeInstruction', 'Discussion mode: Send a message to start discussion. Employees will compete to respond.') || 'Discussion mode: Send a message to start discussion. Employees will compete to respond.');
     }
 
     const textarea = document.getElementById('oneonone-input');
@@ -1799,7 +1801,7 @@ class AppController {
       talentPoolBtn = document.createElement('button');
       talentPoolBtn.id = 'emp-talent-pool-btn';
       talentPoolBtn.className = 'pixel-btn emp-fire-btn';
-      talentPoolBtn.textContent = '📋 Talent Pool';
+      talentPoolBtn.textContent = window.OMC_I18N?.t('talentPool.title', '💼 Talent Pool') || '💼 Talent Pool';
       talentPoolBtn.style.marginRight = '8px';
       const fireBtn2 = document.getElementById('emp-fire-btn');
       fireBtn2.parentNode.insertBefore(talentPoolBtn, fireBtn2);
@@ -2021,7 +2023,7 @@ class AppController {
     const feedPanel = document.getElementById('trace-feed-panel');
 
     titleEl.textContent = `\u2588\u2588 ${(projectName || projectId).toUpperCase()} `;
-    metaEl.textContent = 'loading...';
+    metaEl.textContent = window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...';
     feedPanel.innerHTML = '';
 
     // Dispose previous xterm instance
@@ -2763,14 +2765,14 @@ class AppController {
           modal.classList.remove('hidden');
         }
       }},
-      { cmd: '/allhands', desc: 'Start All-Hands meeting (CEO address)', action: async (arg) => {
+      { cmd: '/allhands', desc: window.OMC_I18N?.t('command.allHandsDesc', 'Iniciar reunião geral (fala do CEO)') || 'Iniciar reunião geral (fala do CEO)', action: async (arg) => {
         await this._startMeetingInConsole('all_hands', arg);
       }},
-      { cmd: '/discuss', desc: 'Start discussion meeting (open floor)', action: async (arg) => {
+      { cmd: '/discuss', desc: window.OMC_I18N?.t('command.discussDesc', 'Start discussion meeting (open floor)') || 'Start discussion meeting (open floor)', action: async (arg) => {
         await this._startMeetingInConsole('discussion', arg);
       }},
-      { cmd: '/attach', desc: 'Attach file or image', action: () => document.getElementById('ceo-file-input')?.click() },
-      { cmd: '/clear', desc: 'Clear EA chat history', action: async () => {
+      { cmd: '/attach', desc: window.OMC_I18N?.t('command.attachDesc', 'Attach file or image') || 'Attach file or image', action: () => document.getElementById('ceo-file-input')?.click() },
+      { cmd: '/clear', desc: window.OMC_I18N?.t('command.clearEaChatDesc', 'Clear EA chat history') || 'Clear EA chat history', action: async () => {
         if (this._currentCeoProject !== this._EA_CHAT) {
           this._ceoTerm?.appendMessage({ role: 'system', text: '/clear only works in EA chat.', source: 'system' });
           return;
@@ -3101,7 +3103,11 @@ class AppController {
   }
 
   async _startMeetingInConsole(meetingType, initialMessage) {
-    this._ceoTerm?.appendMessage({ role: 'system', text: `Starting ${meetingType === 'all_hands' ? 'All-Hands' : 'Discussion'} meeting...`, source: 'system' });
+    this._ceoTerm?.appendMessage({
+      role: 'system',
+      text: window.OMC_I18N?.t('meeting.startingMeeting', 'Starting {type} meeting...', { type: meetingType === 'all_hands' ? window.OMC_I18N?.t('meeting.type.allHands', 'All-Hands') || 'All-Hands' : window.OMC_I18N?.t('meeting.type.discussion', 'Discussion') || 'Discussion' }) || `Starting ${meetingType === 'all_hands' ? 'Iniciando reunião geral' : 'Iniciando discussão'}...`,
+      source: 'system',
+    });
 
     try {
       const res = await fetch('/api/meeting/start', {
@@ -3111,7 +3117,7 @@ class AppController {
       }).then(r => r.json());
 
       if (res.error) {
-        this._ceoTerm?.appendMessage({ role: 'system', text: `Failed: ${res.error}`, source: 'system' });
+        this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('common.failed', 'Failed') + `: ${res.error}`, source: 'system' });
         return;
       }
 
@@ -3124,13 +3130,15 @@ class AppController {
       this._pendingIterProject = null;
       this._pendingSimpleMode = false;
 
-      const typeLabel = meetingType === 'all_hands' ? 'All-Hands' : 'Discussion';
+      const typeLabel = meetingType === 'all_hands'
+        ? window.OMC_I18N?.t('meeting.type.allHands', 'All-Hands') || 'All-Hands'
+        : window.OMC_I18N?.t('meeting.type.discussion', 'Discussion') || 'Discussion';
       const participantNames = res.participants.map(p => p.nickname || p.name).join(', ');
       const history = [
-        { role: 'system', text: `${typeLabel} meeting started. Participants: ${participantNames}`, source: 'system' },
+        { role: 'system', text: window.OMC_I18N?.t('meeting.sessionStarted', '{type} meeting started in {room}. Participants: {participants}', { type: typeLabel, room: res.room_name || '', participants: participantNames }) || `${typeLabel} meeting started. Participants: ${participantNames}`, source: 'system' },
         { role: 'system', text: meetingType === 'all_hands'
-            ? 'All-Hands mode: send your address. Employees absorb silently.'
-            : 'Discussion mode: send a message. Employees compete to respond. /end to finish.',
+            ? window.OMC_I18N?.t('meeting.allHandsModeInstructionConsole', 'All-Hands mode: send your address. Employees absorb silently.') || 'All-Hands mode: send your address. Employees absorb silently.'
+            : window.OMC_I18N?.t('meeting.discussionModeInstructionConsole', 'Discussion mode: send a message. Employees compete to respond. /end to finish.') || 'Discussion mode: send a message. Employees compete to respond. /end to finish.',
           source: 'system' },
       ];
       this._ceoTerm?.showChat(`meeting:${typeLabel}`, history);
@@ -3177,8 +3185,8 @@ class AppController {
         if (data.action_items?.length) {
           this._ceoTerm?.appendMessage({ role: 'system', text: `Action items: ${data.action_items.join(', ')}`, source: 'EA' });
         }
-        this._ceoTerm?.appendMessage({ role: 'system', text: '✓ Meeting ended', source: 'system' });
-        this.logEntry('CEO', `🎓 ${this._currentMeetingType === 'all_hands' ? 'All-Hands' : 'Discussion'} meeting ended`, 'guidance');
+        this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.ended', '✓ Meeting ended') || '✓ Meeting ended', source: 'system' });
+        this.logEntry('CEO', `🎓 ${this._currentMeetingType === 'all_hands' ? window.OMC_I18N?.t('meeting.type.allHands', 'All-Hands') || 'All-Hands' : window.OMC_I18N?.t('meeting.type.discussion', 'Discussion') || 'Discussion'} ${window.OMC_I18N?.t('meeting.ended', 'meeting ended') || 'meeting ended'}`, 'guidance');
       }
     } catch (e) {
       this._ceoTerm?.appendMessage({ role: 'system', text: `Error: ${e.message}`, source: 'system' });
@@ -3416,7 +3424,7 @@ class AppController {
       const btn = document.createElement('button');
       btn.id = 'emp-oauth-login-btn';
       btn.className = 'pixel-btn small';
-      btn.textContent = empData.oauth_logged_in ? 'Re-login' : 'Login';
+      btn.textContent = empData.oauth_logged_in ? window.OMC_I18N?.t('common.relogin', 'Re-login') || 'Re-login' : window.OMC_I18N?.t('common.login', 'Login') || 'Login';
       btn.dataset.fieldKey = field.key;
       btn.dataset.fieldType = 'oauth_button';
       btn.addEventListener('click', () => this.startOAuthLogin());
@@ -3558,12 +3566,12 @@ class AppController {
       try {
         cv = JSON.parse(cvEl.value.trim());
       } catch {
-        this.logEntry('SYSTEM', 'Invalid JSON in CV field.', 'system');
+        this.logEntry('SYSTEM', window.OMC_I18N?.t('candidate.invalidCvJson', 'Invalid JSON in CV field.') || 'Invalid JSON in CV field.', 'system');
         return;
       }
       const btn = scope.querySelector(`[data-field-key="${field.key}"]`);
       btn.disabled = true;
-      btn.textContent = 'Hiring...';
+      btn.textContent = window.OMC_I18N?.t('common.hiring', 'Hiring...') || 'Hiring...';
       try {
         const resp = await fetch('/api/candidates/hire-from-cv', {
           method: 'POST',
@@ -3848,7 +3856,7 @@ class AppController {
         }
       })
       .catch(err => this.logEntry('SYSTEM', `OAuth error: ${err.message}`, 'system'))
-      .finally(() => { btn.disabled = false; btn.textContent = 'Login'; });
+      .finally(() => { btn.disabled = false; btn.textContent = window.OMC_I18N?.t('common.login', 'Login') || 'Login'; });
   }
 
   async _tryAutoReadClipboard() {
@@ -3877,7 +3885,7 @@ class AppController {
     // Fallback: show manual input
     document.getElementById('emp-oauth-code-row').style.display = 'flex';
     this.logEntry('SYSTEM',
-      'Paste the code (Ctrl+V) anywhere on this page, or type it above and click Submit.',
+      window.OMC_I18N?.t('oauth.pasteCodeAnywhere', 'Cole o código (Ctrl+V) em qualquer lugar desta página, ou digite acima e clique em Enviar.') || 'Cole o código (Ctrl+V) em qualquer lugar desta página, ou digite acima e clique em Enviar.',
       'system');
   }
 
@@ -3890,17 +3898,17 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `OAuth failed: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${data.error}`, 'system');
           // Show manual input as fallback
           document.getElementById('emp-oauth-code-row').style.display = 'flex';
         } else {
-          this.logEntry('SYSTEM', `Login successful! ${data.launch || ''}`, 'system');
+          this.logEntry('SYSTEM', `${window.OMC_I18N?.t('oauth.loginSuccessful', 'Login successful') || 'Login successful'}! ${data.launch || ''}`, 'system');
           document.getElementById('emp-oauth-code-row').style.display = 'none';
           this._oauthState = null;
           this._loadModelOrApiKeySection(empId);
         }
       })
-      .catch(err => this.logEntry('SYSTEM', `OAuth error: ${err.message}`, 'system'));
+      .catch(err => this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${err.message}`, 'system'));
   }
 
   submitOAuthCode() {
@@ -4143,7 +4151,7 @@ class AppController {
         // "Details" button below the card
         const detailBtn = document.createElement('button');
         detailBtn.className = 'pixel-btn card-detail-btn';
-        detailBtn.textContent = '📋 Details';
+        detailBtn.textContent = window.OMC_I18N?.t('common.details', 'Details') || 'Details';
         detailBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this._showCandidateDetail(cid, c, roleGroup.role, card);
@@ -4257,7 +4265,7 @@ class AppController {
     const isRemote = (c.hosting === 'self');
     if (!isRemote) {
       newInterviewBtn.disabled = true;
-      newInterviewBtn.title = 'For security reasons, only remote (self-hosted) employees support interview';
+      newInterviewBtn.title = window.OMC_I18N?.t('candidate.remoteInterviewOnly', 'For security reasons, only remote (self-hosted) employees support interview') || 'For security reasons, only remote (self-hosted) employees support interview';
       newInterviewBtn.textContent = '🔒 Interview';
     } else {
       newInterviewBtn.disabled = false;
@@ -4271,7 +4279,7 @@ class AppController {
     newSelectBtn.addEventListener('click', () => {
       this._toggleCandidateSelection(candidateId, c, role, cardEl);
       const nowSelected = this._selectedCandidates.has(candidateId);
-      newSelectBtn.textContent = nowSelected ? '✗ Deselect' : '✔ Select';
+      newSelectBtn.textContent = nowSelected ? '✗ Deselect' : window.OMC_I18N?.t('candidate.select', '✔ Select') || '✔ Select';
       newSelectBtn.className = nowSelected ? 'pixel-btn danger' : 'pixel-btn secondary';
     });
     newCloseBtn.addEventListener('click', () => {
@@ -4290,13 +4298,13 @@ class AppController {
 
     if (count > 0) {
       bar.classList.remove('hidden');
-      countEl.textContent = `${count} selected`;
-      btn.textContent = `RECRUIT PARTY (${count})`;
+      countEl.textContent = window.OMC_I18N?.t('candidate.batchSelected', '{count} selected', { count }) || `${count} selected`;
+      btn.textContent = window.OMC_I18N?.t('candidate.batchRecruit', 'RECRUIT PARTY ({count})', { count }) || `RECRUIT PARTY (${count})`;
       btn.disabled = false;
     } else {
       bar.classList.remove('hidden'); // always show bar for context
-      countEl.textContent = '0 selected — click cards to select';
-      btn.textContent = 'RECRUIT PARTY (0)';
+      countEl.textContent = window.OMC_I18N?.t('candidate.selectHint', '0 selected — click cards to select') || '0 selected — click cards to select';
+      btn.textContent = window.OMC_I18N?.t('candidate.batchRecruit', 'RECRUIT PARTY ({count})', { count: 0 }) || 'RECRUIT PARTY (0)';
       btn.disabled = true;
     }
   }
@@ -4312,7 +4320,7 @@ class AppController {
     // Disable button
     const btn = document.getElementById('candidate-batch-hire-btn');
     btn.disabled = true;
-    btn.textContent = 'RECRUITING...';
+    btn.textContent = window.OMC_I18N?.t('candidate.recruiting', 'RECRUITING...') || 'RECRUITING...';
 
     this.logEntry('CEO', `Batch hiring ${selections.length} candidate(s)...`, 'ceo');
 
@@ -4520,7 +4528,7 @@ class AppController {
     // Show loading state
     this.logEntry('CEO', `Processing hire for ${candidate.name}...`, 'ceo');
     // Disable all hire buttons to prevent double-click
-    document.querySelectorAll('.pixel-btn.hire').forEach(b => { b.disabled = true; b.textContent = 'Hiring...'; });
+    document.querySelectorAll('.pixel-btn.hire').forEach(b => { b.disabled = true; b.textContent = window.OMC_I18N?.t('common.hiring', 'Hiring...') || 'Hiring...'; });
 
     fetch('/api/candidates/hire', {
       method: 'POST',
@@ -4534,7 +4542,7 @@ class AppController {
       .then(data => {
         if (data.error) {
           this.logEntry('SYSTEM', `Hire failed: ${data.error}`, 'system');
-          document.querySelectorAll('.pixel-btn.hire').forEach(b => { b.disabled = false; b.textContent = 'Hire'; });
+          document.querySelectorAll('.pixel-btn.hire').forEach(b => { b.disabled = false; b.textContent = window.OMC_I18N?.t('common.hire', 'Hire') || 'Hire'; });
         } else {
           this.logEntry('CEO', `⏳ Onboarding ${data.name || candidate.name} in background...`, 'ceo');
           this._batchHired = true;
@@ -5058,7 +5066,7 @@ class AppController {
       };
       const cancelBtn = document.createElement('button');
       cancelBtn.className = 'pixel-btn secondary';
-      cancelBtn.textContent = 'Cancel';
+      cancelBtn.textContent = window.OMC_I18N?.t('common.cancel', 'Cancel') || 'Cancel';
       cancelBtn.onclick = () => this.closePopup();
       footer.appendChild(cancelBtn);
       footer.appendChild(confirmBtn);
@@ -5087,7 +5095,7 @@ class AppController {
       footer.style.display = 'flex';
       const submitBtn = document.createElement('button');
       submitBtn.className = 'pixel-btn';
-      submitBtn.textContent = opts.submit_label || 'Submit';
+      submitBtn.textContent = opts.submit_label || window.OMC_I18N?.t('common.submit', 'Enviar') || 'Enviar';
       submitBtn.onclick = () => {
         const values = {};
         for (const [k, inp] of Object.entries(inputs)) values[k] = inp.value;
@@ -5101,7 +5109,7 @@ class AppController {
       };
       const cancelBtn = document.createElement('button');
       cancelBtn.className = 'pixel-btn secondary';
-      cancelBtn.textContent = 'Cancel';
+      cancelBtn.textContent = window.OMC_I18N?.t('common.cancel', 'Cancel') || 'Cancel';
       cancelBtn.onclick = () => this.closePopup();
       footer.appendChild(cancelBtn);
       footer.appendChild(submitBtn);
@@ -5404,11 +5412,11 @@ class AppController {
     const ceoInputArea = document.getElementById('meeting-ceo-input-area');
     if (room.is_booked) {
       led.className = 'status-led booked';
-      statusText.textContent = 'In Meeting';
+      statusText.textContent = window.OMC_I18N?.t('meeting.inMeeting', 'In Meeting') || 'In Meeting';
       ceoInputArea.classList.remove('hidden');
     } else {
       led.className = 'status-led free';
-      statusText.textContent = 'Available';
+      statusText.textContent = window.OMC_I18N?.t('meeting.available', 'Available') || 'Available';
       ceoInputArea.classList.add('hidden');
     }
     // Update participants
@@ -5687,7 +5695,7 @@ class AppController {
                     <label style="font-size:5.5px;color:var(--pixel-yellow);">${t('settings.pasteAnthropicCode', 'Paste the code from Anthropic:')}</label>
                     <div style="display:flex;gap:4px;margin-top:2px;">
                       <input id="oauth-code-field" type="text" placeholder="${t('settings.oauthCodePlaceholder', 'code#state')}" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
-                      <button class="pixel-btn small" onclick="app._submitOAuthCode()">${t('settings.submit', 'Submit')}</button>
+                      <button class="pixel-btn small" onclick="app._submitOAuthCode()">${t('settings.submit', 'Enviar')}</button>
                     </div>
                   </div>
                 </div>
@@ -5851,7 +5859,7 @@ class AppController {
         if (resultEl) { resultEl.textContent = data.error || t('settings.errorLoading', 'Error loading'); resultEl.className = 'api-test-result fail'; }
       }
     } catch (e) {
-      if (resultEl) { resultEl.textContent = 'Error'; resultEl.className = 'api-test-result fail'; }
+      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.errorLoading', 'Error loading') || 'Error loading'; resultEl.className = 'api-test-result fail'; }
     }
   }
 
@@ -5874,12 +5882,12 @@ class AppController {
       });
       const data = await resp.json();
       if (data.ok) {
-        if (resultEl) { resultEl.textContent = 'OK'; resultEl.className = 'api-test-result success'; }
+        if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.ok', 'OK') || 'OK'; resultEl.className = 'api-test-result success'; }
       } else {
-        if (resultEl) { resultEl.textContent = 'FAIL'; resultEl.className = 'api-test-result fail'; }
+        if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.fail', 'FAIL') || 'FAIL'; resultEl.className = 'api-test-result fail'; }
       }
     } catch (e) {
-      if (resultEl) { resultEl.textContent = 'ERR'; resultEl.className = 'api-test-result fail'; }
+      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.err', 'ERR') || 'ERR'; resultEl.className = 'api-test-result fail'; }
     }
   }
 
@@ -5901,7 +5909,7 @@ class AppController {
       });
       const data = await resp.json();
       if (data.status === 'updated') {
-        if (resultEl) { resultEl.textContent = 'OK'; resultEl.className = 'api-test-result success'; }
+        if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.ok', 'OK') || 'OK'; resultEl.className = 'api-test-result success'; }
         this._settingsLoaded = false;
         this._renderApiSettings();
       } else {
@@ -6041,7 +6049,7 @@ class AppController {
         document.getElementById('oauth-code-field')?.focus();
       }
       const resultEl = document.getElementById('api-oauth-result');
-      if (resultEl) resultEl.textContent = 'Waiting for code...';
+      if (resultEl) resultEl.textContent = window.OMC_I18N?.t('oauth.waitingForCode', 'Waiting for code...');
     } catch (e) {
       console.error('Company OAuth error:', e);
     }
@@ -6594,10 +6602,10 @@ class AppController {
             <div class="tool-section-title">${esc(title)}</div>
             <div class="tool-section-body">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                <div class="tool-oauth-status disconnected" style="margin:0;">Not connected${preview}</div>
+                <div class="tool-oauth-status disconnected" style="margin:0;">${window.OMC_I18N?.t('settings.notConnected', 'Not connected') || 'Not connected'}${preview}</div>
                 ${editBtn}
               </div>
-              <button class="pixel-btn" onclick="window.app._toolAction('login','${esc(toolId)}')">Login with ${esc(s.service_name)}</button>
+              <button class="pixel-btn" onclick="window.app._toolAction('login','${esc(toolId)}')">${window.OMC_I18N?.t('common.loginWith', 'Entrar com {service}', { service: esc(s.service_name) }) || `Entrar com ${esc(s.service_name)}`}</button>
               ${credsForm}
             </div>
           </div>`;
@@ -7199,7 +7207,7 @@ class AppController {
         confirmAndDismiss();
         return;
       }
-      countdownEl.textContent = `Auto-confirm in ${remaining}s`;
+      countdownEl.textContent = window.OMC_I18N?.t('common.autoConfirmIn', 'Auto-confirm in {seconds}s', { seconds: remaining }) || `Auto-confirm in ${remaining}s`;
     }, 1000);
 
     const dismiss = () => {
@@ -7758,7 +7766,7 @@ class AppController {
       planBtn.className = 'btn-primary';
       planBtn.style.width = 'auto';
       planBtn.style.marginLeft = '8px';
-      planBtn.textContent = 'Start Planning';
+      planBtn.textContent = window.OMC_I18N?.t('product.startPlanning', 'Start Planning') || 'Start Planning';
       planBtn.addEventListener('click', async () => {
         const res = await fetch(`/api/product/${encodeURIComponent(slug)}/planning`, { method: 'POST' });
         const data = await res.json();
@@ -7773,7 +7781,7 @@ class AppController {
       const activateBtn = document.createElement('button');
       activateBtn.className = 'btn-small';
       activateBtn.style.marginLeft = '4px';
-      activateBtn.textContent = 'Activate Product';
+      activateBtn.textContent = window.OMC_I18N?.t('product.activate', 'Activate Product') || 'Activate Product';
       activateBtn.addEventListener('click', async () => {
         await fetch(`/api/product/${encodeURIComponent(slug)}`, {
           method: 'PUT',
@@ -7790,7 +7798,7 @@ class AppController {
     const exportBtn = document.createElement('button');
     exportBtn.className = 'btn-small';
     exportBtn.style.marginLeft = '4px';
-    exportBtn.textContent = 'Export';
+    exportBtn.textContent = window.OMC_I18N?.t('common.export', 'Export') || 'Export';
     exportBtn.addEventListener('click', async () => {
       const res = await fetch(`/api/product/${encodeURIComponent(slug)}/export`);
       const data = await res.json();
@@ -7829,7 +7837,7 @@ class AppController {
     // Objective
     const objLabel = document.createElement('div');
     objLabel.className = 'product-section-label';
-    objLabel.textContent = 'Objective';
+    objLabel.textContent = window.OMC_I18N?.t('createProduct.objectiveLabel', 'Objective') || 'Objective';
     container.appendChild(objLabel);
     const objEl = document.createElement('div');
     objEl.className = 'product-detail-objective';
@@ -7840,7 +7848,7 @@ class AppController {
     // Owner
     const ownerLabel = document.createElement('div');
     ownerLabel.className = 'product-section-label';
-    ownerLabel.textContent = 'Owner';
+    ownerLabel.textContent = window.OMC_I18N?.t('createProduct.ownerLabel', 'Owner') || 'Owner';
     container.appendChild(ownerLabel);
     const ownerEl = document.createElement('select');
     ownerEl.className = 'form-input';
@@ -7865,7 +7873,7 @@ class AppController {
     // KR Section
     const krLabel = document.createElement('div');
     krLabel.className = 'product-section-label';
-    krLabel.textContent = 'Key Results';
+    krLabel.textContent = window.OMC_I18N?.t('createProduct.keyResultsLabel', 'Key Results') || 'Key Results';
     container.appendChild(krLabel);
 
     const krList = document.createElement('div');
@@ -7935,7 +7943,7 @@ class AppController {
     // Add KR button
     const addKrBtn = document.createElement('button');
     addKrBtn.className = 'btn-small';
-    addKrBtn.textContent = '+ Add KR';
+    addKrBtn.textContent = window.OMC_I18N?.t('createProduct.addKr', '+ Add KR') || '+ Add KR';
     addKrBtn.addEventListener('click', () => this._showAddKrInline(krList, slug));
     krList.appendChild(addKrBtn);
     container.appendChild(krList);
@@ -7943,7 +7951,7 @@ class AppController {
     // Version History
     const verLabel = document.createElement('div');
     verLabel.className = 'product-section-label';
-    verLabel.textContent = 'Version History';
+    verLabel.textContent = window.OMC_I18N?.t('product.versionHistory', 'Version History') || 'Version History';
     container.appendChild(verLabel);
 
     if (versions.length > 0) {
@@ -7969,7 +7977,7 @@ class AppController {
     // Release Version button
     const releaseBtn = document.createElement('button');
     releaseBtn.className = 'btn-small';
-    releaseBtn.textContent = '+ Release Version';
+    releaseBtn.textContent = window.OMC_I18N?.t('product.releaseVersion', '+ Release Version') || '+ Release Version';
     releaseBtn.addEventListener('click', () => this._showReleaseVersionForm(container, slug));
     container.appendChild(releaseBtn);
   }
@@ -8146,7 +8154,7 @@ class AppController {
     toolbar.className = 'product-issues-toolbar';
     const newBtn = document.createElement('button');
     newBtn.className = 'btn-small';
-    newBtn.textContent = '+ New Issue';
+    newBtn.textContent = window.OMC_I18N?.t('product.newIssue', '+ New Issue') || '+ New Issue';
     toolbar.appendChild(newBtn);
 
     // Status filter
@@ -8259,14 +8267,14 @@ class AppController {
     const actionBtn = document.createElement('button');
     actionBtn.className = 'issue-action-btn';
     if (isClosed) {
-      actionBtn.textContent = 'Reopen';
+      actionBtn.textContent = window.OMC_I18N?.t('common.reopen', 'Reopen') || 'Reopen';
       actionBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}/reopen`, { method: 'POST' });
         this._openProductDetail(slug);
       });
     } else {
-      actionBtn.textContent = 'Close';
+      actionBtn.textContent = window.OMC_I18N?.t('common.closeText', 'Close') || 'Close';
       actionBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}/close`, {
@@ -8303,12 +8311,12 @@ class AppController {
 
     // Sprint picker (dropdown)
     const sprintRow = document.createElement('div');
-    sprintRow.textContent = 'Sprint: ';
+    sprintRow.textContent = window.OMC_I18N?.t('product.sprintLabel', 'Sprint: ') || 'Sprint: ';
     const sprintSel = document.createElement('select');
     sprintSel.className = 'form-input';
     sprintSel.style.width = 'auto';
     sprintSel.style.display = 'inline';
-    sprintSel.innerHTML = '<option value="">No Sprint</option>';
+    sprintSel.innerHTML = `<option value="">${window.OMC_I18N?.t('product.noSprint', 'Sem sprint') || 'Sem sprint'}</option>`;
     fetch(`/api/product/${encodeURIComponent(slug)}/sprints`)
       .then(r => r.json())
       .then(sprints => {
@@ -8333,7 +8341,7 @@ class AppController {
     body.appendChild(sprintRow);
 
     const assignRow = document.createElement('div');
-    assignRow.textContent = 'Assignee: ';
+    assignRow.textContent = window.OMC_I18N?.t('product.assigneeLabel', 'Assignee: ') || 'Assignee: ';
     const assignSel = document.createElement('select');
     assignSel.className = 'form-input';
     assignSel.style.width = 'auto';
@@ -8414,7 +8422,7 @@ class AppController {
     hdr.className = 'issue-links-header';
     const title = document.createElement('span');
     title.className = 'issue-links-title';
-    title.textContent = 'Links';
+    title.textContent = window.OMC_I18N?.t('product.linksTitle', 'Links') || 'Links';
     hdr.appendChild(title);
 
     const addBtn = document.createElement('button');
@@ -8436,7 +8444,7 @@ class AppController {
       const empty = document.createElement('div');
       empty.className = 'task-empty';
       empty.style.fontSize = 'calc(5px + var(--font-boost))';
-      empty.textContent = 'No links';
+      empty.textContent = window.OMC_I18N?.t('product.noLinks', 'No links') || 'No links';
       list.appendChild(empty);
     } else {
       for (const link of links) {
@@ -8457,7 +8465,7 @@ class AppController {
         const removeBtn = document.createElement('button');
         removeBtn.className = 'issue-link-remove';
         removeBtn.textContent = '\u00d7';
-        removeBtn.title = 'Remove link';
+        removeBtn.title = window.OMC_I18N?.t('product.removeLink', 'Remove link') || 'Remove link';
         removeBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
           try {
@@ -8502,7 +8510,7 @@ class AppController {
 
     const saveBtn = document.createElement('button');
     saveBtn.className = 'btn-small';
-    saveBtn.textContent = 'Add';
+    saveBtn.textContent = window.OMC_I18N?.t('product.add', 'Add') || 'Add';
     saveBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       if (!targetSel.value) return;
@@ -8758,12 +8766,12 @@ class AppController {
           hdr.style.alignItems = 'center';
           hdr.style.justifyContent = 'space-between';
           const h = document.createElement('h3');
-          h.textContent = 'Sprints';
+          h.textContent = window.OMC_I18N?.t('product.sprints', 'Sprints') || 'Sprints';
           h.style.margin = '0';
           hdr.appendChild(h);
           const newBtn = document.createElement('button');
           newBtn.className = 'btn-small';
-          newBtn.textContent = '+ New Sprint';
+          newBtn.textContent = window.OMC_I18N?.t('product.newSprint', '+ New Sprint') || '+ New Sprint';
           newBtn.addEventListener('click', () => this._showNewSprintForm(section, slug));
           hdr.appendChild(newBtn);
           section.appendChild(hdr);
@@ -8774,7 +8782,7 @@ class AppController {
           if (data.sprints.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'task-empty';
-            empty.textContent = 'No sprints yet. Click "+ New Sprint" to plan your first sprint.';
+            empty.textContent = window.OMC_I18N?.t('product.noSprintsYet', 'No sprints yet. Click "+ New Sprint" to plan your first sprint.') || 'No sprints yet. Click "+ New Sprint" to plan your first sprint.';
             timeline.appendChild(empty);
           }
 
@@ -8798,12 +8806,12 @@ class AppController {
             if (s.status === 'planning') {
               const editBtn = document.createElement('button');
               editBtn.className = 'sprint-action-btn';
-              editBtn.textContent = 'Edit';
+              editBtn.textContent = window.OMC_I18N?.t('product.edit', 'Edit') || 'Edit';
               editBtn.addEventListener('click', () => this._showEditSprintForm(bar, slug, s));
               actions.appendChild(editBtn);
               const startBtn = document.createElement('button');
               startBtn.className = 'sprint-action-btn';
-              startBtn.textContent = 'Start';
+              startBtn.textContent = window.OMC_I18N?.t('product.start', 'Start') || 'Start';
               startBtn.addEventListener('click', async () => {
                 try {
                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}/start`, { method: 'POST' });
@@ -8829,7 +8837,7 @@ class AppController {
             } else if (s.status === 'active') {
               const closeBtn = document.createElement('button');
               closeBtn.className = 'sprint-action-btn';
-              closeBtn.textContent = 'Close';
+              closeBtn.textContent = window.OMC_I18N?.t('common.closeText', 'Close') || 'Close';
               closeBtn.addEventListener('click', async () => {
                 try {
                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}/close`, { method: 'POST' });
@@ -8870,7 +8878,7 @@ class AppController {
           const section = document.createElement('div');
           section.className = 'roadmap-section';
           const h = document.createElement('h3');
-          h.textContent = 'Releases';
+          h.textContent = window.OMC_I18N?.t('product.releases', 'Releases') || 'Releases';
           section.appendChild(h);
 
           for (const v of data.versions) {
@@ -8887,7 +8895,7 @@ class AppController {
 
             const count = document.createElement('span');
             count.className = 'roadmap-version-count';
-            count.textContent = `${v.resolved_count} issues resolved`;
+            count.textContent = window.OMC_I18N?.t('product.issuesResolved', '{count} issues resolved', { count: v.resolved_count }) || `${v.resolved_count} issues resolved`;
 
             row.appendChild(ver);
             row.appendChild(date);
@@ -8902,7 +8910,7 @@ class AppController {
           const section = document.createElement('div');
           section.className = 'roadmap-section';
           const h = document.createElement('h3');
-          h.textContent = 'Milestoned Issues';
+          h.textContent = window.OMC_I18N?.t('product.milestonedIssues', 'Milestoned Issues') || 'Milestoned Issues';
           section.appendChild(h);
 
           // Group by milestone_version
@@ -8963,7 +8971,7 @@ class AppController {
       .then(d => {
         if (d.suggested_capacity != null) {
           const hint = form.querySelector('.sprint-suggested-capacity');
-          hint.textContent = `(suggested: ${d.suggested_capacity} pts)`;
+          hint.textContent = window.OMC_I18N?.t('product.suggestedCapacity', '(suggested: {capacity} pts)', { capacity: d.suggested_capacity }) || `(suggested: ${d.suggested_capacity} pts)`;
           hint.style.cursor = 'pointer';
           hint.title = t('sprint.useSuggestedCapacity', 'Click to use suggested capacity');
           hint.addEventListener('click', () => {
@@ -9141,7 +9149,7 @@ class AppController {
     toolbar.className = 'issue-toolbar';
     const createBtn = document.createElement('button');
     createBtn.className = 'btn-small';
-    createBtn.textContent = '+ Create Review';
+    createBtn.textContent = window.OMC_I18N?.t('product.createReview', '+ Create Review') || '+ Create Review';
     createBtn.addEventListener('click', async () => {
       try {
         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/review`, {
@@ -9150,7 +9158,7 @@ class AppController {
           body: JSON.stringify({ trigger: 'manual', owner: '' }),
         });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        this._showToast('Review created', 'success');
+        this._showToast(window.OMC_I18N?.t('product.reviewCreated', 'Review created') || 'Review created', 'success');
         this._openProductDetail(slug);
       } catch (err) { this._showToast(`Failed: ${err.message}`, 'error'); }
     });
@@ -9160,7 +9168,7 @@ class AppController {
     if (!reviews.length) {
       const emptyMsg = document.createElement('div');
       emptyMsg.className = 'task-empty';
-      emptyMsg.textContent = 'No reviews yet.';
+      emptyMsg.textContent = window.OMC_I18N?.t('product.noReviewsYet', 'No reviews yet.') || 'No reviews yet.';
       container.appendChild(emptyMsg);
       return;
     }
@@ -9268,7 +9276,7 @@ class AppController {
 
         const label = document.createElement('div');
         label.style.cssText = 'color:var(--text-dim);font-size:calc(5px + var(--font-boost));margin-bottom:4px';
-        label.textContent = `Select issues to include in release (${doneIssues.length} done):`;
+        label.textContent = window.OMC_I18N?.t('product.selectIssuesForRelease', 'Select issues to include in release ({count} done):', { count: doneIssues.length }) || `Select issues to include in release (${doneIssues.length} done):`;
         form.appendChild(label);
 
         const checkboxes = [];
@@ -9292,7 +9300,7 @@ class AppController {
         bumpRow.style.marginTop = '6px';
         const bumpLabel = document.createElement('label');
         bumpLabel.style.cssText = 'color:var(--text-dim);font-size:calc(5px + var(--font-boost))';
-        bumpLabel.textContent = 'Bump:';
+        bumpLabel.textContent = window.OMC_I18N?.t('product.bumpLabel', 'Bump:') || 'Bump:';
         const bumpSel = document.createElement('select');
         bumpSel.className = 'form-input';
         bumpSel.style.width = 'auto';
@@ -9302,7 +9310,7 @@ class AppController {
 
         const releaseBtn = document.createElement('button');
         releaseBtn.className = 'btn-small';
-        releaseBtn.textContent = 'Release';
+        releaseBtn.textContent = window.OMC_I18N?.t('product.releaseVersion', '+ Release Version') || 'Release';
         releaseBtn.addEventListener('click', async () => {
           const selectedIds = checkboxes.filter(cb => cb.checked).map(cb => cb.dataset.issueId);
           if (!selectedIds.length) { this._showToast('Select at least one issue', 'warning'); return; }
@@ -9387,13 +9395,13 @@ class AppController {
             const ownerEl = document.createElement('span');
             ownerEl.className = 'product-owner-indicator';
             ownerEl.textContent = `\u2192 ${prod.owner_id}`;
-            ownerEl.title = 'Product owner';
+            ownerEl.title = window.OMC_I18N?.t('product.owner', 'Product owner') || 'Product owner';
             header.appendChild(ownerEl);
           }
           const detailBtn = document.createElement('button');
           detailBtn.className = 'product-detail-btn';
           detailBtn.textContent = '\u22EF';
-          detailBtn.title = 'Product detail';
+          detailBtn.title = window.OMC_I18N?.t('product.detail', 'Product detail') || 'Product detail';
           detailBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this._openProductDetail(prod.slug);
@@ -9868,7 +9876,7 @@ class AppController {
 
         if (doc.status !== 'completed' && doc.status !== 'pending_confirmation') {
           detailHtml += `<div style="margin:8px 0;display:flex;gap:6px;">`;
-          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continue Current Iteration')}</button>`;
+          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continuar iteração atual')}</button>`;
           detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ ${window.OMC_I18N?.t('toolbar.stopAllTasks', 'Stop All Tasks')}</button>`;
           detailHtml += `</div>`;
         }
@@ -10085,7 +10093,7 @@ class AppController {
   _continueIteration(projectId, iterationId) {
     if (!this._checkCooldown('continueIteration')) return;
     const btn = document.getElementById('continue-iter-btn');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Submitting...'; }
+    if (btn) { btn.disabled = true; btn.textContent = window.OMC_I18N?.t('common.submitting', 'Submitting...') || 'Submitting...'; }
 
     fetch('/api/projects/continue', {
       method: 'POST',
@@ -10095,8 +10103,8 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('CEO', `Continue failed: ${data.error}`, 'error');
-          if (btn) { btn.disabled = false; btn.textContent = '▶ Continue Current Iteration'; }
+          this.logEntry('CEO', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${data.error}`, 'error');
+          if (btn) { btn.disabled = false; btn.textContent = window.OMC_I18N?.t('common.continueCurrentIteration', '▶ Continue Current Iteration') || '▶ Continue Current Iteration'; }
         } else {
           this.logEntry('CEO', `Continued iteration ${iterationId}, tasks routed to ${data.routed_to}`, 'ceo');
           const modal = document.getElementById('project-modal');
@@ -10104,15 +10112,15 @@ class AppController {
         }
       })
       .catch(err => {
-        this.logEntry('CEO', `Continue failed: ${err.message}`, 'error');
-        if (btn) { btn.disabled = false; btn.textContent = '▶ Continue Current Iteration'; }
+        this.logEntry('CEO', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${err.message}`, 'error');
+        if (btn) { btn.disabled = false; btn.textContent = window.OMC_I18N?.t('common.continueCurrentIteration', '▶ Continue Current Iteration') || '▶ Continue Current Iteration'; }
       });
   }
 
   _submitFollowup(projectId, instructions) {
     if (!this._checkCooldown('submitFollowup')) return;
     const submitBtn = document.getElementById('followup-submit');
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Submitting...'; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = window.OMC_I18N?.t('common.submitting', 'Enviando...') || 'Enviando...'; }
 
     fetch(`/api/task/${encodeURIComponent(projectId)}/followup`, {
       method: 'POST',
@@ -10123,7 +10131,7 @@ class AppController {
       .then(data => {
         if (data.error) {
           this.logEntry('CEO', `Follow-up task failed: ${data.error}`, 'error');
-          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send'; }
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = window.OMC_I18N?.t('common.send', 'Send') || 'Send'; }
         } else {
           this.logEntry('CEO', `Follow-up instructions added, tasks routed to EA`, 'ceo');
           const modal = document.getElementById('project-modal');
@@ -10132,7 +10140,7 @@ class AppController {
       })
       .catch(err => {
         this.logEntry('CEO', `Follow-up task failed: ${err.message}`, 'error');
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send'; }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = window.OMC_I18N?.t('common.send', 'Send') || 'Send'; }
       });
   }
 
@@ -10434,9 +10442,9 @@ class AppController {
     const stopBtn = document.getElementById('bg-tasks-stop-btn');
     if (stopBtn) {
       stopBtn.addEventListener('click', async () => {
-        if (!confirm('Stop this background task?')) return;
+        if (!confirm(window.OMC_I18N?.t('common.confirm', 'Confirm') || 'Confirm')) return;
         stopBtn.disabled = true;
-        stopBtn.textContent = 'STOPPING...';
+        stopBtn.textContent = window.OMC_I18N?.t('common.stopping', 'Stopping...') || 'Stopping...';
         try {
           await fetch(`/api/background-tasks/${task.id}/stop`, { method: 'POST' });
           // WS background_task_update event will update UI in-place
