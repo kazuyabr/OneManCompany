@@ -1,0 +1,2865 @@
+diff --git a/frontend/app.js b/frontend/app.js
+index a5e2e1a..7675f40 100644
+--- a/frontend/app.js
++++ b/frontend/app.js
+@@ -10,94 +10,6 @@ const ROLE_EMOJI = {
+   HR: '💼', COO: '⚙️',
+ };
+ 
+-const UI_LANGUAGE_STORAGE_KEY = 'omc-ui-language';
+-const UI_LANGUAGES = [
+-  { code: 'en', label: 'English' },
+-  { code: 'pt-BR', label: 'Português (Brasil)' },
+-];
+-
+-const I18N = {
+-  en: {
+-    'nav.products': 'PRODUCTS',
+-    'nav.activity': 'ACTIVITY LOG',
+-    'nav.teamRoster': 'TEAM ROSTER',
+-    'nav.ceoConsole': 'CEO CONSOLE',
+-    'toolbar.exEmployeeWall': 'Ex-Employee Wall',
+-    'toolbar.companyCulture': 'Company Culture',
+-    'toolbar.companyDirection': 'Company Direction',
+-    'toolbar.dashboard': 'Dashboard',
+-    'toolbar.announcements': 'Announcements',
+-    'toolbar.settings': 'Settings',
+-    'toolbar.newProduct': 'New Product',
+-    'toolbar.importProduct': 'Import Product',
+-    'settings.title': '⚙ SETTINGS',
+-    'settings.languageLabel': 'Language',
+-    'settings.textSize': 'Text Size',
+-    'settings.apiConnections': '🔑 API Connections',
+-    'settings.systemCrons': '⏰ System Crons',
+-    'settings.display': '👁 Display',
+-    'settings.language.en': 'English',
+-    'settings.language.ptBR': 'Português (Brasil)',
+-    'common.noProduct': 'No Product',
+-    'common.selectEmployee': '-- Select Employee --',
+-    'common.loading': 'Loading...',
+-    'common.apply': 'Apply',
+-    'common.applying': 'Applying...',
+-    'common.cancelTask': 'Cancel this task?',
+-    'common.settingsReloadNotice': '⚠ Settings changes will trigger a server reload. Use when no tasks are running.',
+-    'status.online': '● ONLINE',
+-    'status.offline': '● OFFLINE',
+-    'common.messagePlaceholder': '$ Type message, / for commands (Enter to send)',
+-  },
+-  'pt-BR': {
+-    'nav.products': 'PRODUTOS',
+-    'nav.activity': 'LOG DE ATIVIDADE',
+-    'nav.teamRoster': 'EQUIPE',
+-    'nav.ceoConsole': 'PAINEL DO CEO',
+-    'toolbar.exEmployeeWall': 'Parede de ex-funcionários',
+-    'toolbar.companyCulture': 'Cultura da empresa',
+-    'toolbar.companyDirection': 'Direção da empresa',
+-    'toolbar.dashboard': 'Painel',
+-    'toolbar.announcements': 'Anúncios',
+-    'toolbar.settings': 'Configurações',
+-    'toolbar.newProduct': 'Novo produto',
+-    'toolbar.importProduct': 'Importar produto',
+-    'settings.title': '⚙ CONFIGURAÇÕES',
+-    'settings.languageLabel': 'Idioma',
+-    'settings.textSize': 'Tamanho do texto',
+-    'settings.apiConnections': '🔑 Conexões de API',
+-    'common.send': 'Enviar',
+-    'employee.uploadAvatar': 'Enviar avatar',
+-    'employee.nameLabel': 'Nome',
+-    'employee.nicknameLabel': 'Apelido',
+-    'employee.departmentLabel': 'Depto',
+-    'employee.roleLabel': 'Função',
+-    'employee.levelLabel': 'Nível',
+-    'employee.skillsLabel': 'Habilidades',
+-    'meeting.typeLabel': 'Tipo de reunião',
+-    'meeting.type.oneonone': 'Reunião 1-a-1',
+-    'meeting.type.allHands': 'All-Hands (fala do CEO)',
+-    'meeting.type.discussion': 'Discussão (abertura geral)',
+-    'meeting.startMeeting': 'Iniciar reunião',
+-    'meeting.endMeeting': 'Encerrar reunião',
+-    'meeting.attachFile': 'Anexar arquivo ou imagem',
+-    'settings.systemCrons': '⏰ Tarefas agendadas',
+-    'settings.display': '👁 Exibição',
+-    'settings.language.en': 'English',
+-    'settings.language.ptBR': 'Português (Brasil)',
+-    'common.noProduct': 'Sem produto',
+-    'common.selectEmployee': '-- Selecionar colaborador --',
+-    'common.loading': 'Carregando...',
+-    'common.apply': 'Aplicar',
+-    'common.applying': 'Aplicando...',
+-    'common.cancelTask': 'Cancelar esta tarefa?',
+-    'common.settingsReloadNotice': '⚠ Alterações nas configurações vão reiniciar o servidor. Use quando não houver tarefas em execução.',
+-    'status.online': '● CONECTADO',
+-    'status.offline': '● OFFLINE',
+-    'common.messagePlaceholder': '$ Digite a mensagem, / para comandos (Enter para enviar)',
+-  },
+-};
+-
+ class AppController {
+   constructor() {
+     this.ws = null;
+@@ -143,6 +55,7 @@ class AppController {
+         this._uiLanguage = window.OMC_I18N.setLanguage(select.value);
+         window.OMC_I18N.applyTo(document);
+         this._syncLocalizedChrome();
++        this._ceoTerm?.refreshLocalizedText?.();
+         select.value = this._uiLanguage;
+       });
+     }
+@@ -174,48 +87,51 @@ class AppController {
+       if (el.getAttribute('aria-label') != null) el.setAttribute('aria-label', t(key, fallback, vars));
+     };
+ 
+-    setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconnecting...');
+-
+-    setTitle('#create-product-btn', 'toolbar.newProduct', 'New Product');
+-    setTitle('#import-product-btn', 'toolbar.importProduct', 'Import Product');
+-    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Ex-Employee Wall');
+-    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Company Culture');
+-    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Company Direction');
+-    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Dashboard');
+-    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Announcements');
+-    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Settings');
+-    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Do Not Disturb');
+-    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Background Tasks');
+-    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Export SVG Screenshot');
+-    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Stop All Tasks');
+-    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Force reload all data from disk');
+-
+-    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Live Meeting Log');
+-    setText('#emp-modal-title', 'employee.detailsTitle', 'Employee Details');
+-    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Select a workflow to view');
+-    setText('#hiring-request-approve', 'common.approve', 'Approve');
+-    setText('#hiring-request-reject', 'common.reject', 'Reject');
+-    setText('#interview-modal-title', 'interview.title', '🎤 Interview');
++    setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconectando...');
++
++    setTitle('#create-product-btn', 'toolbar.newProduct', 'Novo Produto');
++    setTitle('#import-product-btn', 'toolbar.importProduct', 'Importar Produto');
++    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Mural de Ex-funcionários');
++    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Cultura da Empresa');
++    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Direção da Empresa');
++    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Painel');
++    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Anúncios');
++    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Configurações');
++    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Converse com EA');
++    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Alternar lista de projetos');
++    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Vincular tarefa ao produto');
++    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Não Perturbe');
++    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Tarefas em Segundo Plano');
++    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Exportar captura SVG');
++    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Parar todas as tarefas');
++    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Recarregar todos os dados do disco');
++
++    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Registro ao vivo da reunião');
++    setText('#emp-modal-title', 'employee.detailsTitle', 'Detalhes do funcionário');
++    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Selecione um workflow para ver');
++    setText('#hiring-request-approve', 'common.approve', 'Aprovar');
++    setText('#hiring-request-reject', 'common.reject', 'Rejeitar');
++    setText('#interview-modal-title', 'interview.title', '🎤 Entrevista');
+     setText('#onboarding-toggle-btn', 'onboarding.toggle', '▼');
+     setText('#onboarding-done-btn', 'common.close', '✕');
+     setText('#ex-employee-close-btn', 'common.close', '✕');
+     setText('#dashboard-close-btn', 'common.close', '✕');
+     setText('#company-culture-close-btn', 'common.close', '✕');
+     setText('#project-close-btn', 'common.close', '✕');
+-    setText('#product-modal-title', 'product.detailTitle', 'Product Detail');
++    setText('#product-modal-title', 'product.detailTitle', 'Detalhe do produto');
+     setText('#company-direction-close-btn', 'common.close', '✕');
+-    setText('#generic-popup-title', 'common.notification', 'Notification');
++    setText('#generic-popup-title', 'common.notification', 'Notificação');
+     setText('#bg-tasks-close-btn', 'common.close', '✕');
+-    setText('#trace-modal-title', 'traceViewer.title', 'TRACE VIEWER');
++    setText('#trace-modal-title', 'traceViewer.title', 'VISUALIZADOR DE TRACE');
+ 
+-    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'e.g. We focus on AI-driven creative tools for indie creators...');
+-    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Add a new culture entry...');
+-    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'e.g. OneManCompany官网');
+-    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Product goal / objective');
+-    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Type message, / for commands (Enter to send)');
+-    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Type a message...');
+-    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Send a message to this meeting...');
+-    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Type a message...');
++    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'ex.: Focamos em ferramentas criativas com IA para criadores independentes...');
++    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Adicione uma nova entrada de cultura...');
++    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'ex.: OneManCompany site');
++    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Objetivo do produto');
++    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Digite a mensagem, / para comandos (Enter para enviar)');
++    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
++    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Envie uma mensagem para esta reunião...');
++    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
+   }
+ 
+   // ===== WebSocket =====
+@@ -239,7 +155,7 @@ class AppController {
+       if (banner) {
+         banner.classList.add('hidden');
+         const applyBtn = document.getElementById('code-update-apply-btn');
+-        if (applyBtn) { applyBtn.textContent = 'Apply'; applyBtn.disabled = false; }
++        if (applyBtn) { applyBtn.textContent = window.OMC_I18N?.t('banner.apply', 'Apply') || 'Apply'; applyBtn.disabled = false; }
+       }
+       this.bootstrap();
+     };
+@@ -499,7 +415,7 @@ class AppController {
+         if (this._currentConvId === p.conv_id && this._ceoTerm) {
+           this._ceoTerm.appendMessage({
+             role: 'system',
+-            text: '1-on-1 session ended.',
++            text: window.OMC_I18N?.t('meeting.sessionEnded', '1-on-1 session ended.'),
+             source: 'system',
+           });
+           this._currentConvId = null;
+@@ -515,57 +431,57 @@ class AppController {
+       'state_snapshot':     () => {
+         const now = new Date().toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+         const el = document.getElementById('last-sync-time');
+-        if (el) el.textContent = `Sync ${now}`;
++        if (el) el.textContent = window.OMC_I18N?.t('status.sync', 'Sync {time}', { time: now }) || `Sync ${now}`;
+         return null;
+       },
+-      'ceo_task_submitted': (p) => ({ text: `📋 Task: ${p.task}`, cls: 'ceo', agent: 'CEO' }),
+-      'agent_thinking':     (p) => ({ text: `💭 ${p.message}`, cls: (msg.agent || '').toLowerCase(), agent: msg.agent }),
+-      'agent_done':         (p) => { this._hideCeoTyping(); return { text: `✅ ${p.role} done: ${p.summary}`, cls: (p.role || '').toLowerCase(), agent: p.role }; },
+-      'employee_hired':     (p) => ({ text: `🎉 New hire: ${p.name} (${p.role})`, cls: 'hr', agent: 'HR' }),
+-      'employee_fired':     (p) => ({ text: `🚪 Departure: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
+-      'employee_rehired':   (p) => ({ text: `🔄 Rehired: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
+-      'employee_reviewed':  (p) => ({ text: `📊 Quarterly review: ${p.id} — Score: ${p.score}`, cls: 'hr', agent: 'HR' }),
+-      'okr_updated':        (p) => ({ text: `🎯 OKRs updated for #${p.employee_id}`, cls: 'hr', agent: 'HR' }),
+-      'onboarding_started': (p) => ({ text: `📋 Onboarding started: ${p.name}`, cls: 'hr', agent: 'HR' }),
+-      'onboarding_completed': (p) => ({ text: `✅ Onboarding completed: ${p.name}`, cls: 'hr', agent: 'HR' }),
++      'ceo_task_submitted': (p) => ({ text: window.OMC_I18N?.t('log.taskSubmitted', '📋 Task: {task}', { task: p.task }) || `📋 Task: ${p.task}`, cls: 'ceo', agent: 'CEO' }),
++      'agent_thinking':     (p) => ({ text: window.OMC_I18N?.t('log.agentThinking', '💭 {message}', { message: p.message }) || `💭 ${p.message}`, cls: (msg.agent || '').toLowerCase(), agent: msg.agent }),
++      'agent_done':         (p) => { this._hideCeoTyping(); return { text: window.OMC_I18N?.t('log.agentDone', '✅ {role} done: {summary}', { role: p.role, summary: p.summary }) || `✅ ${p.role} done: ${p.summary}`, cls: (p.role || '').toLowerCase(), agent: p.role }; },
++      'employee_hired':     (p) => ({ text: window.OMC_I18N?.t('log.newHire', '🎉 New hire: {name} ({role})', { name: p.name, role: p.role }) || `🎉 New hire: ${p.name} (${p.role})`, cls: 'hr', agent: 'HR' }),
++      'employee_fired':     (p) => ({ text: window.OMC_I18N?.t('log.departure', '🚪 Departure: {name}{nickname} — {reason}', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', reason: p.reason || '' }) || `🚪 Departure: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
++      'employee_rehired':   (p) => ({ text: window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', role: p.role }) || `🔄 Rehired: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
++      'employee_reviewed':  (p) => ({ text: window.OMC_I18N?.t('log.quarterlyReview', '📊 Quarterly review: {id} — Score: {score}', { id: p.id, score: p.score }) || `📊 Quarterly review: ${p.id} — Score: ${p.score}`, cls: 'hr', agent: 'HR' }),
++      'okr_updated':        (p) => ({ text: window.OMC_I18N?.t('log.okrsUpdated', '🎯 OKRs updated for #{employee_id}', { employee_id: p.employee_id }) || `🎯 OKRs updated for #${p.employee_id}`, cls: 'hr', agent: 'HR' }),
++      'onboarding_started': (p) => ({ text: window.OMC_I18N?.t('log.onboardingStarted', '📋 Onboarding started: {name}', { name: p.name }) || `📋 Onboarding started: ${p.name}`, cls: 'hr', agent: 'HR' }),
++      'onboarding_completed': (p) => ({ text: window.OMC_I18N?.t('log.onboardingCompleted', '✅ Onboarding completed: {name}', { name: p.name }) || `✅ Onboarding completed: ${p.name}`, cls: 'hr', agent: 'HR' }),
+       'talent_profile_error': (p) => {
+         const fields = (p.missing_fields || []).join(', ');
+         const lines = [];
+-        lines.push(`${ANSI.red}${ANSI.bold}Talent Profile Error${ANSI.reset}`);
++        lines.push(`${ANSI.red}${ANSI.bold}${window.OMC_I18N?.t('talent.profileErrorTitle', 'Talent Profile Error') || 'Talent Profile Error'}${ANSI.reset}`);
+         lines.push('');
+         lines.push(`${ANSI.cyan}Talent:${ANSI.reset}  ${p.talent_id || 'unknown'}`);
+         if (fields) lines.push(`${ANSI.cyan}Missing:${ANSI.reset} ${ANSI.yellow}${fields}${ANSI.reset}`);
+         if (p.talent_link) lines.push(`${ANSI.cyan}Repo:${ANSI.reset}    ${p.talent_link}`);
+         lines.push('');
+-        lines.push(`${ANSI.dim}Please contact the talent uploader to fix this issue.${ANSI.reset}`);
+-        if (p.talent_link) lines.push(`${ANSI.dim}You can file an issue on the talent repo.${ANSI.reset}`);
+-        this._showXtermAlert('Talent Profile Error', lines);
++        lines.push(`${ANSI.dim}${window.OMC_I18N?.t('talent.profileErrorContact', 'Please contact the talent uploader to fix this issue.')}${ANSI.reset}`);
++        if (p.talent_link) lines.push(`${ANSI.dim}${window.OMC_I18N?.t('talent.profileErrorRepo', 'You can file an issue on the talent repo.')}${ANSI.reset}`);
++        this._showXtermAlert(window.OMC_I18N?.t('talent.profileErrorTitle', 'Talent Profile Error') || 'Talent Profile Error', lines);
+         return { text: `Talent profile error: ${p.talent_id}`, cls: 'hr', agent: 'HR' };
+       },
+-      'probation_review':   (p) => ({ text: `📋 Probation review: #${p.id} — ${p.passed ? 'Passed' : 'Failed'}`, cls: 'hr', agent: 'HR' }),
+-      'pip_started':        (p) => ({ text: `⚠️ PIP started for #${p.id}`, cls: 'hr', agent: 'HR' }),
+-      'pip_resolved':       (p) => ({ text: `✅ PIP resolved for #${p.id}`, cls: 'hr', agent: 'HR' }),
+-      'exit_interview_started': (p) => ({ text: `🚪 Exit interview: ${p.name}`, cls: 'hr', agent: 'HR' }),
+-      'exit_interview_completed': (p) => ({ text: `📄 Exit interview done: ${p.name}`, cls: 'hr', agent: 'HR' }),
+-      'tool_added':         (p) => ({ text: `🔧 New tool: ${p.name}`, cls: 'coo', agent: 'COO' }),
+-      'guidance_start':     (p) => ({ text: `📖 ${p.name} is in a 1-on-1 meeting...`, cls: 'guidance', agent: 'CEO' }),
+-      'guidance_noted':     (p) => ({ text: `🎓 ${p.name}: ${p.acknowledgment}`, cls: 'guidance', agent: p.name }),
+-      'guidance_end':       (p) => ({ text: `📖 ${p.name}'s 1-on-1 meeting concluded`, cls: 'guidance', agent: 'CEO' }),
++      'probation_review':   (p) => ({ text: window.OMC_I18N?.t('log.probationReview', '📋 Probation review: #{id} — {result}', { id: p.id, result: p.passed ? 'Passed' : 'Failed' }) || `📋 Probation review: #${p.id} — ${p.passed ? 'Passed' : 'Failed'}`, cls: 'hr', agent: 'HR' }),
++      'pip_started':        (p) => ({ text: window.OMC_I18N?.t('log.pipStarted', '⚠️ PIP started for #{id}', { id: p.id }) || `⚠️ PIP started for #${p.id}`, cls: 'hr', agent: 'HR' }),
++      'pip_resolved':       (p) => ({ text: window.OMC_I18N?.t('log.pipResolved', '✅ PIP resolved for #{id}', { id: p.id }) || `✅ PIP resolved for #${p.id}`, cls: 'hr', agent: 'HR' }),
++      'exit_interview_started': (p) => ({ text: window.OMC_I18N?.t('log.exitInterviewStarted', '🚪 Exit interview: {name}', { name: p.name }) || `🚪 Exit interview: ${p.name}`, cls: 'hr', agent: 'HR' }),
++      'exit_interview_completed': (p) => ({ text: window.OMC_I18N?.t('log.exitInterviewCompleted', '📄 Exit interview done: {name}', { name: p.name }) || `📄 Exit interview done: ${p.name}`, cls: 'hr', agent: 'HR' }),
++      'tool_added':         (p) => ({ text: window.OMC_I18N?.t('log.newTool', '🔧 New tool: {name}', { name: p.name }) || `🔧 New tool: ${p.name}`, cls: 'coo', agent: 'COO' }),
++      'guidance_start':     (p) => ({ text: window.OMC_I18N?.t('log.guidanceStart', '📖 {name} is in a 1-on-1 meeting...', { name: p.name }) || `📖 ${p.name} is in a 1-on-1 meeting...`, cls: 'guidance', agent: 'CEO' }),
++      'guidance_noted':     (p) => ({ text: window.OMC_I18N?.t('log.guidanceNoted', '🎓 {name}: {acknowledgment}', { name: p.name, acknowledgment: p.acknowledgment }) || `🎓 ${p.name}: ${p.acknowledgment}`, cls: 'guidance', agent: p.name }),
++      'guidance_end':       (p) => ({ text: window.OMC_I18N?.t('log.guidanceEnd', "📖 {name}'s 1-on-1 meeting concluded", { name: p.name }) || `📖 ${p.name}'s 1-on-1 meeting concluded`, cls: 'guidance', agent: 'CEO' }),
+       'meeting_booked':     (p) => {
+-        return { text: `🏢 Room booked: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
++        return { text: window.OMC_I18N?.t('log.roomBooked', '🏢 Room booked: {room_name}', { room_name: p.room_name || '' }) || `🏢 Room booked: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
+       },
+       'meeting_released':   (p) => {
+         // Keep chat history for viewing after meeting ends
+-        return { text: `🏢 Room released: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
++        return { text: window.OMC_I18N?.t('log.roomReleased', '🏢 Room released: {room_name}', { room_name: p.room_name || '' }) || `🏢 Room released: ${p.room_name || ''}`, cls: 'coo', agent: 'COO' };
+       },
+-      'meeting_denied':     (p) => ({ text: `🚫 Room request denied: no rooms available`, cls: 'coo', agent: 'COO' }),
+-      'routine_phase':      (p) => ({ text: `🔄 ${p.phase}: ${p.message}`, cls: 'system', agent: 'ROUTINE' }),
++      'meeting_denied':     (p) => ({ text: window.OMC_I18N?.t('log.roomDenied', '🚫 Room request denied: no rooms available') || '🚫 Room request denied: no rooms available', cls: 'coo', agent: 'COO' }),
++      'routine_phase':      (p) => ({ text: window.OMC_I18N?.t('log.routinePhase', '🔄 {phase}: {message}', { phase: p.phase, message: p.message }) || `🔄 ${p.phase}: ${p.message}`, cls: 'system', agent: 'ROUTINE' }),
+       'meeting_report_ready': (p) => {
+         // Legacy event — no longer enqueues for CEO review (EA handles approval)
+-        return { text: `📄 Meeting report ready (EA reviewed)`, cls: 'system', agent: 'EA' };
++        return { text: window.OMC_I18N?.t('log.meetingReportReady', '📄 Meeting report ready (EA reviewed)') || '📄 Meeting report ready (EA reviewed)', cls: 'system', agent: 'EA' };
+       },
+       'meeting_report_complete': (p) => {
+-        return { text: `📄 Meeting report complete (EA approved)`, cls: 'system', agent: 'EA' };
++        return { text: window.OMC_I18N?.t('log.meetingReportComplete', '📄 Meeting report complete (EA approved)') || '📄 Meeting report complete (EA approved)', cls: 'system', agent: 'EA' };
+       },
+       'recurring_action_items': (p) => {
+         const items = (p.items || []).map(i => `  - ${i}`).join('\n');
+@@ -903,12 +819,13 @@ class AppController {
+     const levels = [...new Set(employees.map(e => e.level))].sort((a, b) => a - b);
+ 
+     const LEVEL_NAMES = {1: 'Junior', 2: 'Mid', 3: 'Senior', 4: 'Founding', 5: 'CEO'};
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+ 
+-    roleSelect.innerHTML = '<option value="">All Roles</option>' +
++    roleSelect.innerHTML = `<option value="">${t('common.allRoles', 'All Roles')}</option>` +
+       roles.map(r => `<option value="${r}"${r === curRole ? ' selected' : ''}>${r}</option>`).join('');
+-    deptSelect.innerHTML = '<option value="">All Departments</option>' +
++    deptSelect.innerHTML = `<option value="">${t('common.allDepartments', 'All Departments')}</option>` +
+       depts.map(d => `<option value="${d}"${d === curDept ? ' selected' : ''}>${d}</option>`).join('');
+-    levelSelect.innerHTML = '<option value="">All Levels</option>' +
++    levelSelect.innerHTML = `<option value="">${t('common.allLevels', 'All Levels')}</option>` +
+       levels.map(l => `<option value="${l}"${String(l) === curLevel ? ' selected' : ''}>${LEVEL_NAMES[l] || 'Lv.' + l}</option>`).join('');
+   }
+ 
+@@ -1004,12 +921,12 @@ class AppController {
+     document.getElementById('code-update-apply-btn').addEventListener('click', () => {
+       const btn = document.getElementById('code-update-apply-btn');
+       btn.disabled = true;
+-      btn.textContent = 'Applying...';
++      btn.textContent = window.OMC_I18N?.t('banner.applying', 'Applying...') || 'Applying...';
+       fetch('/api/admin/apply-code-update', { method: 'POST' })
+         .then(r => r.json())
+         .then(data => {
+           if (data.status === 'deferred') {
+-            btn.textContent = 'Waiting for tasks...';
++            btn.textContent = window.OMC_I18N?.t('banner.waitingTasks', 'Waiting for tasks...') || 'Waiting for tasks...';
+             // Will auto-restart when tasks complete; reconnect logic handles the rest
+           }
+         })
+@@ -1273,11 +1190,11 @@ class AppController {
+             if (data.status === 'ok') {
+                 console.log('Abort all result:', data);
+             } else {
+-                this._showToast(data.detail || data.message || 'Failed to abort all tasks', 'error');
++                this._showToast(data.detail || data.message || window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
+             }
+         } catch (e) {
+             console.error('Abort all failed:', e);
+-            this._showToast('Failed to abort all tasks', 'error');
++            this._showToast(window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
+         }
+     });
+ 
+@@ -1401,7 +1318,8 @@ class AppController {
+   updateOneononeDropdown(employees) {
+     const select = document.getElementById('oneonone-target');
+     const currentVal = select.value;
+-    select.innerHTML = '<option value="">-- Select Employee --</option>';
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    select.innerHTML = `<option value="">${t('common.selectEmployee', 'Select Employee')}</option>`;
+     for (const emp of employees) {
+       const opt = document.createElement('option');
+       opt.value = emp.id;
+@@ -1654,7 +1572,7 @@ class AppController {
+ 
+     const endBtn = document.getElementById('oneonone-end-btn');
+     endBtn.disabled = true;
+-    this._addOneononeSystemMsg('Ending meeting... reflecting on conversation...');
++    this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endingReflection', 'Ending meeting... reflecting on conversation...'));
+ 
+     fetch('/api/oneonone/end', {
+       method: 'POST',
+@@ -1673,10 +1591,10 @@ class AppController {
+           this._addOneononeSystemMsg(`Error: ${data.error}`);
+         } else {
+           if (data.principles_updated) {
+-            this._addOneononeSystemMsg('Meeting concluded. Work principles have been updated based on the conversation.');
++            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endedPrinciplesUpdated', 'Meeting concluded. Work principles have been updated based on the conversation.'));
+             this.logEntry('CEO', `🎓 1-on-1 ended — principles updated`, 'guidance');
+           } else {
+-            this._addOneononeSystemMsg('Meeting concluded. No principle updates needed.');
++            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endedNoUpdate', 'Meeting concluded. No principle updates needed.'));
+             this.logEntry('CEO', `🎓 1-on-1 ended — casual chat`, 'guidance');
+           }
+         }
+@@ -1696,7 +1614,7 @@ class AppController {
+     endBtn.disabled = true;
+     const sendBtn = document.getElementById('oneonone-send-btn');
+     sendBtn.disabled = true;
+-    this._addOneononeSystemMsg('Ending meeting... EA is summarizing action points...');
++    this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.endingEaSummarizing', 'Ending meeting... EA is summarizing action points...'));
+ 
+     try {
+       const data = await fetch('/api/meeting/end', {
+@@ -1709,12 +1627,12 @@ class AppController {
+       } else {
+         const ap = data.action_points || [];
+         if (ap.length > 0) {
+-          this._addOneononeSystemMsg(`Meeting concluded. ${ap.length} action point(s):`);
++          this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.concludedActionPoints', 'Meeting concluded. {count} action point(s):', { count: ap.length }));
+           for (const point of ap) {
+             this._addOneononeSystemMsg(`  • ${point}`);
+           }
+           if (data.project_id) {
+-            this._addOneononeSystemMsg(`Project created: ${data.project_id}`);
++            this._addOneononeSystemMsg(window.OMC_I18N?.t('meeting.projectCreated', 'Project created: {projectId}', { projectId: data.project_id }));
+           }
+           this.logEntry('CEO', `🎓 Meeting ended — ${ap.length} action points → project created`, 'guidance');
+         } else {
+@@ -1839,7 +1757,7 @@ class AppController {
+       principlesEl.innerHTML = `<div class="md-rendered">${this._renderMarkdown(principles)}</div>`;
+       principlesEl.classList.remove('empty-hint');
+     } else {
+-      principlesEl.innerHTML = '<span class="empty-hint">No work principles yet</span>';
++      principlesEl.innerHTML = `<span class="empty-hint">${t('employee.noWorkPrinciplesLabel', 'No work principles yet')}</span>`;
+     }
+ 
+     // Guidance notes (rendered as Markdown)
+@@ -1854,7 +1772,7 @@ class AppController {
+         guidanceEl.appendChild(item);
+       }
+     } else {
+-      guidanceEl.innerHTML = '<span class="empty-hint">No 1-on-1 notes yet</span>';
++      guidanceEl.innerHTML = `<span class="empty-hint">${t('employee.noOneOnOneNotesLabel', 'No 1-on-1 notes yet')}</span>`;
+     }
+ 
+     // 1-on-1 button
+@@ -1974,7 +1892,7 @@ class AppController {
+         }
+         this._empXterm.renderLogs(data.logs);
+       } else {
+-        el.innerHTML = '<span class="empty-hint">No logs</span>';
++        el.innerHTML = `<span class="empty-hint">${t('employee.noLogsLabel', 'No logs')}</span>`;
+       }
+     } catch (err) {
+       console.error('Execution logs fetch error:', err);
+@@ -2008,7 +1926,7 @@ class AppController {
+           }
+         }
+       } else {
+-        el.innerHTML = '<span class="empty-hint">No work history</span>';
++        el.innerHTML = `<span class="empty-hint">${t('employee.noWorkHistoryLabel', 'No work history')}</span>`;
+       }
+     } catch (err) {
+       console.error('Progress log fetch error:', err);
+@@ -2027,12 +1945,12 @@ class AppController {
+         return `<button onclick="app._taskBoardFilter='${val}';app._fetchTaskBoard('${empId}','${val}')" style="background:transparent;color:#ccc;border:none;cursor:pointer;padding:2px 6px;font-size:10px;${active}">${label}(${cnt})</button>`;
+       };
+       tabs = `<div style="display:flex;gap:2px;margin-bottom:4px;border-bottom:1px solid #333;padding-bottom:2px">
+-        ${btn('All','',counts.total)}${btn('Active','active',counts.active)}${btn('Done','completed',counts.completed)}${counts.failed ? btn('Failed','failed',counts.failed) : ''}
++        ${btn(t('common.all', 'All'),'',counts.total)}${btn(t('common.active', 'Active'),'active',counts.active)}${btn(t('common.done', 'Done'),'completed',counts.completed)}${counts.failed ? btn(t('common.failed', 'Failed'),'failed',counts.failed) : ''}
+       </div>`;
+     }
+ 
+     if (!tasks || tasks.length === 0) {
+-      el.innerHTML = tabs + '<span class="empty-hint">No tasks</span>';
++      el.innerHTML = tabs + `<span class="empty-hint">${t('employee.noTasksLabel', 'No tasks')}</span>`;
+       return;
+     }
+ 
+@@ -2113,7 +2031,7 @@ class AppController {
+ 
+     const xterm = new XTermLog(feedPanel, { fontSize: 11 });
+     this._traceXterm = xterm;
+-    xterm.writeln(`${ANSI.gray}Loading trace...${ANSI.reset}`);
++    xterm.writeln(`${ANSI.gray}${window.OMC_I18N?.t('traceViewer.loading', 'Carregando trace...') || 'Carregando trace...'}${ANSI.reset}`);
+ 
+     fetch(`/api/projects/${projectId}/tree`)
+       .then(r => r.json())
+@@ -2123,10 +2041,10 @@ class AppController {
+         await traceLoadAllNodeLogs(nodes);
+         xterm.clear();
+         xterm.renderTraceFeed(nodes, data.root_id);
+-        metaEl.textContent = `${Object.keys(nodes).length} nodes`;
++        metaEl.textContent = window.OMC_I18N?.t('traceViewer.nodes', '{count} nós', { count: Object.keys(nodes).length }) || `${Object.keys(nodes).length} nós`;
+       })
+       .catch(e => {
+-        xterm.writeln(`${ANSI.red}Error: ${e.message}${ANSI.reset}`);
++        xterm.writeln(`${ANSI.red}${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${e.message}${ANSI.reset}`);
+       });
+   }
+ 
+@@ -2143,7 +2061,7 @@ class AppController {
+ 
+       section.style.display = '';
+       if (crons.length === 0) {
+-        container.innerHTML = '<span class="empty-hint">No scheduled jobs</span>';
++        container.innerHTML = `<span class="empty-hint">${t('employee.noScheduledJobsLabel', 'No scheduled jobs')}</span>`;
+         const stopAllBtn = document.getElementById('emp-cron-stop-all-btn');
+         if (stopAllBtn) stopAllBtn.style.display = 'none';
+         return;
+@@ -2173,7 +2091,7 @@ class AppController {
+         info.className = 'emp-cron-info';
+         const taskCount = (cron.dispatched_task_ids || []).length;
+         const taskCountHtml = taskCount > 0
+-          ? `<span class="cron-task-count">${taskCount} tasks</span>`
++          ? `<span class="cron-task-count">${taskCount} ${t('common.tasks', 'tasks')}</span>`
+           : '';
+         info.innerHTML = `
+           ${statusDot}
+@@ -2188,7 +2106,7 @@ class AppController {
+ 
+         const cancelBtn = document.createElement('button');
+         cancelBtn.className = 'emp-cron-cancel-btn';
+-        cancelBtn.textContent = 'STOP';
++        cancelBtn.textContent = t('employee.stopAllLabel', 'Stop All');
+         cancelBtn.onclick = () => this._cancelCron(empId, cron.name);
+ 
+         item.appendChild(info);
+@@ -2202,7 +2120,7 @@ class AppController {
+   }
+ 
+   async _cancelCron(empId, cronName) {
+-    if (!confirm(`Stop scheduled job "${cronName}"? Its pending tasks will also be cancelled.`)) return;
++    if (!confirm(window.OMC_I18N?.t('cron.stopPrompt', 'Parar a tarefa agendada "{name}"? As tarefas pendentes também serão canceladas.', { name: cronName }) || `Parar a tarefa agendada "${cronName}"? As tarefas pendentes também serão canceladas.`)) return;
+     try {
+       const resp = await fetch(`/api/automations/${empId}/cron/${encodeURIComponent(cronName)}/stop`, {
+         method: 'POST',
+@@ -2211,16 +2129,16 @@ class AppController {
+       if (data.status === 'ok') {
+         this._fetchCronList(empId);
+       } else {
+-        this._showToast(data.detail || data.message || 'Failed to stop cron', 'error');
++        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
+       }
+     } catch (err) {
+       console.error('Failed to cancel cron:', err);
+-      this._showToast('Failed to stop cron job', 'error');
++      this._showToast(window.OMC_I18N?.t('cron.stopJobFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
+     }
+   }
+ 
+   async _stopAllCrons(empId) {
+-    if (!confirm('Stop ALL scheduled jobs for this employee?')) return;
++    if (!confirm(window.OMC_I18N?.t('cron.stopAllPrompt', 'Parar TODAS as tarefas agendadas deste funcionário?') || 'Parar TODAS as tarefas agendadas deste funcionário?')) return;
+     try {
+       const resp = await fetch(`/api/automations/${empId}/crons/stop-all`, {
+         method: 'POST',
+@@ -2229,11 +2147,11 @@ class AppController {
+       if (data.status === 'ok') {
+         this._fetchCronList(empId);
+       } else {
+-        this._showToast(data.detail || data.message || 'Failed to stop all crons', 'error');
++        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
+       }
+     } catch (err) {
+       console.error('Failed to stop all crons:', err);
+-      this._showToast('Failed to stop all cron jobs', 'error');
++      this._showToast(window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
+     }
+   }
+ 
+@@ -2242,7 +2160,8 @@ class AppController {
+   _fetchEmployeeProjects(employeeId) {
+     const container = document.getElementById('emp-detail-projects');
+     if (!container) return;
+-    container.innerHTML = '<span class="empty-hint">Loading...</span>';
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    container.innerHTML = `<span class="empty-hint">${t('common.loading', 'Loading...')}</span>`;
+ 
+     fetch(`/api/employees/${employeeId}/projects`)
+       .then(r => r.json())
+@@ -2916,13 +2835,13 @@ class AppController {
+         });
+         const data = await resp.json();
+         dndBtn.classList.toggle('active', data.dnd);
+-        dndBtn.title = data.dnd ? 'Do Not Disturb (ON)' : 'Do Not Disturb';
++        dndBtn.title = data.dnd ? window.OMC_I18N?.t('toolbar.doNotDisturbOn', 'Do Not Disturb (ON)') : window.OMC_I18N?.t('toolbar.doNotDisturb', 'Do Not Disturb');
+       } catch (e) { console.error('DND toggle failed:', e); }
+     });
+     // Load initial state
+     fetch('/api/ceo/dnd').then(r => r.json()).then(data => {
+       dndBtn.classList.toggle('active', data.dnd);
+-      if (data.dnd) dndBtn.title = 'Do Not Disturb (ON)';
++      if (data.dnd) dndBtn.title = window.OMC_I18N?.t('toolbar.doNotDisturbOn', 'Do Not Disturb (ON)');
+     }).catch(err => console.warn('[dnd] state load failed:', err));
+   }
+ 
+@@ -3049,12 +2968,13 @@ class AppController {
+     // Filter to active only
+     convs = convs.filter(c => c.phase === 'active');
+ 
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     container.innerHTML = '';
+     if (!convs.length) {
+       const empty = document.createElement('div');
+       empty.className = 'ceo-section-header';
+       empty.style.fontStyle = 'italic';
+-      empty.textContent = 'No active sessions';
++      empty.textContent = t('ceo.noActiveSessions', 'No active sessions');
+       container.appendChild(empty);
+       return;
+     }
+@@ -3065,7 +2985,7 @@ class AppController {
+       item.className = 'ceo-oneonone-item' + (this._currentConvId === conv.id ? ' active' : '');
+       item.dataset.convId = conv.id;
+       item.textContent = empName;
+-      item.title = `1-on-1 with ${empName}`;
++      item.title = t('ceo.oneOnOneWith', '1-on-1 with {name}', { name: empName });
+       item.addEventListener('click', () => this._openOneononeInTerminal(conv));
+       container.appendChild(item);
+     }
+@@ -3274,8 +3194,8 @@ class AppController {
+     const convId = this._currentConvId;
+     if (!convId) return;
+ 
+-    this._ceoTerm?.appendMessage({ role: 'system', text: 'Ending 1-on-1... employee is reflecting on the conversation...', source: 'system' });
+-    this.logEntry('SYSTEM', 'Ending 1-on-1... employee is reflecting on the conversation...', 'system');
++    this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), source: 'system' });
++    this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), 'system');
+ 
+     try {
+       const resp = await fetch(`/api/conversation/${convId}/close?wait_hooks=true`, {
+@@ -3286,15 +3206,15 @@ class AppController {
+         const hr = resp.hook_result;
+         const empName = this._resolveEmployeeNickname(resp.employee_id || this._currentConvEmployeeId || '');
+         if (hr.principles_updated) {
+-          this._ceoTerm?.appendMessage({ role: 'system', text: `${empName} updated their work principles based on the meeting.`, source: 'system' });
+-          this.logEntry('SYSTEM', `${empName} updated their work principles based on the meeting.`, 'system');
++          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), source: 'system' });
++          this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), 'system');
+         }
+         if (hr.note_saved) {
+-          this._ceoTerm?.appendMessage({ role: 'system', text: `1-on-1 note saved to ${empName}'s guidance record.`, source: 'system' });
+-          this.logEntry('SYSTEM', `1-on-1 note saved to ${empName}'s guidance record.`, 'system');
++          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), source: 'system' });
++          this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), 'system');
+         }
+         if (!hr.principles_updated && !hr.note_saved) {
+-          this._ceoTerm?.appendMessage({ role: 'system', text: `1-on-1 ended (no reflection generated).`, source: 'system' });
++          this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('meeting.endedNoReflection', '1-on-1 ended (no reflection generated).'), source: 'system' });
+         }
+       } else {
+         this._ceoTerm?.appendMessage({ role: 'system', text: '1-on-1 ended.', source: 'system' });
+@@ -3339,7 +3259,7 @@ class AppController {
+ 
+   async _loadModelOrApiKeySection(empId) {
+     const container = document.getElementById('emp-settings-container');
+-    container.innerHTML = '<div style="color:var(--text-dim);font-size:6px;padding:4px;">Loading settings...</div>';
++    container.innerHTML = `<div style="color:var(--text-dim);font-size:6px;padding:4px;">${window.OMC_I18N?.t('settings.loadingSettings', 'Carregando configurações...') || 'Carregando configurações...'}</div>`;
+ 
+     try {
+       const empResp = await fetch(`/api/employee/${empId}?_t=${Date.now()}`).then(r => r.json());
+@@ -3355,7 +3275,7 @@ class AppController {
+         if (empResp.level >= 4) {
+           const notice = document.createElement('div');
+           notice.style.cssText = 'font-size:5px;color:var(--pixel-yellow);padding:2px 4px;margin-bottom:3px;opacity:0.7;';
+-          notice.textContent = '⚠ Settings changes will trigger a server reload. Use when no tasks are running.';
++          notice.textContent = window.OMC_I18N?.t('common.settingsReloadNotice', '⚠ Settings changes will trigger a server reload. Use when no tasks are running.') || '⚠ Settings changes will trigger a server reload. Use when no tasks are running.';
+           container.appendChild(notice);
+         }
+         // Deduplicate sections by id (first occurrence wins)
+@@ -3391,7 +3311,7 @@ class AppController {
+       }
+     } catch (err) {
+       console.error('Failed to load employee settings:', err);
+-      container.innerHTML = '<div style="color:var(--pixel-red);font-size:6px;">Load failed</div>';
++      container.innerHTML = `<div style="color:var(--pixel-red);font-size:6px;">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</div>`;
+     }
+   }
+ 
+@@ -3418,14 +3338,14 @@ class AppController {
+       const isSet = field.key === 'api_key' ? empData.api_key_set : !!empData[`${field.key}_set`];
+       const preview = field.key === 'api_key' ? empData.api_key_preview : empData[`${field.key}_preview`];
+       input.placeholder = isSet
+-        ? `Set (${preview || '****'})`
+-        : 'Not set...';
++        ? window.OMC_I18N?.t('settings.setWithPreview', 'Definido ({preview})', { preview: preview || '****' }) || `Definido (${preview || '****'})`
++        : window.OMC_I18N?.t('settings.notSet', 'Não definido...') || 'Não definido...';
+       input.value = '';
+       row.appendChild(input);
+       // Status indicator
+       const status = document.createElement('span');
+       status.style.cssText = `font-size:6px;color:${isSet ? 'var(--pixel-green)' : 'var(--pixel-red,#f44)'};white-space:nowrap;`;
+-      status.textContent = isSet ? 'Set' : 'None';
++      status.textContent = isSet ? window.OMC_I18N?.t('settings.set', 'Definido') || 'Definido' : window.OMC_I18N?.t('settings.none', 'Nenhum') || 'Nenhum';
+       row.appendChild(status);
+     } else if (field.type === 'number') {
+       const input = document.createElement('input');
+@@ -3445,7 +3365,7 @@ class AppController {
+       select.style.cssText = 'flex:1;';
+       select.dataset.fieldKey = field.key;
+       select.dataset.fieldType = 'select';
+-      select.innerHTML = '<option value="">Loading...</option>';
++      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</option>`;
+       row.appendChild(select);
+       // Async load models
+       this._populateModelSelect(select, currentValue);
+@@ -3542,7 +3462,7 @@ class AppController {
+         select.appendChild(opt);
+       }
+     } catch (err) {
+-      select.innerHTML = '<option value="">Load failed</option>';
++      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</option>`;
+     }
+   }
+ 
+@@ -3571,7 +3491,7 @@ class AppController {
+     // Map to existing API endpoints
+     const saveBtn = document.getElementById('emp-manifest-save-btn');
+     saveBtn.disabled = true;
+-    saveBtn.textContent = 'Saving...';
++    saveBtn.textContent = window.OMC_I18N?.t('common.saving', 'Saving...') || 'Saving...';
+ 
+     try {
+       // Save hosting (agent family) via hosting endpoint — hot-swap, no restart
+@@ -3621,7 +3541,7 @@ class AppController {
+       this.logEntry('SYSTEM', `Save failed: ${err.message}`, 'system');
+     } finally {
+       saveBtn.disabled = false;
+-      saveBtn.textContent = 'Save';
++      saveBtn.textContent = window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar';
+     }
+   }
+ 
+@@ -3676,9 +3596,10 @@ class AppController {
+ 
+   _renderSelfHostedSection(empId, empData, container) {
+     const sessions = empData.sessions || [];
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     const hasActive = sessions.some(s => s.status === 'running');
+     const statusColor = hasActive ? 'var(--pixel-green)' : 'var(--pixel-yellow)';
+-    const statusText = hasActive ? 'Active' : (sessions.length > 0 ? 'Idle' : 'No sessions');
++    const statusText = hasActive ? t('common.active', 'Active') : (sessions.length > 0 ? t('common.idle', 'Idle') : t('common.noSessions', 'No sessions'));
+     const currentModel = empData.llm_model || 'opus';
+     const claudeModels = [
+       { id: 'opus', label: 'Claude Opus' },
+@@ -3690,20 +3611,20 @@ class AppController {
+     section.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
+     section.innerHTML = `
+       <div style="display:flex;align-items:center;gap:4px;">
+-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Agent Family</span>
++        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.agentFamily', 'Família do agente') || 'Família do agente'}</span>
+         <span style="font-size:6px;color:var(--pixel-cyan);">Claude Session</span>
+       </div>
+       <div style="display:flex;align-items:center;gap:4px;">
+-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Model</span>
++        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</span>
+         <select id="emp-self-hosted-model" class="emp-model-select" style="flex:1;">
+           ${claudeModels.map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.label}</option>`).join('')}
+         </select>
+       </div>
+       <div style="display:flex;align-items:center;gap:4px;">
+-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">Status</span>
++        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('settings.status', 'Status') || 'Status'}</span>
+         <span style="font-size:6px;color:${statusColor};">${statusText}</span>
+       </div>
+-      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} session(s)</div>` : ''}
++      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} ${window.OMC_I18N?.t('common.sessions', 'sessão(ões)') || 'sessão(ões)'}</div>` : ''}
+     `;
+     container.appendChild(section);
+ 
+@@ -3733,17 +3654,17 @@ class AppController {
+     section.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
+     section.innerHTML = `
+       <div style="display:flex;align-items:center;gap:4px;">
+-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">Provider</span>
++        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">${window.OMC_I18N?.t('employee.providerLabel', 'Fornecedor') || 'Fornecedor'}</span>
+         <select id="emp-detail-provider" class="emp-model-select" style="flex:1;">
+-          <option value="">Loading...</option>
++          <option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option>
+         </select>
+       </div>
+       <div style="display:flex;align-items:center;gap:4px;">
+-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">Model</span>
+-        <select id="emp-detail-model" class="emp-model-select" style="flex:1;"><option value="">Loading...</option></select>
++        <span style="font-size:6px;color:var(--pixel-yellow);min-width:45px;">${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</span>
++        <select id="emp-detail-model" class="emp-model-select" style="flex:1;"><option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option></select>
+       </div>
+       <div style="display:flex;gap:4px;justify-content:flex-end;">
+-        <button id="emp-model-save-btn" class="pixel-btn small" disabled>Save</button>
++        <button id="emp-model-save-btn" class="pixel-btn small" disabled>${window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar'}</button>
+       </div>
+     `;
+     container.appendChild(section);
+@@ -3764,7 +3685,7 @@ class AppController {
+       const provider = e.target.value;
+       const saveBtn = document.getElementById('emp-model-save-btn');
+       saveBtn.disabled = true;
+-      saveBtn.textContent = 'Switching...';
++      saveBtn.textContent = window.OMC_I18N?.t('common.applying', 'Aplicando...') || 'Aplicando...';
+ 
+       try {
+         // For now, just apply the provider change (API key can be set separately)
+@@ -3780,16 +3701,16 @@ class AppController {
+         });
+         const data = await resp.json();
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Provider switch failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${data.error}`, 'system');
+         } else {
+-          this.logEntry('CEO', `Switched to ${provider}`, 'ceo');
++          this.logEntry('CEO', `${window.OMC_I18N?.t('settings.setAsDefault', 'Definir como padrão') || 'Definir como padrão'}: ${provider}`, 'ceo');
+           this._loadModelOrApiKeySection(empId);
+         }
+       } catch (err) {
+-        this.logEntry('SYSTEM', `Switch failed: ${err.message}`, 'system');
++        this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${err.message}`, 'system');
+       } finally {
+         saveBtn.disabled = false;
+-        saveBtn.textContent = 'Save';
++        saveBtn.textContent = window.OMC_I18N?.t('common.save', 'Salvar') || 'Salvar';
+       }
+     });
+ 
+@@ -3803,7 +3724,7 @@ class AppController {
+     const select = document.getElementById('emp-detail-model');
+     const saveBtn = document.getElementById('emp-model-save-btn');
+     if (!select || !saveBtn) return;
+-    select.innerHTML = '<option value="">Loading...</option>';
++    select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loading', 'Carregando...') || 'Carregando...'}</option>`;
+     saveBtn.disabled = true;
+ 
+     try {
+@@ -3823,7 +3744,7 @@ class AppController {
+       }
+       saveBtn.disabled = false;
+     } catch (err) {
+-      select.innerHTML = '<option value="">Load failed</option>';
++      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.loadFailed', 'Falha ao carregar') || 'Falha ao carregar'}</option>`;
+       console.error('Model list error:', err);
+     }
+   }
+@@ -4107,6 +4028,7 @@ class AppController {
+     this._candidateRoles = payload.roles || [];
+     this._selectedCandidates = new Map(); // candidateId -> {candidate, role}
+     this._interviewingCandidate = null;
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+ 
+     // If no roles structure, wrap flat candidates into a single role group
+     if (!this._candidateRoles.length && this._candidateList.length) {
+@@ -4127,7 +4049,7 @@ class AppController {
+     const rolesEl = document.getElementById('candidate-roles');
+ 
+     // JD sidebar
+-    jdEl.innerHTML = '<div style="font-size:7px;color:var(--pixel-yellow);margin-bottom:4px;">JD — Job Description</div>' +
++    jdEl.innerHTML = `<div style="font-size:7px;color:var(--pixel-yellow);margin-bottom:4px;">${t('candidate.jdLabel', 'JD — Job Description')}</div>` +
+       (payload.jd || '').replace(/\n/g, '<br>');
+ 
+     // Render role groups
+@@ -4198,16 +4120,16 @@ class AppController {
+               <div class="card-hosting">${hostingLabel}</div>
+             </div>
+             <div class="card-back">
+-              <div class="card-detail-title">Skills</div>
++              <div class="card-detail-title">${t('employee.skillsLabel', 'Skills')}</div>
+               <div class="card-detail-text">${esc(skills) || 'N/A'}</div>
+-              <div class="card-detail-title">Tools</div>
++              <div class="card-detail-title">${t('employee.toolsLabel', 'Tools')}</div>
+               <div class="card-detail-text">${esc(tools) || 'N/A'}</div>
+-              <div class="card-detail-title">LLM</div>
++              <div class="card-detail-title">${t('employee.llmLabel', 'LLM')}</div>
+               <div class="card-detail-text">${esc(llmModel)} (${esc(c.api_provider || 'openrouter')})</div>
+-              <div class="card-detail-title">Cost</div>
+-              <div class="card-detail-text">${costPer1m} | Fee: ${hiringFee}</div>
+-              <div class="card-detail-title">Agent Family</div>
+-              <div class="card-detail-text">${hostingLabel} | Auth: ${authLabel}</div>
++              <div class="card-detail-title">${t('employee.costLabel', 'Cost')}</div>
++              <div class="card-detail-text">${costPer1m} | ${t('employee.feeLabel', 'Fee')}: ${hiringFee}</div>
++              <div class="card-detail-title">${t('employee.agentFamily', 'Agent Family')}</div>
++              <div class="card-detail-text">${hostingLabel} | ${t('employee.authLabel', 'Auth')}: ${authLabel}</div>
+             </div>
+           </div>
+         `;
+@@ -4295,22 +4217,22 @@ class AppController {
+         </div>
+         <div class="detail-score" style="border-color:${scoreColor}">
+           <span style="color:${scoreColor}">${scorePct}%</span>
+-          <small>match</small>
++          <small>${t('common.match', 'match')}</small>
+         </div>
+       </div>
+-      ${reasoning ? `<div class="detail-section"><div class="detail-label">Match Reasoning</div><div class="detail-text">${esc(reasoning)}</div></div>` : ''}
+-      ${tags ? `<div class="detail-section"><div class="detail-label">Personality</div><div class="detail-tags-list">${tags}</div></div>` : ''}
+-      <div class="detail-section"><div class="detail-label">Skills</div><div class="detail-skills-list">${skills || '<em>N/A</em>'}</div></div>
+-      ${tools ? `<div class="detail-section"><div class="detail-label">Tools</div><div class="detail-tools-list">${tools}</div></div>` : ''}
++      ${reasoning ? `<div class="detail-section"><div class="detail-label">${t('candidate.matchReasoning', 'Match Reasoning')}</div><div class="detail-text">${esc(reasoning)}</div></div>` : ''}
++      ${tags ? `<div class="detail-section"><div class="detail-label">${t('employee.personalityLabel', 'Personality')}</div><div class="detail-tags-list">${tags}</div></div>` : ''}
++      <div class="detail-section"><div class="detail-label">${t('employee.skillsLabel', 'Skills')}</div><div class="detail-skills-list">${skills || '<em>N/A</em>'}</div></div>
++      ${tools ? `<div class="detail-section"><div class="detail-label">${t('employee.toolsLabel', 'Tools')}</div><div class="detail-tools-list">${tools}</div></div>` : ''}
+       <div class="detail-section detail-grid">
+-        <div><div class="detail-label">LLM Model</div><div class="detail-text">🤖 ${esc(llmModel)}</div></div>
+-        <div><div class="detail-label">Provider</div><div class="detail-text">${esc(c.api_provider || 'openrouter')}</div></div>
+-        <div><div class="detail-label">Cost</div><div class="detail-text">${costPer1m}</div></div>
+-        <div><div class="detail-label">Hiring Fee</div><div class="detail-text">${hiringFee}</div></div>
+-        <div><div class="detail-label">Agent Family</div><div class="detail-text">${hostingLabel}</div></div>
+-        <div><div class="detail-label">Auth</div><div class="detail-text">${authLabel}</div></div>
++        <div><div class="detail-label">${t('employee.llmModelLabel', 'LLM Model')}</div><div class="detail-text">🤖 ${esc(llmModel)}</div></div>
++        <div><div class="detail-label">${t('employee.providerLabel', 'Provider')}</div><div class="detail-text">${esc(c.api_provider || 'openrouter')}</div></div>
++        <div><div class="detail-label">${t('employee.costLabel', 'Cost')}</div><div class="detail-text">${costPer1m}</div></div>
++        <div><div class="detail-label">${t('employee.hiringFeeLabel', 'Hiring Fee')}</div><div class="detail-text">${hiringFee}</div></div>
++        <div><div class="detail-label">${t('employee.agentFamily', 'Agent Family')}</div><div class="detail-text">${hostingLabel}</div></div>
++        <div><div class="detail-label">${t('employee.authLabel', 'Auth')}</div><div class="detail-text">${authLabel}</div></div>
+       </div>
+-      ${c.description_md ? `<div class="detail-section"><div class="detail-label">Description</div><div class="detail-description md-rendered">${this._renderMarkdown(c.description_md)}</div></div>` : ''}
++      ${c.description_md ? `<div class="detail-section"><div class="detail-label">${t('employee.descriptionLabel', 'Description')}</div><div class="detail-description md-rendered">${this._renderMarkdown(c.description_md)}</div></div>` : ''}
+     `;
+ 
+     // Wire up panel buttons
+@@ -4864,7 +4786,7 @@ class AppController {
+   loadProjectList() {
+     const listEl = document.getElementById('project-list');
+     const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+-    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('settings.loading', 'Loading...')}</div>`;
++    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Carregando...')}</div>`;
+     listEl.classList.remove('hidden');
+     document.getElementById('project-detail').classList.add('hidden');
+ 
+@@ -4873,7 +4795,7 @@ class AppController {
+       .then(data => {
+         const projects = this._sortProjectsNewestFirst(data.projects || []);
+         if (projects.length === 0) {
+-          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'No project records')}</div>`;
++          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'Nenhum registro de projeto')}</div>`;
+           return;
+         }
+         listEl.innerHTML = '';
+@@ -4903,7 +4825,7 @@ class AppController {
+         }
+       })
+       .catch(err => {
+-        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">Load failed: ${this._escHtml(err.message)}</div>`;
++        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">${t('project.loadFailed', 'Falha ao carregar: {message}', { message: this._escHtml(err.message) })}</div>`;
+       });
+   }
+ 
+@@ -4912,9 +4834,10 @@ class AppController {
+     const listEl = document.getElementById('project-list');
+     const detailEl = document.getElementById('project-detail');
+     const contentEl = document.getElementById('project-detail-content');
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     listEl.classList.add('hidden');
+     detailEl.classList.remove('hidden');
+-    contentEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
++    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
+ 
+     fetch(`/api/projects/named/${encodeURIComponent(projectId)}`)
+       .then(r => r.json())
+@@ -4937,7 +4860,7 @@ class AppController {
+ 
+     listEl.classList.add('hidden');
+     detailEl.classList.remove('hidden');
+-    contentEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
++    contentEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Carregando...')}</div>`;
+ 
+     fetch(`/api/projects/${encodeURIComponent(projectId)}`)
+       .then(r => r.json())
+@@ -4948,14 +4871,14 @@ class AppController {
+         }
+         let html = `<h4 style="color:var(--pixel-yellow);font-size:8px;margin:6px 0;">${doc.task || ''}</h4>`;
+         html += `<div style="font-size:6px;color:var(--text-dim);margin-bottom:8px;">`;
+-        html += `Status: ${doc.status} | Routed to: ${doc.routed_to} | Created: ${(doc.created_at || '').substring(0, 19)}`;
+-        if (doc.completed_at) html += ` | Completed: ${doc.completed_at.substring(0, 19)}`;
++        html += `${t('project.detailStatusLabel', 'Status:')} ${doc.status} | ${t('project.detailRoutedToLabel', 'Routed to:')} ${doc.routed_to} | ${t('project.detailCreatedLabel', 'Created:')} ${(doc.created_at || '').substring(0, 19)}`;
++        if (doc.completed_at) html += ` | ${t('project.detailCompletedLabel', 'Completed:')} ${doc.completed_at.substring(0, 19)}`;
+         html += `</div>`;
+ 
+         // Timeline
+         const timeline = doc.timeline || [];
+         if (timeline.length > 0) {
+-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 4px;">Timeline (${timeline.length} entries):</div>`;
++          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 4px;">${t('project.detailTimelineLabel', 'Timeline')} (${t('project.detailEntriesLabel', '{count} entries', { count: timeline.length })})</div>`;
+           for (const entry of timeline) {
+             const time = (entry.time || '').substring(11, 19);
+             html += `<div style="font-size:6px;line-height:1.8;border-left:2px solid var(--border);padding-left:6px;margin:2px 0;">`;
+@@ -4972,7 +4895,7 @@ class AppController {
+         // Cost & Budget
+         const cost = doc.cost || {};
+         if (cost.actual_cost_usd > 0 || cost.budget_estimate_usd > 0) {
+-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Cost & Budget: <span style="font-size:5px;color:var(--text-dim);">(estimated)</span></div>`;
++          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${t('project.detailCostBudgetLabel', 'Cost & Budget')} <span style="font-size:5px;color:var(--text-dim);">${t('project.detailEstimatedLabel', '(estimated)')}</span></div>`;
+           const actual = cost.actual_cost_usd || 0;
+           const budget = cost.budget_estimate_usd || 0;
+           const tokens = cost.token_usage || {};
+@@ -4988,7 +4911,7 @@ class AppController {
+           const breakdown = cost.breakdown || [];
+           if (breakdown.length > 0) {
+             html += `<table style="font-size:5px;width:100%;border-collapse:collapse;margin-top:4px;">`;
+-            html += `<tr style="color:var(--text-dim);"><th style="text-align:left;">Employee</th><th>Model</th><th>Tokens</th><th>Cost</th></tr>`;
++            html += `<tr style="color:var(--text-dim);"><th style="text-align:left;">${window.OMC_I18N?.t('employee.nameLabel', 'Nome') || 'Nome'}</th><th>${window.OMC_I18N?.t('employee.llmModelLabel', 'Modelo LLM') || 'Modelo LLM'}</th><th>${window.OMC_I18N?.t('dashboard.tokens', 'Tokens') || 'Tokens'}</th><th>${window.OMC_I18N?.t('employee.costLabel', 'Custo') || 'Custo'}</th></tr>`;
+             for (const b of breakdown) {
+               html += `<tr><td>${b.employee_id}</td><td>${(b.model||'').split('/').pop()}</td><td>${(b.total_tokens||0).toLocaleString()}</td><td>$${(b.cost_usd||0).toFixed(4)}</td></tr>`;
+             }
+@@ -4998,14 +4921,14 @@ class AppController {
+ 
+         // Output
+         if (doc.output) {
+-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Final Output:</div>`;
++          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${window.OMC_I18N?.t('project.outputLabel', 'Saída final:') || 'Saída final:'}</div>`;
+           html += `<div style="font-size:6px;color:var(--pixel-white);background:var(--bg-dark);padding:6px;border:1px solid var(--border);">${doc.output}</div>`;
+         }
+ 
+         // Documents — lazy tree (click to expand directories)
+-        html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">Documents:</div>`;
++        html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${t('project.documentsLabel', 'Documents')}</div>`;
+         html += `<div class="lazy-file-tree" data-project-id="${this._escHtml(projectId)}" data-path="" style="font-size:6px;">
+-          <div style="color:var(--text-dim);">Loading files...</div>
++          <div style="color:var(--text-dim);">${t('common.loading', 'Carregando...')}</div>
+         </div>`;
+ 
+         contentEl.innerHTML = html;
+@@ -5074,7 +4997,7 @@ class AppController {
+     const body = document.getElementById('generic-popup-body');
+     const footer = document.getElementById('generic-popup-footer');
+ 
+-    title.textContent = opts.title || 'Notification';
++    title.textContent = opts.title || window.OMC_I18N?.t('common.notification', 'Notification') || 'Notification';
+     body.innerHTML = '';
+     footer.innerHTML = '';
+     footer.style.display = 'none';
+@@ -5094,7 +5017,7 @@ class AppController {
+       const urlBox = document.createElement('div');
+       urlBox.className = 'popup-url-box';
+       urlBox.textContent = opts.url;
+-      urlBox.title = 'Click to open';
++      urlBox.title = window.OMC_I18N?.t('common.clickToOpen', 'Click to open') || 'Click to open';
+       urlBox.onclick = () => window.open(opts.url, '_blank');
+       body.appendChild(urlBox);
+     }
+@@ -5105,7 +5028,7 @@ class AppController {
+       actions.className = 'popup-actions';
+       const openBtn = document.createElement('button');
+       openBtn.className = 'pixel-btn';
+-      openBtn.textContent = 'Authorize';
++      openBtn.textContent = window.OMC_I18N?.t('common.authorize', 'Authorize') || 'Authorize';
+       openBtn.onclick = () => {
+         const w = 600, h = 700;
+         const left = (screen.width - w) / 2, top = (screen.height - h) / 2;
+@@ -5277,7 +5200,7 @@ class AppController {
+       rendered.innerHTML = '<div class="md-rendered">' + this._renderMarkdown(textarea.value) + '</div>';
+       textarea.classList.add('hidden');
+       rendered.classList.remove('hidden');
+-      editBtn.textContent = '✎ Edit';
++      editBtn.textContent = window.OMC_I18N?.t('workflow.edit', 'Edit') || 'Edit';
+       saveBtn.classList.add('hidden');
+     }
+   }
+@@ -5302,7 +5225,7 @@ class AppController {
+           rendered.innerHTML = '<div class="md-rendered">' + this._renderMarkdown(content) + '</div>';
+           document.getElementById('workflow-content').classList.add('hidden');
+           rendered.classList.remove('hidden');
+-          document.getElementById('workflow-edit-btn').textContent = '✎ Edit';
++          document.getElementById('workflow-edit-btn').textContent = window.OMC_I18N?.t('workflow.edit', 'Edit') || 'Edit';
+           document.getElementById('workflow-save-btn').classList.add('hidden');
+         }
+       })
+@@ -5584,7 +5507,8 @@ class AppController {
+ 
+   loadExEmployees() {
+     const listEl = document.getElementById('ex-employee-list');
+-    listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">Loading...</div>';
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('common.loading', 'Loading...')}</div>`;
+ 
+     // Use state data if available, otherwise fetch
+     const exEmps = window.officeRenderer?.state?.ex_employees || [];
+@@ -5598,20 +5522,21 @@ class AppController {
+       .then(data => {
+         const list = data.ex_employees || [];
+         if (list.length === 0) {
+-          listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No ex-employees</div>';
++          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('exEmployees.empty', 'No ex-employees')}</div>`;
+           return;
+         }
+         this._renderExEmployees(list);
+       })
+       .catch(err => {
+-        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">Load failed: ${this._escHtml(err.message)}</div>`;
++        listEl.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;">${t('exEmployees.loadFailed', 'Load failed')}: ${this._escHtml(err.message)}</div>`;
+       });
+   }
+ 
+   _renderExEmployees(exEmps) {
+     const listEl = document.getElementById('ex-employee-list');
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     if (exEmps.length === 0) {
+-      listEl.innerHTML = '<div style="color:var(--text-dim);font-size:7px;">No ex-employees</div>';
++      listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('exEmployees.empty', 'No ex-employees')}</div>`;
+       return;
+     }
+     listEl.innerHTML = '';
+@@ -5627,7 +5552,7 @@ class AppController {
+           <div class="ex-emp-role">${emp.title || emp.role} — ${emp.department || ''}</div>
+           <div class="ex-emp-skills">${skills}</div>
+         </div>
+-        <button class="pixel-btn small rehire-btn" data-id="${emp.id}">🔄 Rehire</button>
++        <button class="pixel-btn small rehire-btn" data-id="${emp.id}">${t('exEmployees.rehireButton', '🔄 Rehire')}</button>
+       `;
+       card.querySelector('.rehire-btn').addEventListener('click', () => this.rehireEmployee(emp));
+       listEl.appendChild(card);
+@@ -5635,7 +5560,8 @@ class AppController {
+   }
+ 
+   rehireEmployee(emp) {
+-    if (!confirm(`Confirm rehire ${emp.name}${emp.nickname ? '(' + emp.nickname + ')' : ''}? Will restart from Lv.1.`)) return;
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    if (!confirm(t('exEmployees.rehireConfirm', 'Confirm rehire {name}{nickname}? Will restart from Lv.1.', { name: emp.name, nickname: emp.nickname ? `(${emp.nickname})` : '' }))) return;
+ 
+     fetch(`/api/ex-employees/${encodeURIComponent(emp.id)}/rehire`, {
+       method: 'POST',
+@@ -5644,9 +5570,9 @@ class AppController {
+       .then(r => r.json())
+       .then(data => {
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Rehire failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', `${t('exEmployees.rehireFailed', 'Rehire failed')}: ${data.error}`, 'system');
+         } else {
+-          this.logEntry('CEO', `🔄 Rehired: ${data.name}`, 'ceo');
++          this.logEntry('CEO', window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: data.name, nickname: data.nickname ? `(${data.nickname})` : '', role: data.role || '' }) || `🔄 Rehired: ${data.name}`, 'ceo');
+           this.bootstrap();
+           this.loadExEmployees(); // Refresh the list
+         }
+@@ -5760,7 +5686,7 @@ class AppController {
+                   <div id="oauth-code-input" style="display:none;margin-top:4px;">
+                     <label style="font-size:5.5px;color:var(--pixel-yellow);">${t('settings.pasteAnthropicCode', 'Paste the code from Anthropic:')}</label>
+                     <div style="display:flex;gap:4px;margin-top:2px;">
+-                      <input id="oauth-code-field" type="text" placeholder="code#state" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
++                      <input id="oauth-code-field" type="text" placeholder="${t('settings.oauthCodePlaceholder', 'code#state')}" style="flex:1;font-size:6px;padding:3px 6px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);font-family:monospace;" />
+                       <button class="pixel-btn small" onclick="app._submitOAuthCode()">${t('settings.submit', 'Submit')}</button>
+                     </div>
+                   </div>
+@@ -5781,21 +5707,21 @@ class AppController {
+             </div>
+             <div id="${bodyId}" class="api-card-body collapsed">
+               ${oauthSection}
+-              <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
+-              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Enter model ID...')}" />
++              <label class="api-field-label">${t('settings.apiKey', 'Chave de API')}</label>
++              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Informar ID do modelo...')}" />
+               <div class="api-card-actions">
+-                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Start')}</button>
+-                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Save')}</button>
++                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Iniciar')}</button>
++                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Salvar')}</button>
+                 <span id="api-${providerId}-result" class="api-test-result"></span>
+               </div>
+               <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">
+-                <label class="api-field-label">${t('settings.defaultModel', 'Default Model')}</label>
++                <label class="api-field-label">${t('settings.defaultModel', 'Modelo padrão')}</label>
+                 <select id="api-${providerId}-model" class="emp-model-select" style="font-size:6px;width:100%;padding:3px 4px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);">
+-                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Select model...')}</option>`}
++                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Selecionar modelo...')}</option>`}
+                 </select>
+                 <div class="api-card-actions" style="margin-top:4px;">
+                   <button class="pixel-btn small${isDefault ? '' : ' api-test-btn'}" onclick="app._setDefaultProvider('${providerId}')"
+-                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Save API key first')}"` : ''}>${isDefault ? t('settings.saveModel', 'Save Model') : t('settings.setAsDefault', 'Set as Default')}</button>
++                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Salve a chave de API primeiro')}"` : ''}>${isDefault ? t('settings.saveModel', 'Salvar modelo') : t('settings.setAsDefault', 'Definir como padrão')}</button>
+                   <span id="api-${providerId}-default-result" class="api-test-result"></span>
+                 </div>
+               </div>
+@@ -5963,7 +5889,7 @@ class AppController {
+     const model = modelInput ? modelInput.value.trim() : '';
+ 
+     if (!model) {
+-      if (resultEl) { resultEl.textContent = 'Enter model'; resultEl.className = 'api-test-result fail'; }
++      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('settings.enterModel', 'Enter model') || 'Enter model'; resultEl.className = 'api-test-result fail'; }
+       return;
+     }
+ 
+@@ -5979,10 +5905,10 @@ class AppController {
+         this._settingsLoaded = false;
+         this._renderApiSettings();
+       } else {
+-        if (resultEl) { resultEl.textContent = data.error || 'Error'; resultEl.className = 'api-test-result fail'; }
++        if (resultEl) { resultEl.textContent = data.error || window.OMC_I18N?.t('common.errorLoading', 'Error') || 'Error'; resultEl.className = 'api-test-result fail'; }
+       }
+     } catch (e) {
+-      if (resultEl) { resultEl.textContent = 'Error'; resultEl.className = 'api-test-result fail'; }
++      if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('common.errorLoading', 'Error') || 'Error'; resultEl.className = 'api-test-result fail'; }
+     }
+   }
+ 
+@@ -5991,13 +5917,13 @@ class AppController {
+     if (!select || select.dataset.loaded) return;
+ 
+     const currentValue = select.value;
+-    select.innerHTML = '<option value="">Loading models...</option>';
++    select.innerHTML = `<option value="">${window.OMC_I18N?.t('settings.loadingModels', 'Loading models...') || 'Loading models...'}</option>`;
+ 
+     try {
+       const resp = await fetch(`/api/models?provider=${providerId}`);
+       const data = await resp.json();
+       if (data.models && data.models.length > 0) {
+-        let html = '<option value="">Select model...</option>';
++        let html = `<option value="">${window.OMC_I18N?.t('settings.selectModel', 'Select model...') || 'Select model...'}</option>`;
+         for (const m of data.models) {
+           const selected = m.id === currentValue ? ' selected' : '';
+           const label = m.name && m.name !== m.id ? `${m.id}  (${m.name})` : m.id;
+@@ -6012,12 +5938,12 @@ class AppController {
+         input.id = select.id;
+         input.className = 'api-key-input';
+         input.style.cssText = 'font-size:6px;';
+-        input.placeholder = data.error || 'Enter model ID...';
++        input.placeholder = data.error || window.OMC_I18N?.t('settings.enterModelId', 'Enter model ID...') || 'Enter model ID...';
+         input.value = currentValue;
+         select.replaceWith(input);
+       }
+     } catch {
+-      select.innerHTML = `<option value="${this._escAttr(currentValue)}">${currentValue || 'Error loading'}</option>`;
++      select.innerHTML = `<option value="${this._escAttr(currentValue)}">${currentValue || window.OMC_I18N?.t('common.errorLoading', 'Error loading') || 'Error loading'}</option>`;
+     }
+   }
+ 
+@@ -6025,18 +5951,19 @@ class AppController {
+   async _renderSystemCrons() {
+     const container = document.getElementById('system-crons-content');
+     if (!container) return;
+-    container.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:6px;">Loading...</div>';
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    container.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:6px;">${t('common.loading', 'Loading...')}</div>`;
+     try {
+       const resp = await fetch('/api/system/crons');
+       const crons = await resp.json();
+ 
+       if (!crons.length) {
+-        container.innerHTML = '<div style="color:var(--text-dim);font-size:7px;padding:6px;">No system crons registered.</div>';
++        container.innerHTML = `<div style="color:var(--text-dim);font-size:7px;padding:6px;">${t('systemCrons.empty', 'No system crons registered.')}</div>`;
+         return;
+       }
+ 
+       let html = '<table class="pixel-table" style="width:100%;font-size:6.5px;"><thead><tr>';
+-      html += '<th>Name</th><th>Interval</th><th>Description</th><th>Runs</th><th>Status</th><th></th>';
++      html += `<th>${t('systemCrons.name', 'Name')}</th><th>${t('systemCrons.interval', 'Interval')}</th><th>${t('systemCrons.description', 'Description')}</th><th>${t('systemCrons.runs', 'Runs')}</th><th>${t('systemCrons.status', 'Status')}</th><th></th>`;
+       html += '</tr></thead><tbody>';
+ 
+       for (const c of crons) {
+@@ -6124,9 +6051,9 @@ class AppController {
+     const field = document.getElementById('oauth-code-field');
+     const resultEl = document.getElementById('api-oauth-result');
+     const code = (field?.value || '').trim();
+-    if (!code) { if (resultEl) resultEl.textContent = 'Paste the code first'; return; }
++    if (!code) { if (resultEl) resultEl.textContent = window.OMC_I18N?.t('oauth.pasteCodeFirst', 'Paste the code first') || 'Paste the code first'; return; }
+ 
+-    if (resultEl) resultEl.textContent = 'Exchanging...';
++    if (resultEl) resultEl.textContent = window.OMC_I18N?.t('oauth.exchanging', 'Exchanging...') || 'Exchanging...';
+     try {
+       const resp = await fetch('/api/settings/api/oauth/exchange', {
+         method: 'POST',
+@@ -6135,7 +6062,7 @@ class AppController {
+       });
+       const data = await resp.json();
+       if (data.status === 'ok') {
+-        if (resultEl) { resultEl.textContent = '✓ Login successful'; resultEl.style.color = 'var(--pixel-green)'; }
++        if (resultEl) { resultEl.textContent = window.OMC_I18N?.t('oauth.loginSuccessful', 'Login successful') || 'Login successful'; resultEl.style.color = 'var(--pixel-green)'; }
+         this.logEntry('CEO', 'Anthropic OAuth login successful', 'ceo');
+         document.getElementById('oauth-code-input').style.display = 'none';
+         field.value = '';
+@@ -6345,7 +6272,7 @@ class AppController {
+               <div class="company-culture-card-content">${this._escapeHtml(item.content)}</div>
+               <div class="company-culture-card-meta">
+                 <span class="company-culture-card-date">${date}</span>
+-                <button class="company-culture-delete-btn" data-index="${idx}" title="Delete">✕</button>
++                <button class="company-culture-delete-btn" data-index="${idx}" title="${t('project.deleteTooltip', 'Delete')}">✕</button>
+               </div>
+             </div>`;
+         }).join('');
+@@ -6365,6 +6292,7 @@ class AppController {
+     const content = input.value.trim();
+     if (!content) return;
+ 
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     const btn = document.getElementById('company-culture-add-btn');
+     btn.disabled = true;
+ 
+@@ -6376,9 +6304,9 @@ class AppController {
+       .then(r => r.json())
+       .then(data => {
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Add failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', `${t('common.add', 'Add')} failed: ${data.error}`, 'system');
+         } else {
+-          this.logEntry('CEO', `Company culture added: ${content.slice(0, 40)}`, 'ceo');
++          this.logEntry('CEO', `${t('companyCulture.added', 'Company culture added')}: ${content.slice(0, 40)}`, 'ceo');
+           input.value = '';
+           // State will be refreshed via WebSocket push
+         }
+@@ -6388,13 +6316,14 @@ class AppController {
+   }
+ 
+   removeCultureItem(index) {
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     fetch(`/api/company-culture/${index}`, { method: 'DELETE' })
+       .then(r => r.json())
+       .then(data => {
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Delete failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', data.error), 'system');
+         } else {
+-          this.logEntry('CEO', `Company culture removed: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
++          this.logEntry('CEO', `${t('companyCulture.removed', 'Company culture removed')}: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
+           // State will be refreshed via WebSocket push
+         }
+       })
+@@ -6413,7 +6342,7 @@ class AppController {
+         input.value = data.direction || '';
+         this._renderCurrentDirection(data.direction || '');
+       })
+-      .catch(err => { console.error('[addCultureItem] failed:', err); input.value = ''; });
++      .catch(err => { console.error('[companyDirection] failed:', err); input.value = ''; });
+   }
+ 
+   closeCompanyDirection() {
+@@ -6421,6 +6350,7 @@ class AppController {
+   }
+ 
+   saveCompanyDirection() {
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+     const input = document.getElementById('company-direction-input');
+     const direction = input.value.trim();
+     const btn = document.getElementById('company-direction-save-btn');
+@@ -6434,9 +6364,9 @@ class AppController {
+       .then(r => r.json())
+       .then(data => {
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Save failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', `${t('companyDirection.saveFailed', 'Save failed')}: ${data.error}`, 'system');
+         } else {
+-          this.logEntry('CEO', `Company direction updated`, 'ceo');
++          this.logEntry('CEO', t('companyDirection.updated', 'Company direction updated'), 'ceo');
+           this._renderCurrentDirection(direction);
+         }
+       })
+@@ -6449,12 +6379,12 @@ class AppController {
+     const draft = input.value.trim();
+     const btn = document.getElementById('company-direction-enrich-btn');
+     if (!draft) {
+-      this.logEntry('SYSTEM', 'Please write a draft direction first.', 'system');
++      this.logEntry('SYSTEM', t('companyDirection.draftFirst', 'Please write a draft direction first.'), 'system');
+       return;
+     }
+     if (!this._checkCooldown('enrichDirection')) return;
+     btn.disabled = true;
+-    btn.textContent = '⏳ Sending...';
++    btn.textContent = t('companyDirection.sending', '⏳ Sending...');
+ 
+     const task = `The CEO has drafted a company direction statement. Please polish and expand it into a complete corporate positioning description, preserving the core message while adding strategic vision, target market, core competencies, and other dimensions. Once polished, dispatch to COO to save via deposit_company_knowledge(category="direction").\n\nDraft content:\n${draft}`;
+ 
+@@ -6467,15 +6397,15 @@ class AppController {
+       .then(r => r.json())
+       .then(data => {
+         if (data.error) {
+-          this.logEntry('SYSTEM', `Enrich failed: ${data.error}`, 'system');
++          this.logEntry('SYSTEM', `${t('companyDirection.enrichFailed', 'Enrich failed')}: ${data.error}`, 'system');
+         } else {
+-          this.logEntry('CEO', `Direction polish task sent to EA`, 'ceo');
++          this.logEntry('CEO', t('companyDirection.taskSent', 'Direction polish task sent to EA'), 'ceo');
+         }
+       })
+       .catch(err => this.logEntry('SYSTEM', `Error: ${err.message}`, 'system'))
+       .finally(() => {
+         btn.disabled = false;
+-        btn.innerHTML = '&#10024; Polish / Enrich';
++        btn.innerHTML = t('companyDirection.enrichButton', '✨ Polish / Enrich');
+       });
+   }
+ 
+@@ -6641,8 +6571,8 @@ class AppController {
+           <div style="margin-bottom:4px;color:#888;font-size:6px;">
+             <code>${esc(s.client_id_env)}</code> / <code>${esc(s.client_secret_env)}</code>
+           </div>
+-          <input type="text" id="tool-oauth-client-id" placeholder="Client ID" class="tool-oauth-input" />
+-          <input type="password" id="tool-oauth-client-secret" placeholder="Client Secret" class="tool-oauth-input" />
++            <input type="text" id="tool-oauth-client-id" placeholder="${t('tool.oauthClientId', 'Client ID')}" class="tool-oauth-input" />
++            <input type="password" id="tool-oauth-client-secret" placeholder="${t('tool.oauthClientSecret', 'Client Secret')}" class="tool-oauth-input" />
+           <button class="pixel-btn small" onclick="window.app._toolAction('credentials','${esc(toolId)}')">Save</button>
+         </div>`;
+ 
+@@ -6808,13 +6738,14 @@ class AppController {
+   async openToolList() {
+     const modal = document.getElementById('tool-list-modal');
+     const body = document.getElementById('tool-list-body');
+-    body.innerHTML = '<span class="empty-hint">Loading...</span>';
++    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++    body.innerHTML = `<span class="empty-hint">${t('common.loading', 'Loading...')}</span>`;
+     modal.classList.remove('hidden');
+ 
+     try {
+       const tools = await fetch('/api/tools').then(r => r.json());
+       if (tools.length === 0) {
+-        body.innerHTML = '<span class="empty-hint">No tools registered</span>';
++        body.innerHTML = `<span class="empty-hint">${t('toolList.empty', 'No tools registered')}</span>`;
+       } else {
+         body.innerHTML = tools.map(t => `
+           <div class="tool-list-item" onclick="window.app.openToolDetail('${this._escapeHtml(t.id)}')">
+@@ -6954,7 +6885,7 @@ class AppController {
+     const res = await fetch(`/api/tools/${esc(toolId)}/templates/${esc(filename)}`, { method: 'DELETE' });
+     const data = await res.json();
+     if (data.status === 'ok') this.openToolDetail(toolId);
+-    else this._showToast(data.message || 'Delete failed', 'error');
++    else this._showToast(data.message || t('common.deleteFailed', 'Delete failed'), 'error');
+   }
+ 
+   _templateNew(toolId, templatesDir) {
+@@ -7163,7 +7094,7 @@ class AppController {
+     if (!this._chatPanel || !convId) return;
+     if (this._chatPanel.getConvType() !== 'oneonone') return;
+ 
+-    const confirmed = confirm('Clear all 1-on-1 history for this employee? This cannot be undone.');
++    const confirmed = confirm(window.OMC_I18N?.t('meeting.clearHistoryConfirm', 'Clear all 1-on-1 history for this employee? This cannot be undone.'));
+     if (!confirmed) return;
+ 
+     try {
+@@ -7178,9 +7109,9 @@ class AppController {
+       this._chatPanel.showTyping(false);
+ 
+       const empName = this._resolveEmployeeName(data.employee_id || '');
+-      this.logEntry('SYSTEM', `🧹 Cleared 1-on-1 history for ${empName}.`, 'system');
++      this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.clearedHistory', 'Cleared 1-on-1 history for {name}.', { name: empName }) || `🧹 Cleared 1-on-1 history for ${empName}.`, 'system');
+     } catch (err) {
+-      this._showToast(`Failed to clear history: ${err.message}`, 'error');
++      this._showToast(window.OMC_I18N?.t('meeting.clearHistoryFailed', 'Failed to clear history: {message}', { message: err.message }), 'error');
+     }
+   }
+ 
+@@ -7192,7 +7123,7 @@ class AppController {
+     // Show reflection status for 1-on-1
+     if (waitHooks) {
+       this._chatPanel.setInputEnabled(false);
+-      this.logEntry('SYSTEM', 'Ending 1-on-1... employee is reflecting on the conversation...', 'system');
++      this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.reflectingOnConversation', 'Ending 1-on-1... employee is reflecting on the conversation...'), 'system');
+     }
+ 
+     const resp = await fetch(`/api/conversation/${convId}/close?wait_hooks=${waitHooks}`, {
+@@ -7204,13 +7135,13 @@ class AppController {
+       const hr = resp.hook_result;
+       const empName = this._resolveEmployeeName(resp.employee_id || '');
+       if (hr.principles_updated) {
+-        this.logEntry('SYSTEM', `${empName} updated their work principles based on the meeting.`, 'system');
++        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.updatedPrinciples', '{name} updated their work principles based on the meeting.', { name: empName }), 'system');
+       }
+       if (hr.note_saved) {
+-        this.logEntry('SYSTEM', `1-on-1 note saved to ${empName}'s guidance record.`, 'system');
++        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.noteSaved', "1-on-1 note saved to {name}'s guidance record.", { name: empName }), 'system');
+       }
+       if (!hr.principles_updated && !hr.note_saved) {
+-        this.logEntry('SYSTEM', `1-on-1 with ${empName} ended (no reflection generated).`, 'system');
++        this.logEntry('SYSTEM', window.OMC_I18N?.t('meeting.endedNoReflection', '1-on-1 ended (no reflection generated).'), 'system');
+       }
+     }
+ 
+@@ -7317,7 +7248,7 @@ class AppController {
+   }
+ 
+   async _loadLazyDir(container, projectId, dirPath) {
+-    container.innerHTML = '<div style="color:var(--text-dim);">Loading...</div>';
++    container.innerHTML = `<div style="color:var(--text-dim);">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>`;
+     try {
+       // Encode each path segment individually to preserve '/' separators (e.g. slug/iter_001)
+       const encodedId = projectId.split('/').map(encodeURIComponent).join('/');
+@@ -7479,7 +7410,8 @@ class AppController {
+       const sel = document.getElementById('ceo-product-select');
+       if (!sel) return;
+       const current = sel.value || '';
+-      sel.innerHTML = '<option value="">No Product</option>';
++      const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
++      sel.innerHTML = `<option value="">${t('common.noProduct', 'No Product')}</option>`;
+       for (const p of data) {
+         const opt = document.createElement('option');
+         opt.value = p.id;
+@@ -7580,12 +7512,12 @@ class AppController {
+     if (!list) return;
+     const row = document.createElement('div');
+     row.className = 'kr-form-row';
+-    row.innerHTML = `
+-      <input type="text" class="kr-title-input form-input" placeholder="KR title" />
+-      <input type="number" class="kr-target-input form-input" placeholder="Target" style="width:70px" />
+-      <input type="text" class="kr-unit-input form-input" placeholder="Unit" style="width:60px" />
+-      <button class="kr-remove-btn" title="Remove">&times;</button>
+-    `;
++        row.innerHTML = `
++          <input type="text" class="kr-title-input form-input" placeholder="${t('kr.titlePlaceholder', 'KR title')}" />
++          <input type="number" class="kr-target-input form-input" placeholder="${t('kr.targetPlaceholder', 'Target')}" style="width:70px" />
++          <input type="text" class="kr-unit-input form-input" placeholder="${t('kr.unitPlaceholder', 'Unit')}" style="width:60px" />
++          <button class="kr-remove-btn" title="Remove">&times;</button>
++        `;
+     row.querySelector('.kr-remove-btn').addEventListener('click', () => row.remove());
+     list.appendChild(row);
+   }
+@@ -7593,7 +7525,7 @@ class AppController {
+   _populateProductOwnerDropdown() {
+     const sel = document.getElementById('create-product-owner');
+     if (!sel) return;
+-    sel.innerHTML = '<option value="">Select owner...</option>';
++    sel.innerHTML = `<option value="">${window.OMC_I18N?.t('common.selectOwner', 'Select owner...') || 'Select owner...'}</option>`;
+     for (const emp of (this._cachedEmployees || [])) {
+       const opt = document.createElement('option');
+       opt.value = emp.id;
+@@ -7876,9 +7808,9 @@ class AppController {
+     const deleteBtn = document.createElement('button');
+     deleteBtn.className = 'btn-small btn-danger';
+     deleteBtn.style.marginLeft = '4px';
+-    deleteBtn.textContent = 'Delete';
++    deleteBtn.textContent = t('common.delete', 'Delete');
+     deleteBtn.addEventListener('click', async () => {
+-      if (!confirm(`Delete product "${product.name}" and ALL its data? This cannot be undone.`)) return;
++      if (!confirm(t('project.deleteProductConfirm', `Delete product "${product.name}" and ALL its data? This cannot be undone.`))) return;
+       try {
+         const res = await fetch(`/api/product/${encodeURIComponent(slug)}`, { method: 'DELETE' });
+         if (!res.ok) throw new Error(`Server error: ${res.status}`);
+@@ -7887,7 +7819,7 @@ class AppController {
+         this._refreshProductSelector();
+       } catch (err) {
+         console.error('Delete failed:', err);
+-        this._showToast('Delete failed: ' + err.message, 'error');
++        this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error');
+       }
+     });
+     header.appendChild(deleteBtn);
+@@ -7977,9 +7909,9 @@ class AppController {
+       const delKrBtn = document.createElement('button');
+       delKrBtn.className = 'kr-remove-btn';
+       delKrBtn.innerHTML = '&times;';
+-      delKrBtn.title = 'Delete KR';
++      delKrBtn.title = t('project.deleteKrTooltip', 'Delete KR');
+       delKrBtn.addEventListener('click', async () => {
+-        if (!confirm(`Delete KR "${kr.title}"?`)) return;
++        if (!confirm(t('project.deleteKrConfirm', `Delete KR "${kr.title}"?`))) return;
+         try {
+           const r = await fetch(`/api/product/${encodeURIComponent(slug)}/kr/${encodeURIComponent(kr.id)}`, { method: 'DELETE' });
+           if (!r.ok) throw new Error(`HTTP ${r.status}`);
+@@ -8181,13 +8113,13 @@ class AppController {
+     if (container.querySelector('.kr-inline-add')) return;
+     const row = document.createElement('div');
+     row.className = 'kr-inline-add kr-form-row';
+-    row.innerHTML = `
+-      <input type="text" class="kr-title-input form-input" placeholder="KR title" />
+-      <input type="number" class="kr-target-input form-input" placeholder="Target" style="width:70px" />
+-      <input type="text" class="kr-unit-input form-input" placeholder="Unit" style="width:60px" />
+-      <button class="btn-small kr-save-btn">Save</button>
+-      <button class="kr-remove-btn">&times;</button>
+-    `;
++        row.innerHTML = `
++          <input type="text" class="kr-title-input form-input" placeholder="${t('kr.titlePlaceholder', 'KR title')}" />
++          <input type="number" class="kr-target-input form-input" placeholder="${t('kr.targetPlaceholder', 'Target')}" style="width:70px" />
++          <input type="text" class="kr-unit-input form-input" placeholder="${t('kr.unitPlaceholder', 'Unit')}" style="width:60px" />
++          <button class="btn-small kr-save-btn">Save</button>
++          <button class="kr-remove-btn">&times;</button>
++        `;
+     row.querySelector('.kr-remove-btn').addEventListener('click', () => row.remove());
+     row.querySelector('.kr-save-btn').addEventListener('click', async () => {
+       const title = row.querySelector('.kr-title-input').value.trim();
+@@ -8451,16 +8383,16 @@ class AppController {
+     deleteRow.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+     const deleteBtn = document.createElement('button');
+     deleteBtn.className = 'issue-delete-btn';
+-    deleteBtn.textContent = 'Delete Issue';
++    deleteBtn.textContent = t('issue.deleteButtonLabel', 'Delete Issue');
+     deleteBtn.addEventListener('click', async (e) => {
+       e.stopPropagation();
+-      if (!confirm(`Delete issue "${issue.title}"?`)) return;
++      if (!confirm(t('issue.deleteConfirm', `Delete issue "${issue.title}"?`))) return;
+       try {
+         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}`, { method: 'DELETE' });
+         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
+         this._showToast('Issue deleted', 'success');
+         this._openProductDetail(slug);
+-      } catch (err) { this._showToast(`Delete failed: ${err.message}`, 'error'); }
++      } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
+     });
+     deleteRow.appendChild(deleteBtn);
+     body.appendChild(deleteRow);
+@@ -8636,16 +8568,16 @@ class AppController {
+     const row = document.createElement('div');
+     row.className = 'issue-inline-add';
+     row.innerHTML = `
+-      <input type="text" class="form-input issue-new-title" placeholder="Issue title" />
+-      <textarea class="form-input issue-new-desc" rows="2" placeholder="Description (optional)"></textarea>
++      <input type="text" class="form-input issue-new-title" placeholder="${t('issue.titlePlaceholder', 'Issue title')}" />
++      <textarea class="form-input issue-new-desc" rows="2" placeholder="${t('issue.descriptionPlaceholder', 'Description (optional)')}"></textarea>
+       <div class="issue-new-row">
+         <select class="form-input issue-new-priority" style="width:auto">
+           <option value="P0">P0</option><option value="P1">P1</option>
+           <option value="P2" selected>P2</option><option value="P3">P3</option>
+         </select>
+-        <input type="number" class="form-input issue-new-sp" placeholder="Story pts" style="width:60px" />
++        <input type="number" class="form-input issue-new-sp" placeholder="${t('issue.storyPointsPlaceholder', 'Story pts')}" style="width:60px" />
+         <select class="form-input issue-new-sprint" style="width:auto">
+-          <option value="">No Sprint</option>
++          <option value="">${t('issue.sprintSelectPlaceholder', 'No Sprint')}</option>
+         </select>
+         <button class="btn-small issue-new-save">Create</button>
+         <button class="kr-remove-btn issue-new-cancel">&times;</button>
+@@ -8883,15 +8815,15 @@ class AppController {
+               actions.appendChild(startBtn);
+               const delBtn = document.createElement('button');
+               delBtn.className = 'sprint-action-btn danger';
+-              delBtn.textContent = 'Delete';
++              delBtn.textContent = t('sprint.deleteButtonLabel', 'Delete');
+               delBtn.addEventListener('click', async () => {
+-                if (!confirm(`Delete sprint "${s.name}"?`)) return;
++                if (!confirm(t('sprint.deleteConfirm', `Delete sprint "${s.name}"?`))) return;
+                 try {
+                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}`, { method: 'DELETE' });
+                   if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
+-                  this._showToast('Sprint deleted', 'success');
++                  this._showToast(t('sprint.deleted', 'Sprint deleted'), 'success');
+                   this._renderProductRoadmap(slug, container);
+-                } catch (err) { this._showToast(`Delete failed: ${err.message}`, 'error'); }
++                } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
+               });
+               actions.appendChild(delBtn);
+             } else if (s.status === 'active') {
+@@ -9010,16 +8942,16 @@ class AppController {
+     const form = document.createElement('div');
+     form.className = 'sprint-inline-add';
+     form.innerHTML = `
+-      <input type="text" class="form-input sprint-new-name" placeholder="Sprint name" />
+-      <input type="text" class="form-input sprint-new-goal" placeholder="Goal (optional)" />
++      <input type="text" class="form-input sprint-new-name" placeholder="${t('sprint.namePlaceholder', 'Sprint name')}" />
++      <input type="text" class="form-input sprint-new-goal" placeholder="${t('sprint.goalPlaceholder', 'Goal (optional)')}" />
+       <div class="sprint-form-row">
+-        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">Start:</label>
++        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">${t('sprint.startLabel', 'Start:')}</label>
+         <input type="date" class="form-input sprint-new-start" style="width:auto" />
+-        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">End:</label>
++        <label style="color:var(--text-dim);font-size:calc(5px + var(--font-boost))">${t('sprint.endLabel', 'End:')}</label>
+         <input type="date" class="form-input sprint-new-end" style="width:auto" />
+       </div>
+       <div class="sprint-form-row">
+-        <input type="number" class="form-input sprint-new-capacity" placeholder="Capacity (pts)" style="width:80px" />
++        <input type="number" class="form-input sprint-new-capacity" placeholder="${t('sprint.capacityPlaceholder', 'Capacity (pts)')}" style="width:80px" />
+         <span class="sprint-suggested-capacity" style="color:var(--text-dim);font-size:calc(5px + var(--font-boost));margin-left:4px"></span>
+         <button class="btn-small sprint-save-btn">Create</button>
+         <button class="kr-remove-btn sprint-cancel-btn">&times;</button>
+@@ -9033,7 +8965,7 @@ class AppController {
+           const hint = form.querySelector('.sprint-suggested-capacity');
+           hint.textContent = `(suggested: ${d.suggested_capacity} pts)`;
+           hint.style.cursor = 'pointer';
+-          hint.title = 'Click to use suggested capacity';
++          hint.title = t('sprint.useSuggestedCapacity', 'Click to use suggested capacity');
+           hint.addEventListener('click', () => {
+             form.querySelector('.sprint-new-capacity').value = d.suggested_capacity;
+           });
+@@ -9050,10 +8982,10 @@ class AppController {
+     form.querySelector('.sprint-cancel-btn').addEventListener('click', () => form.remove());
+     form.querySelector('.sprint-save-btn').addEventListener('click', async () => {
+       const name = form.querySelector('.sprint-new-name').value.trim();
+-      if (!name) { this._showToast('Sprint name is required', 'warning'); return; }
++      if (!name) { this._showToast(t('sprint.nameRequired', 'Sprint name is required'), 'warning'); return; }
+       const start_date = form.querySelector('.sprint-new-start').value;
+       const end_date = form.querySelector('.sprint-new-end').value;
+-      if (!start_date || !end_date) { this._showToast('Dates are required', 'warning'); return; }
++      if (!start_date || !end_date) { this._showToast(t('sprint.datesRequired', 'Dates are required'), 'warning'); return; }
+       const goal = form.querySelector('.sprint-new-goal').value.trim();
+       const capacity = parseInt(form.querySelector('.sprint-new-capacity').value) || null;
+       try {
+@@ -9103,7 +9035,7 @@ class AppController {
+       };
+       const cap = parseInt(form.querySelector('.sprint-edit-capacity').value);
+       if (!isNaN(cap)) updates.capacity = cap;
+-      if (!updates.name) { this._showToast('Sprint name is required', 'warning'); return; }
++      if (!updates.name) { this._showToast(t('sprint.nameRequired', 'Sprint name is required'), 'warning'); return; }
+       try {
+         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(sprint.id)}`, {
+           method: 'PUT',
+@@ -9697,12 +9629,12 @@ class AppController {
+ 
+         // Cancel button for active tasks
+         if (!isTerminal && t.project_id) {
+-          progressHtml += `<button class="proj-cancel-btn" data-pid="${this._escHtml(t.project_id)}" title="Cancel">&#10005;</button>`;
++          progressHtml += `<button class="proj-cancel-btn" data-pid="${this._escHtml(t.project_id)}" title="${t('project.cancelTooltip', 'Cancel')}">&#10005;</button>`;
+         }
+ 
+         // Trace button
+         if (t.project_id) {
+-          progressHtml += `<button class="proj-trace-btn" data-pid="${this._escHtml(t.project_id)}" data-task="${this._escHtml(t.task.substring(0, 40))}" title="Trace">T</button>`;
++          progressHtml += `<button class="proj-trace-btn" data-pid="${this._escHtml(t.project_id)}" data-task="${this._escHtml(t.task.substring(0, 40))}" title="${t('project.traceTooltip', 'Trace')}">T</button>`;
+         }
+ 
+         if (progressHtml) {
+@@ -9746,7 +9678,7 @@ class AppController {
+     detailEl.classList.remove('hidden');
+     // Render directly into contentEl — no split wrapper needed
+     contentEl.innerHTML = `<div id="project-iter-detail" style="width:100%;height:100%;overflow-y:auto;">
+-      <div style="color:var(--text-dim);font-size:6px;">Loading...</div>
++      <div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>
+     </div>`;
+     this._loadIterationDetail(projectId, projectId, nodeId);
+   }
+@@ -9773,11 +9705,11 @@ class AppController {
+   _renderProjectDetail(projectId, proj, contentEl) {
+     const totalCost = proj.total_cost_usd || 0;
+     let headerHtml = `<div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+-      <span class="project-name-editable" data-project-id="${this._escHtml(projectId)}" title="Click to rename" style="color:var(--pixel-cyan);font-size:8px;cursor:pointer;border-bottom:1px dashed var(--text-dim);">${this._escHtml(proj.name || projectId)}</span>
++      <span class="project-name-editable" data-project-id="${this._escHtml(projectId)}" title="${t('project.renameTooltip', 'Click to rename')}" style="color:var(--pixel-cyan);font-size:8px;cursor:pointer;border-bottom:1px dashed var(--text-dim);">${this._escHtml(proj.name || projectId)}</span>
+       <span style="color:var(--text-dim);font-size:6px;">${proj.status}</span>
+       ${totalCost > 0 ? `<span style="color:var(--pixel-yellow);font-size:6px;">$${totalCost.toFixed(4)}</span>` : ''}
+       <button onclick="app.openTraceViewer('${this._escHtml(projectId)}','${this._escHtml(proj.name || projectId)}')" style="margin-left:auto;background:#1a1a1a;color:#4af;border:1px solid #333;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace">TRACE</button>
+-      <button onclick="app._deleteProject('${this._escHtml(projectId)}')" style="background:#1a1a1a;color:var(--pixel-red);border:1px solid #500;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace" title="Delete project and all data">DELETE</button>
++      <button onclick="app._deleteProject('${this._escHtml(projectId)}')" style="background:#1a1a1a;color:var(--pixel-red);border:1px solid #500;padding:1px 8px;font-size:6px;cursor:pointer;font-family:monospace" title="${t('project.deleteProjectTooltip', 'Delete project and all data')}">DELETE</button>
+     </div>`;
+ 
+     // Build split layout: iteration list (left) + detail (right)
+@@ -9867,7 +9799,7 @@ class AppController {
+   _loadIterationDetail(projectId, iterationId) {
+     const panel = document.getElementById('project-iter-detail');
+     if (!panel) return;
+-    panel.innerHTML = '<div style="color:var(--text-dim);font-size:6px;">Loading...</div>';
++    panel.innerHTML = `<div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div>`;
+ 
+     // Use qualified iteration ID (projectId/iterationId) for unambiguous lookup
+     const qualifiedId = (projectId && iterationId && projectId !== iterationId)
+@@ -9898,8 +9830,8 @@ class AppController {
+ 
+         // Tab bar — "Detail" + "Task Tree" fixed + dynamic plugin tabs
+         const plugins = window.pluginLoader.getPlugins();
+-        let tabBarHtml = `<div class="project-tabs"><button class="project-tab active" data-tab="detail">Detail</button>`;
+-        tabBarHtml += `<button class="project-tab" data-tab="task-tree">\uD83C\uDF33 Task Tree</button>`;
++        let tabBarHtml = `<div class="project-tabs"><button class="project-tab active" data-tab="detail">${t('project.detailTab', 'Detail')}</button>`;
++        tabBarHtml += `<button class="project-tab" data-tab="task-tree">\uD83C\uDF33 ${t('project.taskTreeTab', 'Task Tree')}</button>`;
+         for (const p of plugins) {
+           tabBarHtml += `<button class="project-tab" data-tab="plugin-${p.id}">${p.icon ? p.icon + ' ' : ''}${p.name}</button>`;
+         }
+@@ -9921,45 +9853,45 @@ class AppController {
+           }
+           if (ar) {
+             const arIcon = ar.accepted ? '\u2705' : '\u274C';
+-            const arLabel = ar.accepted ? 'Passed' : 'Failed';
++            const arLabel = ar.accepted ? window.OMC_I18N?.t('common.passed', 'Passed') || 'Passed' : window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed';
+             const arNotes = ar.notes ? ` — ${this._escHtml(ar.notes)}` : '';
+-            detailHtml += `<div style="font-size:6px;color:${ar.accepted ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:4px 0;">${arIcon} Acceptance Result: ${arLabel}${arNotes}</div>`;
++            detailHtml += `<div style="font-size:6px;color:${ar.accepted ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:4px 0;">${arIcon} ${window.OMC_I18N?.t('common.acceptanceResult', 'Acceptance Result:')} ${arLabel}${arNotes}</div>`;
+           }
+           const ear = doc.ea_review_result;
+           if (ear) {
+             const earIcon = ear.approved ? '\u2705' : '\u274C';
+-            const earLabel = ear.approved ? 'Approved' : 'Rejected';
++            const earLabel = ear.approved ? window.OMC_I18N?.t('common.approved', 'Approved') || 'Approved' : window.OMC_I18N?.t('common.rejected', 'Rejected') || 'Rejected';
+             const earNotes = ear.notes ? ` — ${this._escHtml(ear.notes)}` : '';
+-            detailHtml += `<div style="font-size:6px;color:${ear.approved ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:2px 0;">EA Review: ${earIcon} ${earLabel}${earNotes}</div>`;
++            detailHtml += `<div style="font-size:6px;color:${ear.approved ? 'var(--pixel-green)' : 'var(--pixel-red)'};margin:2px 0;">${window.OMC_I18N?.t('common.eaReview', 'EA Review:')} ${earIcon} ${earLabel}${earNotes}</div>`;
+           }
+         }
+ 
+         if (doc.status !== 'completed' && doc.status !== 'pending_confirmation') {
+           detailHtml += `<div style="margin:8px 0;display:flex;gap:6px;">`;
+-          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 Continue Current Iteration</button>`;
+-          detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ Stop All Tasks</button>`;
++          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continue Current Iteration')}</button>`;
++          detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ ${window.OMC_I18N?.t('toolbar.stopAllTasks', 'Stop All Tasks')}</button>`;
+           detailHtml += `</div>`;
+         }
+ 
+         // Follow-up button (always available)
+         detailHtml += `<div class="task-followup-section">
+-          <button class="pixel-btn" id="followup-btn" style="font-size:6px;padding:4px 10px;">+ Follow-up Task</button>
++          <button class="pixel-btn" id="followup-btn" style="font-size:6px;padding:4px 10px;">${t('followup.addButton', '+ Follow-up Task')}</button>
+           <div id="followup-input-area" class="hidden" style="margin-top:6px;">
+-            <textarea id="followup-instructions" class="followup-textarea" placeholder="Enter follow-up instructions..." rows="3"></textarea>
++            <textarea id="followup-instructions" class="followup-textarea" placeholder="${t('followup.instructionsPlaceholder', 'Enter follow-up instructions...')}" rows="3"></textarea>
+             <div style="margin-top:4px;display:flex;gap:4px;">
+-              <button class="pixel-btn" id="followup-submit" style="font-size:6px;padding:3px 8px;">Send</button>
+-              <button class="pixel-btn secondary" id="followup-cancel" style="font-size:6px;padding:3px 8px;">Cancel</button>
++              <button class="pixel-btn" id="followup-submit" style="font-size:6px;padding:3px 8px;">${t('common.send', 'Send')}</button>
++              <button class="pixel-btn secondary" id="followup-cancel" style="font-size:6px;padding:3px 8px;">${t('common.cancel', 'Cancel')}</button>
+             </div>
+           </div>
+         </div>`;
+ 
+         const downloadUrl = `/api/projects/${qualifiedPath}/download`;
+         detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:6px 0 3px;display:flex;justify-content:space-between;align-items:center;">
+-          <span>Documents</span>
+-          <a href="${downloadUrl}" style="font-size:5px;color:var(--pixel-green);text-decoration:none;border:1px solid var(--border);padding:1px 6px;cursor:pointer;">Download ZIP</a>
++          <span>${t('project.documentsLabel', 'Documents')}</span>
++          <a href="${downloadUrl}" style="font-size:5px;color:var(--pixel-green);text-decoration:none;border:1px solid var(--border);padding:1px 6px;cursor:pointer;">${t('project.downloadZip', 'Download ZIP')}</a>
+         </div>`;
+         detailHtml += `<div class="lazy-file-tree" data-project-id="${this._escHtml(qualifiedPath)}" data-path="" style="font-size:6px;">
+-          <div style="color:var(--text-dim);">Loading files...</div>
++          <div style="color:var(--text-dim);">${t('common.loading', 'Loading...')}</div>
+         </div>`;
+ 
+         // CEO Report (stored when project completion report is submitted)
+@@ -10054,7 +9986,7 @@ class AppController {
+           </div>
+         </div>`;
+         for (const p of plugins) {
+-          fullHtml += `<div class="project-tab-content" data-tab="plugin-${p.id}" style="display:none;"><div style="color:var(--text-dim);font-size:6px;">Loading...</div></div>`;
++          fullHtml += `<div class="project-tab-content" data-tab="plugin-${p.id}" style="display:none;"><div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Loading...') || 'Loading...'}</div></div>`;
+         }
+         panel.innerHTML = fullHtml;
+ 
+@@ -10294,7 +10226,7 @@ class AppController {
+   }
+ 
+   _deleteProject(projectId) {
+-    if (!confirm(`Delete project "${projectId}" and ALL its data? This cannot be undone.`)) return;
++    if (!confirm(t('project.deleteProjectConfirm', `Delete project "${projectId}" and ALL its data? This cannot be undone.`))) return;
+     fetch(`/api/projects/${encodeURIComponent(projectId)}`, { method: 'DELETE' })
+       .then(r => {
+         if (!r.ok) throw new Error(`Server error: ${r.status}`);
+diff --git a/frontend/i18n/en.json b/frontend/i18n/en.json
+new file mode 100644
+index 0000000..8a157f3
+--- /dev/null
++++ b/frontend/i18n/en.json
+@@ -0,0 +1,489 @@
++{
++  "nav.products": "PRODUCTS",
++  "nav.activity": "ACTIVITY LOG",
++  "nav.teamRoster": "TEAM ROSTER",
++  "nav.ceoConsole": "CEO CONSOLE",
++  "toolbar.settings": "Settings",
++  "toolbar.newProduct": "New Product",
++  "toolbar.importProduct": "Import Product",
++  "toolbar.exEmployeeWall": "Ex-Employee Wall",
++  "toolbar.companyCulture": "Company Culture",
++  "toolbar.companyDirection": "Company Direction",
++  "companyCulture.title": "Company Culture",
++  "companyDirection.title": "Company Direction",
++  "exEmployees.title": "Ex-Employee Wall",
++  "toolbar.dashboard": "Dashboard",
++  "toolbar.announcements": "Announcements",
++  "toolbar.doNotDisturb": "Do Not Disturb",
++  "toolbar.backgroundTasks": "Background Tasks",
++  "toolbar.exportScreenshot": "Export SVG Screenshot",
++  "toolbar.stopAllTasks": "Stop All Tasks",
++  "toolbar.forceReload": "Force reload all data from disk",
++  "settings.title": "⚙ SETTINGS",
++  "settings.languageLabel": "Language",
++  "settings.textSize": "Text Size",
++  "settings.apiConnections": "🔑 API Connections",
++  "common.send": "Send",
++  "common.cancel": "Cancel",
++  "common.loading": "Loading...",
++  "common.errorLoading": "Error loading",
++  "common.noProduct": "No Product",
++  "common.selectEmployee": "Select Employee",
++  "common.selectOwner": "Select owner...",
++  "common.allRoles": "All Roles",
++  "common.allDepartments": "All Departments",
++  "common.allLevels": "All Levels",
++  "common.active": "Active",
++  "common.idle": "Idle",
++  "common.noSessions": "No sessions",
++  "common.all": "All",
++  "common.done": "Done",
++  "common.failed": "Failed",
++  "common.tasks": "tasks",
++  "common.add": "Add",
++  "common.apply": "Apply",
++  "common.applying": "Applying...",
++  "common.cancelTask": "Cancel this task?",
++  "status.sync": "Sync {time}",
++  "common.settingsReloadNotice": "⚠ Settings changes will trigger a server reload. Use when no tasks are running.",
++  "common.messagePlaceholder": "$ Type message, / for commands (Enter to send)",
++  "meeting.typeLabel": "Meeting Type",
++  "meeting.type.oneonone": "1-on-1 Meeting",
++  "meeting.type.allHands": "All-Hands (CEO Address)",
++  "meeting.type.discussion": "Discussion (Open Floor)",
++  "meeting.startMeeting": "Start Meeting",
++  "meeting.endMeeting": "End Meeting",
++  "meeting.attachFile": "Attach file or image",
++  "settings.systemCrons": "⏰ System Crons",
++  "settings.display": "👁 Display",
++  "hiringRequest.title": "💼 COO Hiring Request",
++  "candidate.title": "👤 Boss Online — Candidate Selection",
++  "candidate.interview": "💬 Interview",
++  "candidate.select": "✔ Select",
++  "candidate.batchSelected": "{count} selected",
++  "candidate.batchRecruit": "RECRUIT PARTY ({count})",
++  "talentPool.title": "💼 Talent Pool",
++  "onboarding.title": "🚀 Onboarding",
++  "ceo.chat": "💬 Chat",
++  "ceo.chatWithEA": "Chat with EA",
++  "ceo.projects": "Projects",
++  "ceo.oneOnOne": "1-on-1",
++  "ceo.oneOnOneWith": "1-on-1 with {name}",
++  "ceo.noActiveSessions": "No active sessions",
++  "ceo.linkTaskToProduct": "Link task to product",
++  "ceo.toggleProjectList": "Toggle project list",
++  "ceo.youLabel": "👑 YOU",
++  "ceo.newTask": "New Task",
++  "ceo.noMessagesYet": "No messages yet.",
++  "ceo.selectProjectToStart": "Select a project to start",
++  "ceo.noProduct": "No Product",
++  "status.employeeCount": "👥 {count}",
++  "status.toolCount": "🔧 {count}",
++  "status.roomCount": "🏢 {free}/{total}",
++  "status.online": "● CONNECTED",
++  "status.offline": "● OFFLINE",
++  "announcements.title": "🔔 Announcements",
++  "announcements.loading": "Loading...",
++  "announcements.empty": "No new announcements",
++  "announcements.failed": "Could not load announcements",
++  "dashboard.noData": "No data",
++  "dashboard.staffOverview": "Staff Overview",
++  "dashboard.active": "Active",
++  "dashboard.departed": "Departed",
++  "dashboard.working": "Working",
++  "dashboard.idle": "Idle",
++  "dashboard.inMeeting": "In Meeting",
++  "dashboard.equipmentRooms": "Equipment & Meeting Rooms",
++  "dashboard.tools": "Tools",
++  "dashboard.rooms": "Rooms",
++  "dashboard.available": "Available",
++  "dashboard.taskStatus": "Task Status",
++  "dashboard.running": "Running",
++  "dashboard.queued": "Queued",
++  "dashboard.deptDistribution": "Dept Distribution",
++  "dashboard.performanceDistribution": "Performance Distribution",
++  "dashboard.excellent": "3.75 Excellent",
++  "dashboard.qualified": "3.5 Qualified",
++  "dashboard.needsImprovement": "3.25 Needs Improvement",
++  "dashboard.costOverview": "Cost Overview",
++  "dashboard.costNote": "(estimated, subject to actual billing)",
++  "dashboard.grandTotal": "Grand Total",
++  "dashboard.projects": "Projects",
++  "dashboard.overhead": "Overhead",
++  "dashboard.projectTokens": "Project Tokens",
++  "dashboard.overheadTokens": "Overhead Tokens",
++  "dashboard.overheadByCategory": "Overhead by Category",
++  "dashboard.category": "Category",
++  "dashboard.usd": "USD",
++  "dashboard.inTokens": "In Tokens",
++  "dashboard.outTokens": "Out Tokens",
++  "dashboard.costByDepartment": "Cost by Department",
++  "dashboard.project": "Project",
++  "dashboard.tokens": "Tokens",
++  "dashboard.status": "Status",
++  "settings.loading": "Loading...",
++  "settings.noSystemCrons": "No system crons registered.",
++  "settings.cronsError": "Error: {message}",
++  "settings.name": "Name",
++  "settings.interval": "Interval",
++  "settings.description": "Description",
++  "settings.runs": "Runs",
++  "settings.status": "Status",
++  "settings.stop": "Stop",
++  "settings.start": "Start",
++  "settings.set": "Set",
++  "settings.save": "Save",
++  "settings.mode": "Mode",
++  "settings.local": "Local",
++  "settings.remote": "Remote",
++  "settings.apiKey": "API Key",
++  "settings.setupTokenRecommended": "Setup Token (Recommended)",
++  "settings.authorizeWithAnthropic": "Authorize with Anthropic",
++  "settings.pasteAnthropicCode": "Paste the code from Anthropic:",
++  "settings.defaultModel": "Default Model",
++  "settings.selectModel": "Select model...",
++  "settings.loadingOptions": "Loading options...",
++  "settings.loadingModels": "Loading models...",
++  "settings.talentMarket": "Talent Market",
++  "settings.connected": "Connected",
++  "settings.defaultBadge": "DEFAULT",
++  "settings.apiKeyNotConfigured": "API Key not configured",
++  "settings.notConnected": "Not Connected",
++  "settings.cloudConnectionFailed": "Cloud connection failed",
++  "settings.localTalentMarket": "Using Local Talent Market",
++  "settings.aiPoweredSearch": "AI-Powered Search",
++  "settings.apiKeyPlaceholder": "(none)",
++  "settings.improvesCandidateQuality": "improves candidate quality",
++  "settings.enterModel": "Enter model",
++  "settings.saveApiKeyFirst": "Save API key first",
++  "settings.useSaved": "Use saved key",
++  "settings.saved": "Saved",
++  "settings.saveModel": "Save Model",
++  "settings.setAsDefault": "Set as Default",
++  "settings.enterModelId": "Enter model ID...",
++  "settings.errorLoading": "Error loading",
++  "settings.noKey": "No key",
++  "settings.submit": "Submit",
++  "settings.orUseApiKeyDirectly": "Or use API Key directly",
++  "settings.ok": "OK",
++  "settings.fail": "FAIL",
++  "settings.err": "ERR",
++  "settings.enterValue": "Enter value",
++  "meeting.roomTitle": "🏢 {name}",
++  "meeting.minutesTitle": "📒 Meeting Minutes: {name}",
++  "meeting.oneononeTitle": "🎓 1-on-1 Meeting",
++  "meeting.capacityLabel": "Capacity",
++  "meeting.participantsLabel": "Participants",
++  "meeting.sessionEnded": "1-on-1 session ended.",
++  "meeting.available": "Available",
++  "meeting.inMeeting": "In Meeting",
++  "meeting.capacity": "{count} people",
++  "meeting.participants": "Participants",
++  "meeting.noParticipants": "No participants",
++  "meeting.liveLog": "Live Meeting Log",
++  "meeting.loading": "Loading...",
++  "meeting.loadingMinutes": "Loading minutes...",
++  "meeting.noLogs": "No meeting logs",
++  "meeting.noArchivedMeetings": "No archived meetings",
++  "meeting.failedLoadChat": "Failed to load chat",
++  "meeting.failedLoadMinutes": "Failed to load minutes",
++  "meeting.notFound": "Not found",
++  "meeting.backToList": "Back to list",
++  "meeting.summary": "Summary",
++  "meeting.noData": "No data",
++  "meeting.selectEmployee": "Select Employee",
++  "meeting.selectEmployeePlaceholder": "-- Select Employee --",
++  "oauth.waitingForCode": "Waiting for code...",
++  "oauth.pasteCodeFirst": "Paste the code first",
++  "oauth.exchanging": "Exchanging...",
++  "oauth.loginSuccessful": "Login successful",
++  "workflow.title": "Company Rules — Workflows",
++  "workflow.selectPrompt": "← Select a workflow to view",
++  "companyDirection.description": "Define the company's strategy / direction. This is injected into each employee's prompt.",
++  "workflow.edit": "Edit",
++  "workflow.saveChanges": "Save Changes",
++  "employee.detailsTitle": "Employee Details",
++  "employee.taskBoardLabel": "Task Board",
++  "employee.noTasksLabel": "No tasks",
++  "employee.executionLogLabel": "Execution Log",
++  "employee.noLogsLabel": "No logs",
++  "employee.workHistoryLabel": "Work History",
++  "employee.noWorkHistoryLabel": "No work history",
++  "employee.personalityLabel": "Personality",
++  "employee.skillsLabel": "Skills",
++  "employee.toolsLabel": "Tools",
++  "employee.llmLabel": "LLM",
++  "employee.llmModelLabel": "LLM Model",
++  "employee.providerLabel": "Provider",
++  "employee.costLabel": "Cost",
++  "employee.feeLabel": "Fee",
++  "employee.hiringFeeLabel": "Hiring Fee",
++  "employee.agentFamily": "Agent Family",
++  "employee.authLabel": "Auth",
++  "employee.descriptionLabel": "Description",
++  "interview.title": "🎤 Interview",
++  "toolList.title": "🛠 TOOL LIST",
++  "project.detailTitle": "📋 Project Wall — All Tasks",
++  "product.detailTitle": "Product Detail",
++  "traceViewer.title": "TRACE VIEWER",
++  "bgTasks.title": "BACKGROUND TASKS",
++  "bgTasks.selectTask": "Select a task",
++  "createProduct.title": "NEW PRODUCT",
++  "createProduct.nameLabel": "Name",
++  "createProduct.objectiveLabel": "Objective",
++  "createProduct.ownerLabel": "Owner",
++  "createProduct.selectOwner": "Select owner...",
++  "createProduct.keyResultsLabel": "Key Results",
++  "createProduct.addKr": "+ Add KR",
++  "createProduct.create": "Create",
++  "projectWall.empty": "No project records",
++  "employee.uploadAvatar": "Upload Avatar",
++  "employee.nameLabel": "Name",
++  "employee.nicknameLabel": "Nickname",
++  "employee.departmentLabel": "Dept",
++  "employee.roleLabel": "Role",
++  "employee.levelLabel": "Level",
++  "employee.permsLabel": "Perms",
++  "employee.salaryLabel": "Salary",
++  "employee.perfLabel": "Perf",
++  "employee.okrsLabel": "OKRs",
++  "employee.startOneOnOne": "🎓 Start 1-on-1",
++  "employee.dismissEmployee": "🚪 Dismiss Employee",
++  "employee.workPrinciplesLabel": "Work Principles",
++  "employee.oneOnOneNotesLabel": "1-on-1 Notes",
++  "employee.noWorkPrinciplesLabel": "No work principles yet",
++  "employee.noOneOnOneNotesLabel": "No 1-on-1 notes yet",
++  "employee.noScheduledJobsLabel": "No scheduled jobs",
++  "employee.scheduledJobsLabel": "Scheduled Jobs",
++  "employee.stopAllLabel": "Stop All",
++  "employee.projectHistoryLabel": "Project History",
++  "exEmployees.empty": "No ex-employees",
++  "toolList.empty": "No tools registered",
++  "systemCrons.empty": "No system crons registered.",
++  "systemCrons.name": "Name",
++  "systemCrons.interval": "Interval",
++  "systemCrons.description": "Description",
++  "systemCrons.runs": "Runs",
++  "systemCrons.status": "Status",
++  "companyDirection.placeholder": "e.g. We focus on AI-driven creative tools for indie creators...",
++  "companyCulture.placeholder": "Add a new culture entry...",
++  "companyCulture.empty": "No culture entries yet. CEO can add above.",
++  "companyCulture.failed": "Failed to load culture.",
++  "companyCulture.added": "Company culture added",
++  "companyCulture.removed": "Company culture removed",
++  "companyDirection.saveFailed": "Save failed",
++  "companyDirection.updated": "Company direction updated",
++  "companyDirection.draftFirst": "Please write a draft direction first.",
++  "companyDirection.sending": "⏳ Sending...",
++  "companyDirection.enrichFailed": "Enrich failed",
++  "companyDirection.taskSent": "Direction polish task sent to EA",
++  "companyDirection.enrichButton": "✨ Polish / Enrich",
++  "office.levelJunior": "Junior",
++  "office.levelMid": "Mid",
++  "office.levelSenior": "Senior",
++  "office.levelFounding": "Founding",
++  "office.levelCEO": "CEO",
++  "office.meetingLabel": "Meeting",
++  "office.toolLabelFallback": "TOOL",
++  "office.companyRulesTooltip": "Company Rules\nClick to view and edit workflows",
++  "office.projectWallTooltip": "Project Wall\nClick to view project history",
++  "office.ceoTooltip": "CEO (You)\nRole: Chief Executive\nInput tasks below",
++  "office.employeeTooltipSkills": "Skills:",
++  "office.employeeTooltipPerformance": "Performance:",
++  "office.employeeTooltipNeedsSetup": "🔑 Needs API setup",
++  "office.employeeTooltipApiOffline": "🔴 API offline",
++  "office.employeeTooltipInMeeting": "📖 In 1-on-1 meeting...",
++  "office.employeeTooltipClickDetails": "(Click for details)",
++  "office.roomTooltipCapacity": "Capacity:",
++  "office.roomTooltipStatus": "Status:",
++  "office.roomStatusInUse": "🔴 In Use",
++  "office.roomStatusAvailable": "🟢 Available",
++  "office.roomTooltipParticipants": "Participants:",
++  "office.roomInUseBadge": "IN USE",
++  "office.bulletinBoardLabel": "Rules",
++  "office.projectWallLabel": "Projects",
++  "office.executiveLabel": "Executive",
++  "toolbar.doNotDisturbOn": "Do Not Disturb (ON)",
++  "meeting.endingReflection": "Ending meeting... reflecting on conversation...",
++  "meeting.endedPrinciplesUpdated": "Meeting concluded. Work principles have been updated based on the conversation.",
++  "meeting.endedNoUpdate": "Meeting concluded. No principle updates needed.",
++  "meeting.endingEaSummarizing": "Ending meeting... EA is summarizing action points...",
++  "meeting.concludedActionPoints": "Meeting concluded. {count} action point(s):",
++  "meeting.projectCreated": "Project created: {projectId}",
++  "meeting.clearHistoryConfirm": "Clear all 1-on-1 history for this employee? This cannot be undone.",
++  "meeting.clearedHistory": "Cleared 1-on-1 history for {name}.",
++  "meeting.clearHistoryFailed": "Failed to clear history: {message}",
++  "meeting.reflectingOnConversation": "Ending 1-on-1... employee is reflecting on the conversation...",
++  "meeting.updatedPrinciples": "{name} updated their work principles based on the meeting.",
++  "meeting.noteSaved": "1-on-1 note saved to {name}'s guidance record.",
++  "meeting.endedNoReflection": "1-on-1 ended (no reflection generated).",
++  "meeting.ended": "1-on-1 ended.",
++  "meeting.failedToEnd": "Failed to end 1-on-1: {message}",
++  "meeting.noActiveSessionToEnd": "No active meeting or 1-on-1 to end.",
++  "createProduct.namePlaceholder": "e.g. OneManCompany site",
++  "createProduct.objectivePlaceholder": "Product goal / objective",
++  "ceo.messagePlaceholder": "$ Type message, / for commands (Enter to send)",
++  "meeting.messagePlaceholder": "Type a message...",
++  "meeting.sendMessagePlaceholder": "Send a message to this meeting...",
++  "interview.messagePlaceholder": "Type a message...",
++  "companyCulture.addEntryPlaceholder": "Add a new culture entry...",
++  "companyDirection.inputPlaceholder": "e.g. We focus on AI-driven creative tools for indie creators...",
++  "project.documentsLabel": "Documents",
++  "project.downloadZip": "Download ZIP",
++  "project.deleteProjectTooltip": "Delete project and all data",
++  "project.deleteProjectConfirm": "Delete project \"{name}\" and ALL its data? This cannot be undone.",
++  "project.deleteKrTooltip": "Delete KR",
++  "project.deleteKrConfirm": "Delete KR \"{name}\"?",
++  "issue.deleteButtonLabel": "Delete Issue",
++  "issue.deleteConfirm": "Delete issue \"{name}\"?",
++  "sprint.deleteButtonLabel": "Delete",
++  "sprint.deleted": "Sprint deleted",
++  "sprint.deleteConfirm": "Delete sprint \"{name}\"?",
++  "sprint.useSuggestedCapacity": "Click to use suggested capacity",
++  "sprint.nameRequired": "Sprint name is required",
++  "sprint.datesRequired": "Dates are required",
++  "common.delete": "Delete",
++  "common.deleteFailed": "Delete failed: {message}",
++  "talent.profileErrorTitle": "Talent Profile Error",
++  "talent.profileErrorContact": "Please contact the talent uploader to fix this issue.",
++  "talent.profileErrorRepo": "You can file an issue on the talent repo.",
++  "log.taskSubmitted": "📋 Task: {task}",
++  "log.agentThinking": "💭 {message}",
++  "log.agentDone": "✅ {role} done: {summary}",
++  "log.newHire": "🎉 New hire: {name} ({role})",
++  "log.departure": "🚪 Departure: {name}{nickname} — {reason}",
++  "log.rehired": "🔄 Rehired: {name}{nickname} ({role})",
++  "log.quarterlyReview": "📊 Quarterly review: {id} — Score: {score}",
++  "log.okrsUpdated": "🎯 OKRs updated for #{employee_id}",
++  "log.onboardingStarted": "📋 Onboarding started: {name}",
++  "log.onboardingCompleted": "✅ Onboarding completed: {name}",
++  "log.probationReview": "📋 Probation review: #{id} — {result}",
++  "log.pipStarted": "⚠️ PIP started for #{id}",
++  "log.pipResolved": "✅ PIP resolved for #{id}",
++  "log.exitInterviewStarted": "🚪 Exit interview: {name}",
++  "log.exitInterviewCompleted": "📄 Exit interview done: {name}",
++  "log.newTool": "🔧 New tool: {name}",
++  "log.guidanceStart": "📖 {name} is in a 1-on-1 meeting...",
++  "log.guidanceNoted": "🎓 {name}: {acknowledgment}",
++  "log.guidanceEnd": "📖 {name}'s 1-on-1 meeting concluded",
++  "log.roomBooked": "🏢 Room booked: {room_name}",
++  "log.roomReleased": "🏢 Room released: {room_name}",
++  "log.roomDenied": "🚫 Room request denied: no rooms available",
++  "log.routinePhase": "🔄 {phase}: {message}",
++  "log.meetingReportReady": "📄 Meeting report ready (EA reviewed)",
++  "log.meetingReportComplete": "📄 Meeting report complete (EA approved)",
++  "log.recurringIssues": "Recurring issues",
++  "onboarding.toggle": "▼",
++  "candidate.selectedCount": "0 selected",
++  "talentPool.sourceBadge": "",
++  "common.approve": "Approve",
++  "common.reject": "Reject",
++  "common.approved": "Approved",
++  "common.rejected": "Rejected",
++  "common.save": "Save",
++  "common.close": "✕",
++  "common.notification": "Notification",
++  "common.clickToOpen": "Click to open",
++  "common.authorize": "Authorize",
++  "common.passed": "Passed",
++  "common.acceptanceResult": "Acceptance Result:",
++  "common.eaReview": "EA Review:",
++  "common.continueCurrentIteration": "▶ Continue Current Iteration",
++  "workflow.contentLabel": "Workflow content",
++  "interview.hireButton": "💼 Hire",
++  "interview.backButton": "← Back to candidates",
++  "settings.enterModel": "Enter model",
++  "settings.loadingModels": "Loading models...",
++  "settings.selectModel": "Select model...",
++  "settings.enterModelId": "Enter model ID...",
++  "banner.codeUpdated": "🔄 Code updated",
++  "banner.apply": "Apply",
++  "banner.applying": "Applying...",
++  "banner.waiting": "Waiting...",
++  "banner.waitingTasks": "Waiting for tasks...",
++  "banner.reconnecting": "🔄 Reconnecting...",
++  "exEmployees.loadFailed": "Load failed",
++  "exEmployees.rehireButton": "🔄 Rehire",
++  "exEmployees.rehireConfirm": "Confirm rehire {name}{nickname}? Will restart from Lv.1.",
++  "exEmployees.rehireFailed": "Rehire failed",
++  "followup.addButton": "+ Follow-up task",
++  "followup.instructionsPlaceholder": "Enter follow-up instructions...",
++  "issue.titlePlaceholder": "Issue title",
++  "issue.descriptionPlaceholder": "Description (optional)",
++  "issue.storyPointsPlaceholder": "Story points",
++  "issue.sprintSelectPlaceholder": "Select sprint",
++  "kr.titlePlaceholder": "KR title",
++  "kr.targetPlaceholder": "Target",
++  "kr.unitPlaceholder": "Unit",
++  "project.cancelTooltip": "Cancel",
++  "project.traceTooltip": "Trace",
++  "project.renameTooltip": "Click to rename",
++  "project.deleteTooltip": "Delete",
++  "project.detailTab": "Detail",
++  "project.taskTreeTab": "Task Tree",
++  "settings.oauthCodePlaceholder": "code#state",
++  "sprint.namePlaceholder": "Sprint name",
++  "sprint.goalPlaceholder": "Goal (optional)",
++  "sprint.startLabel": "Start:",
++  "sprint.endLabel": "End:",
++  "sprint.capacityPlaceholder": "Capacity (pts)",
++  "tool.oauthClientId": "Client ID",
++  "tool.oauthClientSecret": "Client Secret",
++  "traceViewer.loading": "Loading trace...",
++  "traceViewer.nodes": "{count} nodes",
++  "project.detailStatusLabel": "Status:",
++  "project.detailRoutedToLabel": "Routed to:",
++  "project.detailCreatedLabel": "Created:",
++  "project.detailCompletedLabel": "Completed:",
++  "project.detailTimelineLabel": "Timeline",
++  "project.detailEntriesLabel": "{count} entries",
++  "project.detailCostBudgetLabel": "Cost & Budget",
++  "project.detailEstimatedLabel": "(estimated)",
++  "project.outputLabel": "Final Output:",
++  "project.loadFailed": "Load failed: {message}",
++  "cron.stopPrompt": "Stop scheduled job \"{name}\"? Its pending tasks will also be cancelled.",
++  "cron.stopAllPrompt": "Stop ALL scheduled jobs for this employee?",
++  "cron.stopFailed": "Failed to stop cron",
++  "cron.stopJobFailed": "Failed to stop cron job",
++  "cron.stopAllFailed": "Failed to stop all crons",
++  "settings.loadingSettings": "Loading settings...",
++  "settings.notSet": "Not set...",
++  "settings.setWithPreview": "Set ({preview})",
++  "settings.none": "None",
++  "settings.status": "Status",
++  "common.error": "Error",
++  "common.loadFailed": "Load failed",
++  "common.loadFailedWithMessage": "Load failed: {message}",
++  "common.failedToLoadRetrospective": "Failed to load retrospective data.",
++  "common.failedToLoadTools": "Failed to load tools",
++  "common.failedToLoadKanban": "Failed to load kanban: {message}",
++  "common.failedToLoadRoadmap": "Failed to load roadmap: {message}",
++  "common.failedToLoadActivity": "Failed to load activity: {message}",
++  "common.failedToLoadTemplate": "Failed to load template",
++  "common.failedToCreateProduct": "Failed to create product",
++  "common.failedToDismissEmployee": "Failed to dismiss employee",
++  "common.failedToAbortAllTasks": "Failed to abort all tasks",
++  "common.failedToStopCron": "Failed to stop cron",
++  "common.failedToStopCronJob": "Failed to stop cron job",
++  "common.failedToStopAllCronJobs": "Failed to stop all cron jobs",
++  "common.failedToLoadConversation": "Failed to load conversation:",
++  "common.failedToSendMessage": "Failed to send message: {message}",
++  "common.failedToEndOneOnOne": "Failed to end 1-on-1: {message}",
++  "common.failedToLoadEmployeeSettings": "Failed to load employee settings:",
++  "common.failedToLoadCulture": "Failed to load culture.",
++  "common.failedToDeleteProject": "Failed to delete project: {message}",
++  "common.failedToLoadWorkflows": "Failed to load workflows: {message}",
++  "log.workflowUpdated": "📋 Workflow updated: {name}",
++  "log.hrScreeningDone": "📋 HR screening done: {count} candidates in {roles} role(s)",
++  "log.fileEditRequest": "📝 File edit request: {rel_path} — {reason}",
++  "log.fileUpdated": "✅ File updated: {rel_path}",
++  "log.fileEditRejected": "❌ File edit rejected: {rel_path}",
++  "log.hiringAutoApproved": "📋 COO auto-approved hiring: {role} — {reason} (hire_id: {hire_id})",
++  "log.hiringDecisionConfirmed": "✅ Hiring confirmed: {role}",
++  "log.hiringDecisionRejected": "❌ Hiring rejected: {role}",
++  "log.popupNotification": "📢 {title}",
++  "log.credentialsRequired": "🔑 {title}",
++  "log.agentTaskUpdate": "📋 {employee_id} task: {status}",
++  "log.recurringActionItems": "⚠️ {message}:\n{items}",
++  "log.meetingChat": "💬 [{speaker}] {message}"
++}
+diff --git a/frontend/i18n/pt-BR.json b/frontend/i18n/pt-BR.json
+new file mode 100644
+index 0000000..8a4ecf2
+--- /dev/null
++++ b/frontend/i18n/pt-BR.json
+@@ -0,0 +1,465 @@
++{
++  "nav.products": "PRODUTOS",
++  "nav.activity": "LOG DE ATIVIDADE",
++  "nav.teamRoster": "EQUIPE",
++  "nav.ceoConsole": "PAINEL DO CEO",
++  "toolbar.settings": "Configurações",
++  "toolbar.newProduct": "Novo Produto",
++  "toolbar.importProduct": "Importar Produto",
++  "toolbar.exEmployeeWall": "Mural de Ex-funcionários",
++  "toolbar.companyCulture": "Cultura da Empresa",
++  "toolbar.companyDirection": "Direção da Empresa",
++  "toolbar.dashboard": "Painel",
++  "toolbar.announcements": "Anúncios",
++  "toolbar.doNotDisturb": "Não Perturbe",
++  "toolbar.backgroundTasks": "Tarefas em Segundo Plano",
++  "toolbar.exportScreenshot": "Exportar captura SVG",
++  "toolbar.stopAllTasks": "Parar todas as tarefas",
++  "toolbar.forceReload": "Recarregar todos os dados do disco",
++  "settings.title": "⚙ CONFIGURAÇÕES",
++  "settings.languageLabel": "Idioma",
++  "settings.textSize": "Tamanho do texto",
++  "settings.apiConnections": "🔑 Conexões de API",
++  "common.send": "Enviar",
++  "common.cancel": "Cancelar",
++  "common.loading": "Carregando...",
++  "common.errorLoading": "Erro ao carregar",
++  "common.noProduct": "Sem produto",
++  "common.selectEmployee": "Selecionar colaborador",
++  "common.selectOwner": "Selecionar responsável...",
++  "common.allRoles": "Todas as funções",
++  "common.allDepartments": "Todos os departamentos",
++  "common.allLevels": "Todos os níveis",
++  "common.active": "Ativo",
++  "common.idle": "Ocioso",
++  "common.noSessions": "Nenhuma sessão",
++  "common.apply": "Aplicar",
++  "common.applying": "Aplicando...",
++  "common.cancelTask": "Cancelar esta tarefa?",
++  "common.settingsReloadNotice": "⚠ Alterações nas configurações vão reiniciar o servidor. Use quando não houver tarefas em execução.",
++  "common.messagePlaceholder": "$ Digite a mensagem, / para comandos (Enter para enviar)",
++  "meeting.typeLabel": "Tipo de reunião",
++  "meeting.type.oneonone": "Reunião 1-pra-1",
++  "meeting.type.allHands": "All-Hands (fala do CEO)",
++  "meeting.type.discussion": "Discussão (abertura geral)",
++  "meeting.startMeeting": "Iniciar reunião",
++  "meeting.endMeeting": "Encerrar reunião",
++  "meeting.attachFile": "Anexar arquivo ou imagem",
++  "settings.systemCrons": "⏰ Tarefas agendadas",
++  "settings.display": "👁 Exibição",
++  "ceo.chat": "💬 Chat",
++  "ceo.chatWithEA": "Converse com EA",
++  "ceo.projects": "Projetos",
++  "ceo.oneOnOne": "1-pra-1",
++  "ceo.oneOnOneWith": "1-pra-1 com {name}",
++  "ceo.noActiveSessions": "Nenhuma sessão ativa",
++  "ceo.linkTaskToProduct": "Vincular tarefa ao produto",
++  "ceo.toggleProjectList": "Alternar lista de projetos",
++  "ceo.youLabel": "👑 VOCÊ",
++  "ceo.newTask": "Nova tarefa",
++  "ceo.noMessagesYet": "Nenhuma mensagem ainda.",
++  "ceo.selectProjectToStart": "Selecione um projeto para começar",
++  "ceo.noProduct": "Sem produto",
++  "status.employeeCount": "👥 {count}",
++  "status.toolCount": "🔧 {count}",
++  "status.roomCount": "🏢 {free}/{total}",
++  "status.online": "● CONECTADO",
++  "status.offline": "● OFFLINE",
++  "announcements.title": "🔔 Anúncios",
++  "announcements.loading": "Carregando...",
++  "announcements.empty": "Nenhum anúncio novo",
++  "announcements.failed": "Não foi possível carregar os anúncios",
++  "dashboard.noData": "Sem dados",
++  "dashboard.staffOverview": "Visão geral da equipe",
++  "dashboard.active": "Ativo",
++  "dashboard.departed": "Saído",
++  "dashboard.working": "Trabalhando",
++  "dashboard.idle": "Ocioso",
++  "dashboard.inMeeting": "Em reunião",
++  "dashboard.equipmentRooms": "Equipamentos e salas de reunião",
++  "dashboard.tools": "Ferramentas",
++  "dashboard.rooms": "Salas",
++  "dashboard.available": "Disponível",
++  "dashboard.taskStatus": "Status das tarefas",
++  "dashboard.running": "Em execução",
++  "dashboard.queued": "Na fila",
++  "dashboard.deptDistribution": "Distribuição por departamento",
++  "dashboard.performanceDistribution": "Distribuição de desempenho",
++  "dashboard.excellent": "3.75 Excelente",
++  "dashboard.qualified": "3.5 Qualificado",
++  "dashboard.needsImprovement": "3.25 Precisa melhorar",
++  "dashboard.costOverview": "Visão geral de custos",
++  "dashboard.costNote": "(estimado, sujeito à cobrança real)",
++  "dashboard.grandTotal": "Total geral",
++  "dashboard.projects": "Projetos",
++  "dashboard.overhead": "Overhead",
++  "dashboard.projectTokens": "Tokens de projeto",
++  "dashboard.overheadTokens": "Tokens de overhead",
++  "dashboard.overheadByCategory": "Overhead por categoria",
++  "dashboard.category": "Categoria",
++  "dashboard.usd": "USD",
++  "dashboard.inTokens": "Tokens de entrada",
++  "dashboard.outTokens": "Tokens de saída",
++  "dashboard.costByDepartment": "Custo por departamento",
++  "dashboard.project": "Projeto",
++  "dashboard.tokens": "Tokens",
++  "dashboard.status": "Status",
++  "settings.loading": "Carregando...",
++  "settings.noSystemCrons": "Nenhuma tarefa agendada cadastrada.",
++  "settings.cronsError": "Erro: {message}",
++  "settings.name": "Nome",
++  "settings.interval": "Intervalo",
++  "settings.description": "Descrição",
++  "settings.runs": "Execuções",
++  "settings.status": "Status",
++  "settings.stop": "Parar",
++  "settings.start": "Iniciar",
++  "settings.set": "Definir",
++  "settings.save": "Salvar",
++  "settings.mode": "Modo",
++  "settings.local": "Local",
++  "settings.remote": "Remoto",
++  "settings.apiKey": "Chave de API",
++  "settings.setupTokenRecommended": "Token de configuração (recomendado)",
++  "settings.authorizeWithAnthropic": "Autorizar com Anthropic",
++  "settings.pasteAnthropicCode": "Cole o código do Anthropic:",
++  "settings.defaultModel": "Modelo padrão",
++  "settings.selectModel": "Selecionar modelo...",
++  "settings.loadingOptions": "Carregando opções...",
++  "settings.loadingModels": "Carregando modelos...",
++  "settings.talentMarket": "Mercado de talentos",
++  "settings.connected": "Conectado",
++  "settings.defaultBadge": "PADRÃO",
++  "settings.apiKeyNotConfigured": "Chave de API não configurada",
++  "settings.notConnected": "Não conectado",
++  "settings.cloudConnectionFailed": "Falha na conexão com a nuvem",
++  "settings.localTalentMarket": "Usando o mercado de talentos local",
++  "settings.aiPoweredSearch": "Busca com IA",
++  "settings.apiKeyPlaceholder": "(nenhuma)",
++  "settings.improvesCandidateQuality": "melhora a qualidade dos candidatos",
++  "settings.enterModel": "Informar modelo",
++  "settings.saveApiKeyFirst": "Salve a chave de API primeiro",
++  "settings.useSaved": "Usar chave salva",
++  "settings.saved": "Salvo",
++  "settings.saveModel": "Salvar modelo",
++  "settings.setAsDefault": "Definir como padrão",
++  "settings.enterModelId": "Informar ID do modelo...",
++  "settings.errorLoading": "Erro ao carregar",
++  "settings.noKey": "Sem chave",
++  "settings.submit": "Enviar",
++  "settings.orUseApiKeyDirectly": "Ou usar a chave de API diretamente",
++  "settings.ok": "OK",
++  "settings.fail": "FALHA",
++  "settings.err": "ERR",
++  "settings.enterValue": "Informar valor",
++  "meeting.roomTitle": "🏢 {name}",
++  "meeting.minutesTitle": "📒 Atas da reunião: {name}",
++  "meeting.oneononeTitle": "🎓 Reunião 1-pra-1",
++  "meeting.available": "Disponível",
++  "meeting.inMeeting": "Em reunião",
++  "meeting.capacity": "{count} pessoas",
++  "meeting.participants": "Participantes",
++  "meeting.noParticipants": "Nenhum participante",
++  "meeting.liveLog": "Registro ao vivo da reunião",
++  "meeting.loading": "Carregando...",
++  "meeting.loadingMinutes": "Carregando atas...",
++  "meeting.noLogs": "Sem registros da reunião",
++  "meeting.noArchivedMeetings": "Sem reuniões arquivadas",
++  "meeting.failedLoadChat": "Falha ao carregar o chat",
++  "meeting.failedLoadMinutes": "Falha ao carregar as atas",
++  "meeting.notFound": "Não encontrado",
++  "meeting.backToList": "Voltar para a lista",
++  "meeting.summary": "Resumo",
++  "meeting.noData": "Sem dados",
++  "meeting.selectEmployee": "Selecionar colaborador",
++  "meeting.selectEmployeePlaceholder": "-- Selecionar colaborador --",
++  "oauth.waitingForCode": "Aguardando código...",
++  "oauth.pasteCodeFirst": "Cole o código primeiro",
++  "oauth.exchanging": "Trocando...",
++  "oauth.loginSuccessful": "Login bem-sucedido",
++  "workflow.title": "Company Rules — Workflows",
++  "workflow.selectPrompt": "← Selecione um workflow para ver",
++  "workflow.edit": "Editar",
++  "workflow.saveChanges": "Salvar alterações",
++  "employee.detailsTitle": "Detalhes do funcionário",
++  "employee.taskBoardLabel": "Quadro de tarefas",
++  "employee.noTasksLabel": "Sem tarefas",
++  "employee.executionLogLabel": "Registro de execução",
++  "employee.noLogsLabel": "Sem logs",
++  "employee.workHistoryLabel": "Histórico de trabalho",
++  "employee.noWorkHistoryLabel": "Sem histórico de trabalho",
++  "employee.personalityLabel": "Personalidade",
++  "employee.skillsLabel": "Habilidades",
++  "employee.toolsLabel": "Ferramentas",
++  "employee.llmLabel": "LLM",
++  "employee.llmModelLabel": "Modelo LLM",
++  "employee.providerLabel": "Fornecedor",
++  "employee.costLabel": "Custo",
++  "employee.feeLabel": "Taxa",
++  "employee.hiringFeeLabel": "Taxa de contratação",
++  "employee.agentFamily": "Família do agente",
++  "settings.oauthCodePlaceholder": "code#state",
++  "tool.oauthClientId": "Client ID",
++  "tool.oauthClientSecret": "Client Secret",
++  "kr.titlePlaceholder": "Título do KR",
++  "kr.targetPlaceholder": "Meta",
++  "kr.unitPlaceholder": "Unidade",
++  "issue.titlePlaceholder": "Título da issue",
++  "issue.descriptionPlaceholder": "Descrição (opcional)",
++  "issue.storyPointsPlaceholder": "Pts da história",
++  "issue.sprintSelectPlaceholder": "Selecionar sprint",
++  "sprint.namePlaceholder": "Nome da sprint",
++  "sprint.goalPlaceholder": "Objetivo (opcional)",
++  "sprint.startLabel": "Início:",
++  "sprint.endLabel": "Fim:",
++  "sprint.capacityPlaceholder": "Capacidade (pts)",
++  "followup.addButton": "+ Tarefa de follow‑up",
++  "followup.instructionsPlaceholder": "Insira instruções de follow‑up...",
++  "project.cancelTooltip": "Cancelar",
++  "project.traceTooltip": "Trace",
++  "project.renameTooltip": "Clique para renomear",
++  "project.deleteTooltip": "Excluir",
++  "project.detailTab": "Detalhe",
++  "project.taskTreeTab": "Árvore de Tarefas",
++  "employee.authLabel": "Autenticação",
++  "employee.descriptionLabel": "Descrição",
++  "interview.title": "🎤 Entrevista",
++  "toolList.title": "🛠 LISTA DE FERRAMENTAS",
++  "project.detailTitle": "📋 Mural de projetos — Todas as tarefas",
++  "product.detailTitle": "Detalhe do produto",
++  "traceViewer.title": "VISUALIZADOR DE TRACE",
++  "bgTasks.title": "TAREFAS EM SEGUNDO PLANO",
++  "bgTasks.selectTask": "Selecione uma tarefa",
++  "createProduct.title": "NOVO PRODUTO",
++  "createProduct.nameLabel": "Nome",
++  "createProduct.objectiveLabel": "Objetivo",
++  "createProduct.ownerLabel": "Responsável",
++  "createProduct.selectOwner": "Selecionar responsável...",
++  "createProduct.keyResultsLabel": "Resultados-chave",
++  "createProduct.addKr": "+ Adicionar KR",
++  "createProduct.create": "Criar",
++  "projectWall.empty": "Nenhum registro de projeto",
++  "employee.uploadAvatar": "Enviar avatar",
++  "employee.nameLabel": "Nome",
++  "employee.nicknameLabel": "Apelido",
++  "employee.departmentLabel": "Dept",
++  "employee.roleLabel": "Função",
++  "employee.levelLabel": "Nível",
++  "employee.permsLabel": "Perms",
++  "employee.salaryLabel": "Salário",
++  "employee.perfLabel": "Perf",
++  "employee.okrsLabel": "OKRs",
++  "employee.startOneOnOne": "🎓 Iniciar 1-pra-1",
++  "employee.dismissEmployee": "🚪 Demitir funcionário",
++  "employee.workPrinciplesLabel": "Princípios de trabalho",
++  "employee.oneOnOneNotesLabel": "Notas de 1-pra-1",
++  "employee.scheduledJobsLabel": "Tarefas agendadas",
++  "employee.stopAllLabel": "Parar tudo",
++  "employee.noScheduledJobsLabel": "Nenhuma tarefa agendada",
++  "employee.projectHistoryLabel": "Histórico de projetos",
++  "exEmployees.empty": "Nenhum ex-funcionário",
++  "toolList.empty": "Nenhuma ferramenta cadastrada",
++  "systemCrons.empty": "Nenhuma tarefa agendada cadastrada.",
++  "systemCrons.name": "Nome",
++  "systemCrons.interval": "Intervalo",
++  "systemCrons.description": "Descrição",
++  "systemCrons.runs": "Execuções",
++  "systemCrons.status": "Status",
++  "companyDirection.placeholder": "ex.: Focamos em ferramentas criativas com IA para criadores independentes...",
++  "companyCulture.placeholder": "Adicione uma nova entrada de cultura...",
++  "createProduct.namePlaceholder": "ex.: OneManCompany site",
++  "createProduct.objectivePlaceholder": "Objetivo do produto",
++  "ceo.messagePlaceholder": "$ Digite uma mensagem, / para comandos (Enter para enviar)",
++  "meeting.messagePlaceholder": "Digite uma mensagem...",
++  "meeting.sendMessagePlaceholder": "Envie uma mensagem para esta reunião...",
++  "interview.messagePlaceholder": "Digite uma mensagem...",
++  "companyCulture.addEntryPlaceholder": "Adicione uma nova entrada de cultura...",
++  "companyDirection.inputPlaceholder": "ex.: Focamos em ferramentas criativas com IA para criadores independentes...",
++  "project.documentsLabel": "Documentos",
++  "project.downloadZip": "Baixar ZIP",
++  "project.deleteProjectTooltip": "Excluir projeto e todos os dados",
++  "project.deleteProjectConfirm": "Excluir o projeto \"{name}\" e TODOS os seus dados? Isso não pode ser desfeito.",
++  "project.deleteKrTooltip": "Excluir KR",
++  "project.deleteKrConfirm": "Excluir KR \"{name}\"?",
++  "issue.deleteButtonLabel": "Excluir Issue",
++  "issue.deleteConfirm": "Excluir issue \"{name}\"?",
++  "sprint.deleteButtonLabel": "Excluir",
++  "sprint.deleted": "Sprint excluída",
++  "sprint.deleteConfirm": "Excluir sprint \"{name}\"?",
++  "sprint.useSuggestedCapacity": "Clique para usar a capacidade sugerida",
++  "sprint.nameRequired": "O nome da sprint é obrigatório",
++  "sprint.datesRequired": "As datas são obrigatórias",
++  "common.delete": "Excluir",
++  "common.deleteFailed": "Falha ao excluir: {message}",
++  "onboarding.toggle": "▼",
++  "candidate.selectedCount": "0 selecionados",
++  "talentPool.sourceBadge": "",
++  "common.approve": "Aprovar",
++  "common.reject": "Rejeitar",
++  "common.close": "✕",
++  "common.notification": "Notificação",
++  "common.clickToOpen": "Clique para abrir",
++  "common.passed": "Aprovado",
++  "common.acceptanceResult": "Resultado da aceitação:",
++  "common.eaReview": "Revisão do EA:",
++  "common.continueCurrentIteration": "▶ Continuar iteração atual",
++  "banner.codeUpdated": "🔄 Código atualizado",
++  "banner.apply": "Aplicar",
++  "banner.waiting": "Aguardando...",
++  "banner.reconnecting": "🔄 Reconectando...",
++  "meeting.capacityLabel": "Capacidade",
++  "meeting.participantsLabel": "Participantes",
++  "meeting.sessionEnded": "1-pra-1 encerrada.",
++  "meeting.endingReflection": "Encerrando reunião... refletindo sobre a conversa...",
++  "meeting.endedPrinciplesUpdated": "Reunião concluída. Os princípios de trabalho foram atualizados com base na conversa.",
++  "meeting.endedNoUpdate": "Reunião concluída. Nenhuma atualização de princípios foi necessária.",
++  "meeting.endingEaSummarizing": "Encerrando reunião... EA está resumindo os pontos de ação...",
++  "meeting.concludedActionPoints": "Reunião concluída. {count} ponto(s) de ação:",
++  "meeting.projectCreated": "Projeto criado: {projectId}",
++  "meeting.clearHistoryConfirm": "Limpar todo o histórico de 1-pra-1 deste funcionário? Isso não pode ser desfeito.",
++  "meeting.clearedHistory": "Histórico de 1-pra-1 limpo para {name}.",
++  "meeting.clearHistoryFailed": "Falha ao limpar o histórico: {message}",
++  "meeting.reflectingOnConversation": "Encerrando 1-pra-1... o funcionário está refletindo sobre a conversa...",
++  "meeting.updatedPrinciples": "{name} atualizou os princípios de trabalho com base na reunião.",
++  "meeting.noteSaved": "Nota de 1-pra-1 salva no registro de orientação de {name}.",
++  "meeting.endedNoReflection": "1-pra-1 encerrada (nenhuma reflexão gerada).",
++  "meeting.ended": "1-pra-1 encerrada.",
++  "meeting.failedToEnd": "Falha ao encerrar 1-pra-1: {message}",
++  "meeting.noActiveSessionToEnd": "Não há reunião ativa nem 1-pra-1 para encerrar.",
++  "companyDirection.description": "Defina a estratégia / direção da empresa. Isso é injetado no prompt de cada funcionário.",
++  "talent.profileErrorTitle": "Erro no perfil de talento",
++  "talent.profileErrorContact": "Entre em contato com quem enviou o talento para corrigir este problema.",
++  "talent.profileErrorRepo": "É possível abrir uma issue no repositório do talento.",
++  "log.taskSubmitted": "📋 Tarefa: {task}",
++  "log.agentThinking": "💭 {message}",
++  "log.agentDone": "✅ {role} concluído: {summary}",
++  "log.newHire": "🎉 Nova contratação: {name} ({role})",
++  "log.departure": "🚪 Saída: {name}{nickname} — {reason}",
++  "log.rehired": "🔄 Recontratado: {name}{nickname} ({role})",
++  "log.quarterlyReview": "📊 Revisão trimestral: {id} — Nota: {score}",
++  "log.okrsUpdated": "🎯 OKRs atualizados para #{employee_id}",
++  "log.onboardingStarted": "📋 Onboarding iniciado: {name}",
++  "log.onboardingCompleted": "✅ Onboarding concluído: {name}",
++  "log.probationReview": "📋 Revisão de experiência: #{id} — {result}",
++  "log.pipStarted": "⚠️ PIP iniciado para #{id}",
++  "log.pipResolved": "✅ PIP resolvido para #{id}",
++  "log.exitInterviewStarted": "🚪 Entrevista de saída: {name}",
++  "log.exitInterviewCompleted": "📄 Entrevista de saída concluída: {name}",
++  "log.newTool": "🔧 Nova ferramenta: {name}",
++  "log.guidanceStart": "📖 {name} está em uma reunião 1-pra-1...",
++  "log.guidanceNoted": "🎓 {name}: {acknowledgment}",
++  "log.guidanceEnd": "📖 Reunião 1-pra-1 de {name} encerrada",
++  "log.roomBooked": "🏢 Sala reservada: {room_name}",
++  "log.roomReleased": "🏢 Sala liberada: {room_name}",
++  "log.roomDenied": "🚫 Solicitação de sala negada: não há salas disponíveis",
++  "log.routinePhase": "🔄 {phase}: {message}",
++  "log.meetingReportReady": "📄 Relatório da reunião pronto (EA revisou)",
++  "log.meetingReportComplete": "📄 Relatório da reunião concluído (EA aprovou)",
++  "log.recurringIssues": "Problemas recorrentes",
++  "status.sync": "Sync {time}",
++  "candidate.title": "👤 Boss Online — Seleção de candidatos",
++  "candidate.interview": "💬 Entrevista",
++  "candidate.select": "✔ Selecionar",
++  "candidate.batchSelected": "{count} selecionados",
++  "candidate.batchRecruit": "RECRUIT PARTY ({count})",
++  "talentPool.title": "💼 Mercado de talentos",
++  "onboarding.title": "🚀 Onboarding",
++  "common.tasks": "tarefas",
++  "employee.noWorkPrinciplesLabel": "Nenhum princípio de trabalho ainda",
++  "employee.noOneOnOneNotesLabel": "Nenhuma nota de 1-pra-1 ainda",
++  "exEmployees.title": "Mural de Ex-funcionários",
++  "exEmployees.loadFailed": "Falha ao carregar",
++  "exEmployees.rehireButton": "🔄 Recontratar",
++  "exEmployees.rehireConfirm": "Confirmar recontratação de {name}{nickname}? Isso vai reiniciar a partir do Lv.1.",
++  "exEmployees.rehireFailed": "Falha na recontratação",
++  "companyCulture.title": "Cultura da Empresa",
++  "companyCulture.empty": "Ainda não há entradas de cultura. O CEO pode adicionar acima.",
++  "companyCulture.failed": "Falha ao carregar a cultura.",
++  "companyCulture.added": "Cultura da empresa adicionada",
++  "companyCulture.removed": "Cultura da empresa removida",
++  "companyDirection.title": "Direção da Empresa",
++  "companyDirection.saveFailed": "Falha ao salvar",
++  "companyDirection.updated": "Direção da empresa atualizada",
++  "companyDirection.draftFirst": "Escreva primeiro um rascunho da direção.",
++  "companyDirection.sending": "⏳ Enviando...",
++  "companyDirection.enrichFailed": "Falha ao enriquecer",
++  "companyDirection.taskSent": "Tarefa de polimento da direção enviada para EA",
++  "companyDirection.enrichButton": "✨ Polir / enriquecer",
++  "office.companyRulesTooltip": "Regras da empresa\nClique para ver e editar workflows",
++  "office.projectWallTooltip": "Mural de projetos\nClique para ver o histórico de projetos",
++  "office.ceoTooltip": "CEO (Você)\nFunção: Chief Executive\nInsira tarefas abaixo",
++  "office.employeeTooltipSkills": "Habilidades:",
++  "office.employeeTooltipPerformance": "Desempenho:",
++  "office.employeeTooltipNeedsSetup": "🔑 Precisa de configuração de API",
++  "office.employeeTooltipApiOffline": "🔴 API offline",
++  "office.employeeTooltipInMeeting": "📖 Em reunião 1-pra-1...",
++  "office.employeeTooltipClickDetails": "(Clique para detalhes)",
++  "office.roomTooltipCapacity": "Capacidade:",
++  "office.roomTooltipStatus": "Status:",
++  "office.roomStatusInUse": "🔴 Em uso",
++  "office.roomStatusAvailable": "🟢 Disponível",
++  "office.roomTooltipParticipants": "Participantes:",
++  "office.roomInUseBadge": "EM USO",
++  "office.bulletinBoardLabel": "Regras",
++  "office.projectWallLabel": "Projetos",
++  "office.executiveLabel": "Executivo",
++  "banner.applying": "Aplicando...",
++  "banner.waitingTasks": "Aguardando tarefas...",
++  "traceViewer.loading": "Carregando trace...",
++  "traceViewer.nodes": "{count} nós",
++  "project.detailStatusLabel": "Status:",
++  "project.detailRoutedToLabel": "Roteado para:",
++  "project.detailCreatedLabel": "Criado:",
++  "project.detailCompletedLabel": "Concluído:",
++  "project.detailTimelineLabel": "Linha do tempo",
++  "project.detailEntriesLabel": "{count} entradas",
++  "project.detailCostBudgetLabel": "Custo e orçamento",
++  "project.detailEstimatedLabel": "(estimado)",
++  "project.outputLabel": "Saída final:",
++  "project.loadFailed": "Falha ao carregar: {message}",
++  "cron.stopPrompt": "Parar a tarefa agendada \"{name}\"? As tarefas pendentes também serão canceladas.",
++  "cron.stopAllPrompt": "Parar TODAS as tarefas agendadas deste funcionário?",
++  "cron.stopFailed": "Falha ao parar a tarefa agendada",
++  "cron.stopJobFailed": "Falha ao parar a tarefa agendada",
++  "cron.stopAllFailed": "Falha ao parar todas as tarefas agendadas",
++  "settings.loadingSettings": "Carregando configurações...",
++  "settings.notSet": "Não definido...",
++  "settings.setWithPreview": "Definido ({preview})",
++  "settings.none": "Nenhum",
++  "settings.status": "Status",
++  "common.error": "Erro",
++  "common.loadFailed": "Falha ao carregar",
++  "common.loadFailedWithMessage": "Falha ao carregar: {message}",
++  "common.failedToLoadRetrospective": "Falha ao carregar os dados retrospectivos.",
++  "common.failedToLoadTools": "Falha ao carregar as ferramentas",
++  "common.failedToLoadKanban": "Falha ao carregar o kanban: {message}",
++  "common.failedToLoadRoadmap": "Falha ao carregar o roadmap: {message}",
++  "common.failedToLoadActivity": "Falha ao carregar a atividade: {message}",
++  "common.failedToLoadTemplate": "Falha ao carregar o modelo",
++  "common.failedToCreateProduct": "Falha ao criar produto",
++  "common.failedToDismissEmployee": "Falha ao demitir funcionário",
++  "common.failedToAbortAllTasks": "Falha ao abortar todas as tarefas",
++  "common.failedToStopCron": "Falha ao parar a tarefa agendada",
++  "common.failedToStopCronJob": "Falha ao parar a tarefa agendada",
++  "common.failedToStopAllCronJobs": "Falha ao parar todas as tarefas agendadas",
++  "common.failedToLoadConversation": "Falha ao carregar a conversa:",
++  "common.failedToSendMessage": "Falha ao enviar mensagem: {message}",
++  "common.failedToEndOneOnOne": "Falha ao encerrar 1-pra-1: {message}",
++  "common.failedToLoadEmployeeSettings": "Falha ao carregar as configurações do funcionário:",
++  "common.failedToLoadCulture": "Falha ao carregar a cultura.",
++  "common.failedToDeleteProject": "Falha ao excluir o projeto: {message}",
++  "common.failedToLoadWorkflows": "Falha ao carregar os workflows: {message}",
++  "log.workflowUpdated": "📋 Workflow atualizado: {name}",
++  "log.hrScreeningDone": "📋 Triagem do RH concluída: {count} candidatos em {roles} função(ões)",
++  "log.fileEditRequest": "📝 Solicitação de edição de arquivo: {rel_path} — {reason}",
++  "log.fileUpdated": "✅ Arquivo atualizado: {rel_path}",
++  "log.fileEditRejected": "❌ Edição de arquivo rejeitada: {rel_path}",
++  "log.hiringAutoApproved": "📋 Contratação autoaprovada pelo COO: {role} — {reason} (hire_id: {hire_id})",
++  "log.hiringDecisionConfirmed": "✅ Contratação confirmada: {role}",
++  "log.hiringDecisionRejected": "❌ Contratação rejeitada: {role}",
++  "log.popupNotification": "📢 {title}",
++  "log.credentialsRequired": "🔑 {title}",
++  "log.agentTaskUpdate": "📋 {employee_id} tarefa: {status}",
++  "log.recurringActionItems": "⚠️ {message}:\n{items}",
++  "log.meetingChat": "💬 [{speaker}] {message}"
++}
+diff --git a/frontend/office.js b/frontend/office.js
+index bcc46be..e740532 100644
+--- a/frontend/office.js
++++ b/frontend/office.js
+@@ -574,7 +574,7 @@ class OfficeRenderer {
+     const execRowH = layout.exec_row_height || 2;
+     const execMidX = (MAP_COLS / 2) * TILE;
+     const execSignY = (execRow + execRowH + WALL_ROWS) * TILE;
+-    this._drawDeptSign(execMidX, execSignY, 'Executive', '#c0b060');
++    this._drawDeptSign(execMidX, execSignY, window.OMC_I18N?.t('office.executiveLabel', 'Executive'), '#c0b060');
+   }
+ 
+   /** Draw a pixel-art garden-style sign: stake + board with label text. */
+@@ -684,7 +684,7 @@ class OfficeRenderer {
+     ctx.fillStyle = '#4a2e18';
+     ctx.font = 'bold 7px monospace';
+     ctx.textAlign = 'center';
+-    ctx.fillText('\u{1F4CB} Rules', bx + TILE * 1.5, by + TILE + 4);
++    ctx.fillText(`\u{1F4CB} ${window.OMC_I18N?.t('office.bulletinBoardLabel', 'Regras') || 'Regras'}`, bx + TILE * 1.5, by + TILE + 4);
+     ctx.textAlign = 'left';
+   }
+ 
+@@ -744,7 +744,7 @@ class OfficeRenderer {
+     ctx.fillStyle = '#0d2a1a';
+     ctx.font = 'bold 7px monospace';
+     ctx.textAlign = 'center';
+-    ctx.fillText('\u{1F4CA} Projects', bx + TILE * 1.5, by + TILE + 4);
++    ctx.fillText(`\u{1F4CA} ${window.OMC_I18N?.t('office.projectWallLabel', 'Projetos') || 'Projetos'}`, bx + TILE * 1.5, by + TILE + 4);
+     ctx.textAlign = 'left';
+   }
+ 
+@@ -1001,7 +1001,7 @@ class OfficeRenderer {
+     this.ctx.fillStyle = PALETTE.led1;
+     this.ctx.font = '7px monospace';
+     this.ctx.textAlign = 'center';
+-    const label = (toolData.name || 'TOOL').substring(0, 8).toUpperCase();
++    const label = (toolData.name || window.OMC_I18N?.t('office.toolLabelFallback', 'TOOL')).substring(0, 8).toUpperCase();
+     this.ctx.fillText(label, px + 16, py + 36);
+     this.ctx.textAlign = 'left';
+   }
+@@ -1088,7 +1088,7 @@ class OfficeRenderer {
+     }
+ 
+     // Room label (auto-wrap)
+-    const fullLabel = roomData.name || 'Meeting';
++    const fullLabel = roomData.name || window.OMC_I18N?.t('office.meetingLabel', 'Reunião') || 'Reunião';
+     ctx.font = '7px monospace';
+     const maxW = TILE * 2 + 4;
+     const lines = [];
+@@ -1120,7 +1120,7 @@ class OfficeRenderer {
+     if (roomData.is_booked) {
+       ctx.fillStyle = PALETTE.meetingBooked;
+       ctx.font = '6px monospace';
+-      ctx.fillText('IN USE', px + TILE, ly + 8 + lines.length * lineH);
++      ctx.fillText(window.OMC_I18N?.t('office.roomInUseBadge', 'IN USE'), px + TILE, ly + 8 + lines.length * lineH);
+     }
+     ctx.textAlign = 'left';
+ 
+@@ -1211,18 +1211,24 @@ class OfficeRenderer {
+     let tooltipText = null;
+ 
+     if (x >= 5 && x <= 7 && y <= 1) {
+-      tooltipText = '📋 Company Rules\nClick to view and edit workflows';
++      tooltipText = window.OMC_I18N?.t('office.companyRulesTooltip', 'Company Rules\nClick to view and edit workflows');
+     }
+     if (x >= 12 && x <= 14 && y <= 1) {
+-      tooltipText = '📋 Project Wall\nClick to view project history';
++      tooltipText = window.OMC_I18N?.t('office.projectWallTooltip', 'Project Wall\nClick to view project history');
+     }
+ 
+     const ceoCanvasRow = ((this.state.office_layout || {}).executive_row || 0) + WALL_ROWS;
+     if (x === 10 && (y === ceoCanvasRow - 1 || y === ceoCanvasRow || y === ceoCanvasRow + 1)) {
+-      tooltipText = 'CEO (You)\nRole: Chief Executive\nInput tasks below';
++      tooltipText = window.OMC_I18N?.t('office.ceoTooltip', 'CEO (You)\nRole: Chief Executive\nInput tasks below');
+     }
+ 
+-    const LEVEL_NAMES = { 1: 'Junior', 2: 'Mid', 3: 'Senior', 4: 'Founding', 5: 'CEO' };
++    const LEVEL_NAMES = {
++      1: window.OMC_I18N?.t('office.levelJunior', 'Júnior'),
++      2: window.OMC_I18N?.t('office.levelMid', 'Pleno'),
++      3: window.OMC_I18N?.t('office.levelSenior', 'Sênior'),
++      4: window.OMC_I18N?.t('office.levelFounding', 'Fundador'),
++      5: window.OMC_I18N?.t('office.levelCEO', 'CEO'),
++    };
+     for (const emp of (this.state.employees || [])) {
+       const [ex, ey] = emp.desk_position || [0, 0];
+       const canvasRow = ey + WALL_ROWS;
+@@ -1232,11 +1238,11 @@ class OfficeRenderer {
+         const title = emp.title || `${lvl}${emp.role}`;
+         const hist = emp.performance_history || [];
+         const latestScore = hist.length > 0 ? hist[hist.length - 1].score : '-';
+-        tooltipText = `${emp.name}${nn}\n${title}\nSkills: ${(emp.skills || []).join(', ')}\nPerformance: ${latestScore}`;
+-        if (emp.needs_setup) tooltipText += '\n🔑 Needs API setup';
+-        else if (emp.api_online === false) tooltipText += '\n🔴 API offline';
+-        if (emp.is_listening) tooltipText += '\n📖 In 1-on-1 meeting...';
+-        tooltipText += '\n\n(Click for details)';
++        tooltipText = `${emp.name}${nn}\n${title}\n${window.OMC_I18N?.t('office.employeeTooltipSkills', 'Habilidades:')} ${(emp.skills || []).join(', ')}\n${window.OMC_I18N?.t('office.employeeTooltipPerformance', 'Desempenho:')} ${latestScore}`;
++        if (emp.needs_setup) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipNeedsSetup', '🔑 Precisa de configuração de API')}`;
++        else if (emp.api_online === false) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipApiOffline', '🔴 API offline')}`;
++        if (emp.is_listening) tooltipText += `\n${window.OMC_I18N?.t('office.employeeTooltipInMeeting', '📖 Em reunião 1-pra-1...')}`;
++        tooltipText += `\n\n${window.OMC_I18N?.t('office.employeeTooltipClickDetails', '(Clique para detalhes)')}`;
+         break;
+       }
+     }
+@@ -1255,10 +1261,10 @@ class OfficeRenderer {
+     for (const room of (this.state.meeting_rooms || [])) {
+       const [rx, ry] = room.position || [0, 0];
+       if (x >= rx && x <= rx + 1 && y >= ry + WALL_ROWS && y <= ry + WALL_ROWS + 2) {
+-        const status = room.is_booked ? '🔴 In Use' : '🟢 Available';
+-        tooltipText = `🏢 ${room.name}\n${room.description}\nCapacity: ${room.capacity}\nStatus: ${status}`;
++        const status = room.is_booked ? window.OMC_I18N?.t('office.roomStatusInUse', '🔴 Em uso') : window.OMC_I18N?.t('office.roomStatusAvailable', '🟢 Disponível');
++        tooltipText = `🏢 ${room.name}\n${room.description}\n${window.OMC_I18N?.t('office.roomTooltipCapacity', 'Capacidade:')} ${room.capacity}\n${window.OMC_I18N?.t('office.roomTooltipStatus', 'Status:')} ${status}`;
+         if (room.is_booked && room.participants?.length > 0) {
+-          tooltipText += `\nParticipants: ${room.participants.join(', ')}`;
++          tooltipText += `\n${window.OMC_I18N?.t('office.roomTooltipParticipants', 'Participantes:')} ${room.participants.join(', ')}`;
+         }
+         break;
+       }

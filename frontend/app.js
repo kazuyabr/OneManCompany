@@ -438,8 +438,8 @@ class AppController {
       'agent_thinking':     (p) => ({ text: window.OMC_I18N?.t('log.agentThinking', '💭 {message}', { message: p.message }) || `💭 ${p.message}`, cls: (msg.agent || '').toLowerCase(), agent: msg.agent }),
       'agent_done':         (p) => { this._hideCeoTyping(); return { text: window.OMC_I18N?.t('log.agentDone', '✅ {role} done: {summary}', { role: p.role, summary: p.summary }) || `✅ ${p.role} done: ${p.summary}`, cls: (p.role || '').toLowerCase(), agent: p.role }; },
       'employee_hired':     (p) => ({ text: window.OMC_I18N?.t('log.newHire', '🎉 New hire: {name} ({role})', { name: p.name, role: p.role }) || `🎉 New hire: ${p.name} (${p.role})`, cls: 'hr', agent: 'HR' }),
-      'employee_fired':     (p) => ({ text: window.OMC_I18N?.t('log.departure', '🚪 Departure: {name}{nickname} — {reason}', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', reason: p.reason || '' }) || `🚪 Departure: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
-      'employee_rehired':   (p) => ({ text: window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: p.name, nickname: p.nickname ? '(' + p.nickname + ')' : '', role: p.role }) || `🔄 Rehired: ${p.name}${p.nickname ? '(' + p.nickname + ')' : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
+      'employee_fired':     (p) => ({ text: window.OMC_I18N?.t('log.departure', '🚪 Departure: {name}{nickname} — {reason}', { name: p.name, nickname: p.nickname ? `(${p.nickname})` : '', reason: p.reason || '' }) || `🚪 Departure: ${p.name}${p.nickname ? `(${p.nickname})` : ''} — ${p.reason || ''}`, cls: 'hr', agent: 'HR' }),
+      'employee_rehired':   (p) => ({ text: window.OMC_I18N?.t('log.rehired', '🔄 Rehired: {name}{nickname} ({role})', { name: p.name, nickname: p.nickname ? `(${p.nickname})` : '', role: p.role }) || `🔄 Rehired: ${p.name}${p.nickname ? `(${p.nickname})` : ''} (${p.role})`, cls: 'hr', agent: 'CEO' }),
       'employee_reviewed':  (p) => ({ text: window.OMC_I18N?.t('log.quarterlyReview', '📊 Quarterly review: {id} — Score: {score}', { id: p.id, score: p.score }) || `📊 Quarterly review: ${p.id} — Score: ${p.score}`, cls: 'hr', agent: 'HR' }),
       'okr_updated':        (p) => ({ text: window.OMC_I18N?.t('log.okrsUpdated', '🎯 OKRs updated for #{employee_id}', { employee_id: p.employee_id }) || `🎯 OKRs updated for #${p.employee_id}`, cls: 'hr', agent: 'HR' }),
       'onboarding_started': (p) => ({ text: window.OMC_I18N?.t('log.onboardingStarted', '📋 Onboarding started: {name}', { name: p.name }) || `📋 Onboarding started: ${p.name}`, cls: 'hr', agent: 'HR' }),
@@ -458,7 +458,7 @@ class AppController {
         this._showXtermAlert(window.OMC_I18N?.t('talent.profileErrorTitle', 'Talent Profile Error') || 'Talent Profile Error', lines);
         return { text: `Talent profile error: ${p.talent_id}`, cls: 'hr', agent: 'HR' };
       },
-      'probation_review':   (p) => ({ text: window.OMC_I18N?.t('log.probationReview', '📋 Probation review: #{id} — {result}', { id: p.id, result: p.passed ? 'Passed' : 'Failed' }) || `📋 Probation review: #${p.id} — ${p.passed ? 'Passed' : 'Failed'}`, cls: 'hr', agent: 'HR' }),
+      'probation_review':   (p) => ({ text: window.OMC_I18N?.t('log.probationReview', '📋 Probation review: #{id} — {result}', { id: p.id, result: p.passed ? window.OMC_I18N?.t('common.passed', 'Passed') || 'Passed' : window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed' }) || `📋 Probation review: #${p.id} — ${p.passed ? window.OMC_I18N?.t('common.passed', 'Passed') || 'Passed' : window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}`, cls: 'hr', agent: 'HR' }),
       'pip_started':        (p) => ({ text: window.OMC_I18N?.t('log.pipStarted', '⚠️ PIP started for #{id}', { id: p.id }) || `⚠️ PIP started for #${p.id}`, cls: 'hr', agent: 'HR' }),
       'pip_resolved':       (p) => ({ text: window.OMC_I18N?.t('log.pipResolved', '✅ PIP resolved for #{id}', { id: p.id }) || `✅ PIP resolved for #${p.id}`, cls: 'hr', agent: 'HR' }),
       'exit_interview_started': (p) => ({ text: window.OMC_I18N?.t('log.exitInterviewStarted', '🚪 Exit interview: {name}', { name: p.name }) || `🚪 Exit interview: ${p.name}`, cls: 'hr', agent: 'HR' }),
@@ -485,7 +485,7 @@ class AppController {
       },
       'recurring_action_items': (p) => {
         const items = (p.items || []).map(i => `  - ${i}`).join('\n');
-        return { text: `⚠️ ${p.message || 'Recurring issues'}:\n${items}`, cls: 'ceo', agent: 'EA' };
+        return { text: window.OMC_I18N?.t('log.recurringActionItems', '⚠️ {message}:\n{items}', { message: p.message || window.OMC_I18N?.t('log.recurringIssues', 'Recurring issues') || 'Recurring issues', items }) || `⚠️ ${p.message || window.OMC_I18N?.t('log.recurringIssues', 'Recurring issues') || 'Recurring issues'}:\n${items}`, cls: 'ceo', agent: 'EA' };
       },
       'meeting_chat':       (p) => {
         const roomId = p.room_id || '';
@@ -509,41 +509,43 @@ class AppController {
         }
         return null; // no activity log entry
       },
-      'workflow_updated':    (p) => ({ text: `📋 Workflow updated: ${p.name}`, cls: 'ceo', agent: 'CEO' }),
+      'workflow_updated':    (p) => ({ text: window.OMC_I18N?.t('log.workflowUpdated', '📋 Workflow updated: {name}', { name: p.name }) || `📋 Workflow updated: ${p.name}`, cls: 'ceo', agent: 'CEO' }),
       'candidates_ready':   (p) => {
         this.showCandidateSelection(p);
         const totalCandidates = (p.roles || []).reduce((sum, r) => sum + (r.candidates || []).length, 0) || (p.candidates || []).length;
-        return { text: `📋 HR screening done: ${totalCandidates} candidates in ${(p.roles || []).length || 1} role(s)`, cls: 'hr', agent: 'HR' };
+        return { text: window.OMC_I18N?.t('log.hrScreeningDone', '📋 HR screening done: {count} candidates in {roles} role(s)', { count: totalCandidates, roles: (p.roles || []).length || 1 }) || `📋 HR screening done: ${totalCandidates} candidates in ${(p.roles || []).length || 1} role(s)`, cls: 'hr', agent: 'HR' };
       },
       'onboarding_progress': (p) => {
         this._handleOnboardingProgress(p);
         return null; // no log entry, modal handles it
       },
       'file_edit_proposed':  (p) => {
-        return { text: `📝 File edit request: ${p.rel_path} — ${p.reason}`, cls: 'ceo', agent: p.proposed_by || 'AGENT' };
+        return { text: window.OMC_I18N?.t('log.fileEditRequest', '📝 File edit request: {rel_path} — {reason}', { rel_path: p.rel_path, reason: p.reason }) || `📝 File edit request: ${p.rel_path} — ${p.reason}`, cls: 'ceo', agent: p.proposed_by || 'AGENT' };
       },
-      'file_edit_applied':   (p) => ({ text: `✅ File updated: ${p.rel_path}`, cls: 'ceo', agent: 'CEO' }),
-      'file_edit_rejected':  (p) => ({ text: `❌ File edit rejected: ${p.rel_path}`, cls: 'ceo', agent: 'CEO' }),
+      'file_edit_applied':   (p) => ({ text: window.OMC_I18N?.t('log.fileUpdated', '✅ File updated: {rel_path}', { rel_path: p.rel_path }) || `✅ File updated: ${p.rel_path}`, cls: 'ceo', agent: 'CEO' }),
+      'file_edit_rejected':  (p) => ({ text: window.OMC_I18N?.t('log.fileEditRejected', '❌ File edit rejected: {rel_path}', { rel_path: p.rel_path }) || `❌ File edit rejected: ${p.rel_path}`, cls: 'ceo', agent: 'CEO' }),
       'hiring_request_ready': (p) => {
-        return { text: `📋 COO auto-approved hiring: ${p.role} — ${p.reason} (hire_id: ${p.hire_id})`, cls: 'coo', agent: 'COO' };
+        return { text: window.OMC_I18N?.t('log.hiringAutoApproved', '📋 COO auto-approved hiring: {role} — {reason} (hire_id: {hire_id})', { role: p.role, reason: p.reason, hire_id: p.hire_id }) || `📋 COO auto-approved hiring: ${p.role} — ${p.reason} (hire_id: ${p.hire_id})`, cls: 'coo', agent: 'COO' };
       },
       'hiring_request_decided': (p) => {
-        return { text: `${p.approved ? '✅' : '❌'} Hiring ${p.approved ? 'confirmed' : 'rejected'}: ${p.role}`, cls: 'ceo', agent: 'CEO' };
+        const textKey = p.approved ? 'log.hiringDecisionConfirmed' : 'log.hiringDecisionRejected';
+        const fallback = p.approved ? '✅ Hiring confirmed: {role}' : '❌ Hiring rejected: {role}';
+        return { text: window.OMC_I18N?.t(textKey, fallback, { role: p.role }) || `${p.approved ? '✅' : '❌'} Hiring ${p.approved ? 'confirmed' : 'rejected'}: ${p.role}`, cls: 'ceo', agent: 'CEO' };
       },
       'open_popup':          (p) => {
         this.openPopup(p);
-        return { text: `📢 ${p.title || 'Notification'}`, cls: 'system', agent: p.agent || 'SYSTEM' };
+        return { text: window.OMC_I18N?.t('log.popupNotification', '📢 {title}', { title: p.title || window.OMC_I18N?.t('common.notification', 'Notification') || 'Notification' }) || `📢 ${p.title || 'Notification'}`, cls: 'system', agent: p.agent || 'SYSTEM' };
       },
       'request_credentials': (p) => {
         this.openPopup({ ...p, type: 'credentials' });
-        return { text: `🔑 ${p.title || 'Credentials required'}`, cls: 'system', agent: p.agent || 'SYSTEM' };
+        return { text: window.OMC_I18N?.t('log.credentialsRequired', '🔑 {title}', { title: p.title || window.OMC_I18N?.t('common.credentialsRequired', 'Credentials required') || 'Credentials required' }) || `🔑 ${p.title || 'Credentials required'}`, cls: 'system', agent: p.agent || 'SYSTEM' };
       },
       'agent_task_update':   (p) => {
         // In-place update: use WS payload directly instead of REST re-fetch
         if (this.viewingEmployeeId && p.employee_id === this.viewingEmployeeId && p.task) {
           this._updateTaskBoardCard(p.task);
         }
-        return { text: `📋 ${p.employee_id} task: ${p.task?.status || 'updated'}`, cls: 'system', agent: 'AGENT' };
+        return { text: window.OMC_I18N?.t('log.agentTaskUpdate', '📋 {employee_id} task: {status}', { employee_id: p.employee_id, status: p.task?.status || window.OMC_I18N?.t('common.updated', 'updated') || 'updated' }) || `📋 ${p.employee_id} task: ${p.task?.status || 'updated'}`, cls: 'system', agent: 'AGENT' };
       },
       'dispatch_status_change': (p) => {
         // Refresh the active plugin tab if viewing that project
@@ -583,7 +585,7 @@ class AppController {
             this._updateBgTaskDetailStatus(p);
           }
         }
-        return { text: `BG Task ${p.id || '?'}: ${p.status}`, cls: 'system', agent: 'SYSTEM' };
+        return { text: window.OMC_I18N?.t('log.backgroundTaskUpdate', 'BG Task {id}: {status}', { id: p.id || '?', status: p.status || window.OMC_I18N?.t('common.updated', 'updated') || 'updated' }) || `BG Task ${p.id || '?'}: ${p.status || 'updated'}`, cls: 'system', agent: 'SYSTEM' };
       },
       'cron_status_change': (p) => {
         // Layer 2: refresh cron list if viewing this employee.
@@ -3117,7 +3119,7 @@ class AppController {
       }).then(r => r.json());
 
       if (res.error) {
-        this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('common.failed', 'Failed') + `: ${res.error}`, source: 'system' });
+        this._ceoTerm?.appendMessage({ role: 'system', text: window.OMC_I18N?.t('common.failedWithMessage', 'Failed: {message}', { message: res.error }) || `Failed: ${res.error}`, source: 'system' });
         return;
       }
 
@@ -3898,7 +3900,7 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${data.error}`, 'system');
+          this.logEntry('SYSTEM', window.OMC_I18N?.t('common.failedWithMessage', 'Failed: {message}', { message: data.error }) || `Failed: ${data.error}`, 'system');
           // Show manual input as fallback
           document.getElementById('emp-oauth-code-row').style.display = 'flex';
         } else {
@@ -3908,7 +3910,7 @@ class AppController {
           this._loadModelOrApiKeySection(empId);
         }
       })
-      .catch(err => this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${err.message}`, 'system'));
+      .catch(err => this.logEntry('SYSTEM', window.OMC_I18N?.t('common.failedWithMessage', 'Failed: {message}', { message: err.message }) || `Failed: ${err.message}`, 'system'));
   }
 
   submitOAuthCode() {
@@ -3993,9 +3995,12 @@ class AppController {
       })
         .then(r => r.json())
         .then(data => {
-          this.logEntry('CEO', `Hiring request ${approved ? 'approved' : 'rejected'}: ${payload.role}`, 'ceo');
+          const status = approved
+            ? window.OMC_I18N?.t('common.approved', 'Approved') || 'Approved'
+            : window.OMC_I18N?.t('common.rejected', 'Rejected') || 'Rejected';
+          this.logEntry('CEO', window.OMC_I18N?.t('hiringRequest.decision', 'Hiring request {status}: {role}', { status, role: payload.role }) || `Hiring request ${status}: ${payload.role}`, 'ceo');
         })
-        .catch(err => this.logEntry('SYSTEM', `Decision failed: ${err.message}`, 'system'));
+        .catch(err => this.logEntry('SYSTEM', window.OMC_I18N?.t('common.decisionFailed', 'Decision failed: {message}', { message: err.message }) || `Decision failed: ${err.message}`, 'system'));
       cleanup();
     };
 
@@ -4322,7 +4327,7 @@ class AppController {
     btn.disabled = true;
     btn.textContent = window.OMC_I18N?.t('candidate.recruiting', 'RECRUITING...') || 'RECRUITING...';
 
-    this.logEntry('CEO', `Batch hiring ${selections.length} candidate(s)...`, 'ceo');
+    this.logEntry('CEO', window.OMC_I18N?.t('candidate.batchHiring', 'Batch hiring {count} candidate(s)...', { count: selections.length }) || `Batch hiring ${selections.length} candidate(s)...`, 'ceo');
 
     // Save batch_id — closeCandidateModal won't clear it when _batchHired=true,
     // but keep a local copy as defensive measure
@@ -4385,19 +4390,19 @@ class AppController {
         <div class="onboarding-steps">
           <div class="onboarding-step waiting" data-step="assigning_id">
             <span class="step-dot"></span>
-            <span class="step-label">Assign ID</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.assignId', 'Assign ID') || 'Assign ID'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="copying_skills">
             <span class="step-dot"></span>
-            <span class="step-label">Copy Skills</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.copySkills', 'Copy Skills') || 'Copy Skills'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="registering_agent">
             <span class="step-dot"></span>
-            <span class="step-label">Register Agent</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.registerAgent', 'Register Agent') || 'Register Agent'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="completed">
             <span class="step-dot"></span>
-            <span class="step-label">Ready</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.ready', 'Ready') || 'Ready'}</span>
           </div>
         </div>
         <div class="onboarding-item-message"></div>
@@ -4435,19 +4440,19 @@ class AppController {
         <div class="onboarding-steps">
           <div class="onboarding-step waiting" data-step="assigning_id">
             <span class="step-dot"></span>
-            <span class="step-label">Assign ID</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.assignId', 'Assign ID') || 'Assign ID'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="copying_skills">
             <span class="step-dot"></span>
-            <span class="step-label">Copy Skills</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.copySkills', 'Copy Skills') || 'Copy Skills'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="registering_agent">
             <span class="step-dot"></span>
-            <span class="step-label">Register Agent</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.registerAgent', 'Register Agent') || 'Register Agent'}</span>
           </div>
           <div class="onboarding-step waiting" data-step="completed">
             <span class="step-dot"></span>
-            <span class="step-label">Ready</span>
+            <span class="step-label">${window.OMC_I18N?.t('onboarding.ready', 'Ready') || 'Ready'}</span>
           </div>
         </div>
         <div class="onboarding-item-message"></div>
@@ -4821,7 +4826,7 @@ class AppController {
               <span class="project-card-date">${date}</span>
             </div>
             <div class="project-card-meta">
-              ${p.iteration_count || 0} iteration(s) | ${p.file_count || 0} files${costStr}${p.current_owner ? ' · ' + this._escHtml(p.current_owner) : ''}
+              ${p.iteration_count || 0} iteration(s) | ${p.file_count || 0} files${costStr}${p.current_owner ? ` · ${this._escHtml(p.current_owner)}` : ''}
             </div>
           `;
           card.style.cursor = 'pointer';
@@ -4929,7 +4934,7 @@ class AppController {
 
         // Output
         if (doc.output) {
-          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${window.OMC_I18N?.t('project.outputLabel', 'Saída final:') || 'Saída final:'}</div>`;
+          html += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 4px;">${window.OMC_I18N?.t('project.outputLabel', 'Output') || 'Output'}</div>`;
           html += `<div style="font-size:6px;color:var(--pixel-white);background:var(--bg-dark);padding:6px;border:1px solid var(--border);">${doc.output}</div>`;
         }
 
@@ -6329,7 +6334,7 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('SYSTEM', t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', data.error), 'system');
+          this.logEntry('SYSTEM', t('common.deleteFailed', 'Delete failed: {message}', { message: data.error }), 'system');
         } else {
           this.logEntry('CEO', `${t('companyCulture.removed', 'Company culture removed')}: ${data.removed?.content?.slice(0, 40) || ''}`, 'ceo');
           // State will be refreshed via WebSocket push
@@ -7489,7 +7494,7 @@ class AppController {
         try {
           const text = await file.text();
           const bundle = JSON.parse(text);
-          const ownerId = prompt('Enter owner employee ID (e.g. 00004):');
+          const ownerId = prompt(window.OMC_I18N?.t('common.enterOwnerEmployeeId', 'Enter owner employee ID (e.g. 00004):') || 'Enter owner employee ID (e.g. 00004):');
           if (!ownerId) return;
           bundle.owner_id = ownerId;
           bundle.auto_activate = true;
@@ -7502,13 +7507,13 @@ class AppController {
           if (result.status === 'imported') {
             this.updateProjectsPanel();
             this._refreshProductSelector();
-            this._showToast(`Imported "${bundle.product.name}" — ${result.issues_created} issues, ${result.krs_created} KRs`, 'success', 5000);
+            this._showToast(window.OMC_I18N?.t('common.importedProduct', 'Imported "{name}" — {issues} issues, {krs} KRs', { name: bundle.product.name, issues: result.issues_created, krs: result.krs_created }) || `Imported "${bundle.product.name}" — ${result.issues_created} issues, ${result.krs_created} KRs`, 'success', 5000);
           } else {
-            this._showToast('Import failed: ' + (result.detail || 'Unknown error'), 'error');
+            this._showToast(window.OMC_I18N?.t('common.importFailedWithMessage', 'Import failed: {message}', { message: result.detail || window.OMC_I18N?.t('common.unknownError', 'Unknown error') || 'Unknown error' }) || `Import failed: ${result.detail || 'Unknown error'}`, 'error');
           }
         } catch (err) {
           console.error('Import failed:', err);
-          this._showToast('Import failed: ' + err.message, 'error');
+          this._showToast(window.OMC_I18N?.t('common.importFailedWithMessage', 'Import failed: {message}', { message: err.message }) || `Import failed: ${err.message}`, 'error');
         }
       });
       input.click();
@@ -7827,7 +7832,7 @@ class AppController {
         this._refreshProductSelector();
       } catch (err) {
         console.error('Delete failed:', err);
-        this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error');
+        this._showToast(t('common.deleteFailed', 'Delete failed: {message}', { message: err.message }), 'error');
       }
     });
     header.appendChild(deleteBtn);
@@ -8398,9 +8403,9 @@ class AppController {
       try {
         const r = await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}`, { method: 'DELETE' });
         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-        this._showToast('Issue deleted', 'success');
+        this._showToast(t('common.issueDeleted', 'Issue deleted'), 'success');
         this._openProductDetail(slug);
-      } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
+      } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}', { message: err.message }), 'error'); }
     });
     deleteRow.appendChild(deleteBtn);
     body.appendChild(deleteRow);
@@ -8816,9 +8821,9 @@ class AppController {
                 try {
                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}/start`, { method: 'POST' });
                   if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-                  this._showToast('Sprint started', 'success');
+                  this._showToast(window.OMC_I18N?.t('product.sprintStarted', 'Sprint started') || 'Sprint started', 'success');
                   this._renderProductRoadmap(slug, container);
-                } catch (err) { this._showToast(`Start failed: ${err.message}`, 'error'); }
+                } catch (err) { this._showToast(window.OMC_I18N?.t('product.startFailedWithMessage', 'Start failed: {message}', { message: err.message }) || `Start failed: ${err.message}`, 'error'); }
               });
               actions.appendChild(startBtn);
               const delBtn = document.createElement('button');
@@ -8831,7 +8836,7 @@ class AppController {
                   if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
                   this._showToast(t('sprint.deleted', 'Sprint deleted'), 'success');
                   this._renderProductRoadmap(slug, container);
-                } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}').replace('{message}', err.message), 'error'); }
+                } catch (err) { this._showToast(t('common.deleteFailed', 'Delete failed: {message}', { message: err.message }), 'error'); }
               });
               actions.appendChild(delBtn);
             } else if (s.status === 'active') {
@@ -9904,20 +9909,20 @@ class AppController {
 
         // CEO Report (stored when project completion report is submitted)
         if (doc.ceo_report) {
-          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">📊 CEO Report</div>`;
+          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">${t('product.ceoReportLabel', 'CEO Report')}</div>`;
           detailHtml += `<div class="task-result-report md-rendered" style="border-left:2px solid var(--pixel-cyan);padding-left:6px;">${this._renderMarkdown(doc.ceo_report)}</div>`;
         }
 
         if (taskResult) {
-          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">Task Report</div>`;
+          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">${t('product.taskReportLabel', 'Task Report')}</div>`;
           detailHtml += `<div class="task-result-report md-rendered">${this._renderMarkdown(taskResult)}</div>`;
         } else if (doc.output) {
-          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">Output</div>`;
+          detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">${t('product.outputLabel', 'Output')}</div>`;
           detailHtml += `<div style="font-size:5px;color:var(--pixel-white);background:var(--bg-dark);padding:4px;border:1px solid var(--border);max-height:80px;overflow-y:auto;">${this._escHtml(doc.output)}</div>`;
         }
 
         const timeline = doc.timeline || [];
-        detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">Log (${timeline.length})</div>`;
+        detailHtml += `<div style="font-size:7px;color:var(--pixel-cyan);margin:8px 0 3px;">${t('product.logLabel', 'Log')} (${timeline.length})</div>`;
         if (timeline.length > 0) {
           detailHtml += `<div style="max-height:120px;overflow-y:auto;">`;
           for (const entry of timeline) {
@@ -10103,16 +10108,16 @@ class AppController {
       .then(r => r.json())
       .then(data => {
         if (data.error) {
-          this.logEntry('CEO', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${data.error}`, 'error');
+          this.logEntry('CEO', window.OMC_I18N?.t('common.failedWithMessage', 'Failed: {message}', { message: data.error }) || `Failed: ${data.error}`, 'error');
           if (btn) { btn.disabled = false; btn.textContent = window.OMC_I18N?.t('common.continueCurrentIteration', '▶ Continue Current Iteration') || '▶ Continue Current Iteration'; }
         } else {
-          this.logEntry('CEO', `Continued iteration ${iterationId}, tasks routed to ${data.routed_to}`, 'ceo');
+          this.logEntry('CEO', window.OMC_I18N?.t('common.iterationContinued', 'Continued iteration {iterationId}, tasks routed to {routed_to}', { iterationId, routed_to: data.routed_to }) || `Continued iteration ${iterationId}, tasks routed to ${data.routed_to}`, 'ceo');
           const modal = document.getElementById('project-modal');
           if (modal) modal.classList.add('hidden');
         }
       })
       .catch(err => {
-        this.logEntry('CEO', `${window.OMC_I18N?.t('common.failed', 'Failed') || 'Failed'}: ${err.message}`, 'error');
+        this.logEntry('CEO', window.OMC_I18N?.t('common.failedWithMessage', 'Failed: {message}', { message: err.message }) || `Failed: ${err.message}`, 'error');
         if (btn) { btn.disabled = false; btn.textContent = window.OMC_I18N?.t('common.continueCurrentIteration', '▶ Continue Current Iteration') || '▶ Continue Current Iteration'; }
       });
   }
