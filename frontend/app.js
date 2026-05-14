@@ -2671,8 +2671,9 @@ class AppController {
 
   get _slashCommands() {
     const projName = this._currentCeoProject ? this._currentCeoProject.split('/')[0] : null;
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     return [
-      { cmd: '/new', desc: 'Create a new project', action: (arg) => {
+      { cmd: '/new', desc: t('command.newDesc', 'Create a new project'), action: (arg) => {
         if (arg) {
           // /new 做一个网站 → create task immediately
           this._ceoTerm?.appendCeoMessage(`/new ${arg}`);
@@ -2680,16 +2681,16 @@ class AppController {
           formData.append('task', arg);
           formData.append('mode', 'standard');
           fetch('/api/ceo/task', { method: 'POST', body: formData })
-            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: '✓ Project created', source: 'system' }); })
-            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: `✗ Failed: ${e.message}`, source: 'system' }); });
+            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: t('command.projectCreated', '✓ Project created'), source: 'system' }); })
+            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: t('command.failed', '✗ Failed: {message}', { message: e.message }), source: 'system' }); });
         } else {
           // /new with no arg → switch to EA chat for input
           this._openEaChat();
         }
       }},
-      { cmd: '/iter', desc: projName ? `New iteration on "${projName}"` : 'Select a project first', action: (arg) => {
+      { cmd: '/iter', desc: projName ? t('command.iterDesc', 'New iteration on "{name}"', { name: projName }) : t('command.selectProjectFirst', 'Select a project first'), action: (arg) => {
         if (!this._currentCeoProject || this._currentCeoProject === this._EA_CHAT) {
-          this._ceoTerm?.appendMessage({ role: 'system', text: 'Select a project first, then use /iter', source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: t('command.iterFirst', 'Select a project first, then use /iter'), source: 'system' });
           return;
         }
         if (arg) {
@@ -2701,26 +2702,26 @@ class AppController {
           formData.append('project_id', pid.split('/')[0]);
           formData.append('mode', 'standard');
           fetch('/api/ceo/task', { method: 'POST', body: formData })
-            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: '✓ New iteration created', source: 'system' }); })
-            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: `✗ Failed: ${e.message}`, source: 'system' }); });
+            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: t('command.iterCreated', '✓ New iteration created'), source: 'system' }); })
+            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: t('command.failed', '✗ Failed: {message}', { message: e.message }), source: 'system' }); });
         } else {
           // /iter with no arg → prompt for input
           this._pendingIterProject = this._currentCeoProject;
-          this._ceoTerm?.appendMessage({ role: 'system', text: `Type the iteration goal for "${projName}". Press Enter to create.`, source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: t('command.iterPrompt', 'Type the iteration goal for "{name}". Press Enter to create.', { name: projName || '' }), source: 'system' });
           const input = document.getElementById('ceo-conv-input');
-          if (input) input.placeholder = `$ New iteration for ${projName}...`;
+          if (input) input.placeholder = t('command.iterPlaceholder', '$ New iteration for {name}...', { name: projName || '' });
         }
       }},
-      { cmd: '/end', desc: this._currentConvType === 'meeting' ? 'End current meeting' : (this._currentConvType === 'oneonone' ? 'End 1-on-1' : 'No active session'), action: () => {
+      { cmd: '/end', desc: this._currentConvType === 'meeting' ? t('command.endMeetingDesc', 'End current meeting') : (this._currentConvType === 'oneonone' ? t('command.endOneonOneDesc', 'End 1-pra-1') : t('command.endNoneDesc', 'No active session')), action: () => {
         if (this._currentConvType === 'meeting') {
           this._endMeetingInConsole();
         } else if (this._currentConvType === 'oneonone' && this._currentConvId) {
           this._endOneononeFromTerminal();
         } else {
-          this._ceoTerm?.appendMessage({ role: 'system', text: 'No active meeting or 1-on-1 to end.', source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: t('command.endNoSession', 'No active meeting or 1-pra-1 to end.'), source: 'system' });
         }
       }},
-      { cmd: '/simple', desc: 'Simple task (no retrospective)', action: (arg) => {
+      { cmd: '/simple', desc: t('command.simpleDesc', 'Simple task (no retrospective)'), action: (arg) => {
         if (arg) {
           // /simple 快速查一下 → create simple task immediately
           this._ceoTerm?.appendCeoMessage(`/simple ${arg}`);
@@ -2728,38 +2729,38 @@ class AppController {
           formData.append('task', arg);
           formData.append('mode', 'simple');
           fetch('/api/ceo/task', { method: 'POST', body: formData })
-            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: '✓ Simple task created', source: 'system' }); })
-            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: `✗ Failed: ${e.message}`, source: 'system' }); });
+            .then(() => { this._refreshCeoProjectList(); this._ceoTerm?.appendMessage({ role: 'system', text: t('command.simpleCreated', '✓ Simple task created'), source: 'system' }); })
+            .catch(e => { this._ceoTerm?.appendMessage({ role: 'system', text: t('command.failed', '✗ Failed: {message}', { message: e.message }), source: 'system' }); });
         } else {
           // /simple with no arg → enter simple mode
           this._pendingSimpleMode = true;
           this._currentCeoProject = null; this._currentConvId = null; this._currentConvType = null;
           this._refreshCeoProjectList();
           this._ceoTerm?.showChat(null, []);
-          this._ceoTerm?.appendMessage({ role: 'system', text: 'Simple mode: type task and press Enter.', source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: t('command.simplePrompt', 'Simple mode: type task and press Enter.'), source: 'system' });
           const input = document.getElementById('ceo-conv-input');
-          if (input) input.placeholder = '$ Simple task (Enter to submit)...';
+          if (input) input.placeholder = t('command.simplePlaceholder', '$ Simple task (Enter to submit)...');
         }
       }},
-      { cmd: '/review', desc: 'Trigger quarterly performance review', action: () => {
-        this._ceoTerm?.appendMessage({ role: 'system', text: 'Triggering quarterly review...', source: 'system' });
-        this.logEntry('CEO', '🔄 Triggering quarterly review...', 'ceo');
+      { cmd: '/review', desc: t('command.reviewDesc', 'Trigger quarterly performance review'), action: () => {
+        this._ceoTerm?.appendMessage({ role: 'system', text: t('command.reviewing', 'Triggering quarterly review...'), source: 'system' });
+        this.logEntry('CEO', t('command.reviewing', '🔄 Triggering quarterly review...'), 'ceo');
         fetch('/api/hr/review', { method: 'POST' })
           .then(r => r.json())
           .then(data => {
             if (data.error) {
-              this._ceoTerm?.appendMessage({ role: 'system', text: `Review failed: ${data.error}`, source: 'system' });
-              this.logEntry('SYSTEM', `Review failed: ${data.error}`, 'system');
+              this._ceoTerm?.appendMessage({ role: 'system', text: t('command.reviewFailed', 'Review failed: {message}', { message: data.error }), source: 'system' });
+              this.logEntry('SYSTEM', t('command.reviewFailed', 'Review failed: {message}', { message: data.error }), 'system');
             } else {
-              this._ceoTerm?.appendMessage({ role: 'system', text: '📋 Quarterly review task assigned to HR', source: 'system' });
-              this.logEntry('HR', '📋 Quarterly review task assigned to HR', 'hr');
+              this._ceoTerm?.appendMessage({ role: 'system', text: t('command.reviewAssigned', '📋 Quarterly review task assigned to HR'), source: 'system' });
+              this.logEntry('HR', t('command.reviewAssigned', '📋 Quarterly review task assigned to HR'), 'hr');
             }
           })
           .catch(e => {
-            this._ceoTerm?.appendMessage({ role: 'system', text: `Review error: ${e.message}`, source: 'system' });
+            this._ceoTerm?.appendMessage({ role: 'system', text: t('command.reviewError', 'Review error: {message}', { message: e.message }), source: 'system' });
           });
       }},
-      { cmd: '/1on1', desc: 'Start 1-on-1 meeting with an employee', action: () => {
+      { cmd: '/1on1', desc: t('command.oneononeDesc', 'Start 1-pra-1 meeting with an employee'), action: () => {
         const modal = document.getElementById('oneonone-modal');
         if (modal) {
           document.getElementById('meeting-type-select').value = 'oneonone';
@@ -2767,16 +2768,16 @@ class AppController {
           modal.classList.remove('hidden');
         }
       }},
-      { cmd: '/allhands', desc: window.OMC_I18N?.t('command.allHandsDesc', 'Iniciar reunião geral (fala do CEO)') || 'Iniciar reunião geral (fala do CEO)', action: async (arg) => {
+      { cmd: '/allhands', desc: t('command.allHandsDesc', 'Iniciar reunião geral (fala do CEO)'), action: async (arg) => {
         await this._startMeetingInConsole('all_hands', arg);
       }},
-      { cmd: '/discuss', desc: window.OMC_I18N?.t('command.discussDesc', 'Start discussion meeting (open floor)') || 'Start discussion meeting (open floor)', action: async (arg) => {
+      { cmd: '/discuss', desc: t('command.discussDesc', 'Start discussion meeting (open floor)'), action: async (arg) => {
         await this._startMeetingInConsole('discussion', arg);
       }},
-      { cmd: '/attach', desc: window.OMC_I18N?.t('command.attachDesc', 'Attach file or image') || 'Attach file or image', action: () => document.getElementById('ceo-file-input')?.click() },
-      { cmd: '/clear', desc: window.OMC_I18N?.t('command.clearEaChatDesc', 'Clear EA chat history') || 'Clear EA chat history', action: async () => {
+      { cmd: '/attach', desc: t('command.attachDesc', 'Attach file or image'), action: () => document.getElementById('ceo-file-input')?.click() },
+      { cmd: '/clear', desc: t('command.clearEaChatDesc', 'Clear EA chat history'), action: async () => {
         if (this._currentCeoProject !== this._EA_CHAT) {
-          this._ceoTerm?.appendMessage({ role: 'system', text: '/clear only works in EA chat.', source: 'system' });
+          this._ceoTerm?.appendMessage({ role: 'system', text: t('command.clearEaChatOnly', '/clear only works in EA chat.'), source: 'system' });
           return;
         }
         // Forget old conversation and create a new one

@@ -19,28 +19,29 @@ class ChatPanel {
     }
 
     _render() {
+        const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
         this._container.innerHTML = `
             <div class="chat-panel">
                 <div class="chat-panel-header">
                     <span class="chat-panel-type"></span>
                     <span class="chat-panel-employee"></span>
-                    <button class="chat-panel-clear-btn">Clear</button>
-                    <button class="chat-panel-close-btn">End</button>
+                    <button class="chat-panel-clear-btn">${t('chatPanel.clear', 'Clear')}</button>
+                    <button class="chat-panel-close-btn">${t('chatPanel.end', 'End')}</button>
                 </div>
                 <div class="chat-panel-messages"></div>
-                <div class="chat-panel-typing hidden" aria-label="Agent thinking">
+                <div class="chat-panel-typing hidden" aria-label="${t('chatPanel.typingAriaLabel', 'Agent thinking')}">
                     <span class="chat-panel-typing-dot">.</span>
                     <span class="chat-panel-typing-dot">.</span>
                     <span class="chat-panel-typing-dot">.</span>
                 </div>
                 <div class="chat-panel-input-row">
-                    <textarea class="chat-panel-input" rows="2" placeholder="Type a message..."></textarea>
+                    <textarea class="chat-panel-input" rows="2" placeholder="${t('chatPanel.messagePlaceholder', 'Type a message...')}"></textarea>
                     <div class="chat-panel-actions">
-                        <label class="chat-panel-upload-label">
+                        <label class="chat-panel-upload-label" title="${t('chatPanel.attach', '+')}">
                             <input type="file" class="chat-panel-file" multiple hidden />
                             +
                         </label>
-                        <button class="chat-panel-send-btn">Send</button>
+                        <button class="chat-panel-send-btn">${t('common.send', 'Send')}</button>
                     </div>
                 </div>
             </div>
