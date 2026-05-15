@@ -11,9 +11,9 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="e72ced7e-c551-40a9-b60e-18bb7db0592f"></script>
 </head>
 <body>
-  <div id="app" role="application" aria-label="Painel do CEO da One Man Company">
+  <div id="app" role="application" aria-label="Painel do CEO da One Man Company" data-i18n-aria-label="app.mainAriaLabel">
     <!-- Left top: Products & Projects -->
-    <aside id="left-top-panel" aria-label="Produtos">
+    <aside id="left-top-panel" aria-label="Produtos" data-i18n-aria-label="nav.products">
       <div class="collapsible-header" data-target="projects-panel-body">
         <span class="collapse-arrow">&#9660;</span>
         <h3 class="pixel-title" data-i18n="nav.products">PRODUTOS</h3>
@@ -26,7 +26,7 @@
     </aside>
 
     <!-- Left bottom: Activity Log -->
-    <aside id="left-bottom-panel" aria-label="Log de atividade">
+    <aside id="left-bottom-panel" aria-label="Log de atividade" data-i18n-aria-label="nav.activity">
       <div class="collapsible-header" data-target="activity-body">
         <span class="collapse-arrow">&#9660;</span>
         <h3 class="pixel-title" data-i18n="nav.activity">LOG DE ATIVIDADE</h3>
@@ -55,7 +55,7 @@
           <span class="status-item" id="last-sync-time"></span>
         </div>
       </div>
-      <canvas id="office-canvas" width="640" height="480" aria-label="Planta do escritório" role="img"></canvas>
+      <canvas id="office-canvas" width="640" height="480" aria-label="Planta do escritório" role="img" data-i18n-aria-label="office.canvasLabel"></canvas>
       <div id="tooltip" class="tooltip hidden"></div>
     </main>
 
@@ -83,7 +83,7 @@
       </div>
       <div id="ceo-body" class="collapsible-body collapsible-flex">
         <div id="ceo-avatar-area">
-          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="Avatar do CEO" data-i18n-alt="ceo.youLabel" onerror="this.style.display='none'" />
+          <img id="ceo-avatar" width="32" height="32" src="/api/employees/00001/avatar" alt="Avatar do CEO" data-i18n-alt="ceo.avatarAlt" onerror="this.style.display='none'" />
           <span class="ceo-label" data-i18n="ceo.youLabel">&#128081; VOCÊ</span>
           <button id="dnd-toggle-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.doNotDisturb" title="Não Perturbe" data-i18n-aria-label="toolbar.doNotDisturb" aria-label="Não Perturbe">&#127769;</button>
           <button id="bg-tasks-toolbar-btn" class="toolbar-icon-btn" data-i18n-title="toolbar.backgroundTasks" title="Tarefas em Segundo Plano" data-i18n-aria-label="toolbar.backgroundTasks" aria-label="Tarefas em Segundo Plano">&#9641;</button>
@@ -663,7 +663,7 @@
 
   <!-- Reconnecting overlay -->
   <div id="reconnecting-overlay" class="reconnecting-overlay hidden">
-    <span class="reconnecting-text">&#128260; Reconectando...</span>
+    <span class="reconnecting-text" data-i18n="common.reconnecting">&#128260; Reconectando...</span>
   </div>
 
   <!-- Background Tasks Modal -->
