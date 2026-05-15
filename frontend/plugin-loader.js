@@ -47,7 +47,7 @@ class PluginLoader {
       return;
     }
 
-    container.innerHTML = '<div style="color:var(--text-dim);font-size:6px;">Loading...</div>';
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:6px;">${window.OMC_I18N?.t('common.loading', 'Carregando...')}</div>`;
 
     try {
       const resp = await fetch(`/api/projects/${encodeURIComponent(projectId)}/plugin/${encodeURIComponent(pluginId)}`);
