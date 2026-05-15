@@ -675,7 +675,7 @@ class TaskTreeRenderer {
         if (remaining.length > 0) {
             const newMore = {
                 id: `_more_${moreModel._parentId}_${Date.now()}`,
-                name: `+${remaining.length} more`,
+                name: _t('taskTree.showMoreLabel', '+{count} mais', { count: remaining.length }),
                 avatar: '···',
                 avatarUrl: '',
                 dept: 'Default',
@@ -809,8 +809,9 @@ class TaskTreeRenderer {
         const info = node.employee_info || {};
         const isCeo = node.node_type === 'ceo_prompt' || node.node_type === 'ceo_followup' || node.node_type === 'ceo_request';
         const displayName = isCeo ? 'CEO' : (info.nickname || info.name || node.employee_id);
+        const statusLabel = _t((STATUS_STYLES[node.status] || STATUS_STYLES.pending).labelKey, (STATUS_STYLES[node.status] || STATUS_STYLES.pending).labelFallback);
         const nodeTypeLabel = node.node_type === 'ceo_prompt' ? _t('taskTree.originalPrompt', 'Prompt original')
-            : node.node_type === 'ceo_followup' ? _t('taskTree.followUp', 'Follow-up')
+            : node.node_type === 'ceo_followup' ? _t('taskTree.followUp', 'Acompanhamento')
             : node.node_type === 'ceo_request' ? _t('taskTree.ceoRequest', 'Solicitação do CEO') : '';
         const avatarHtml = info.avatar_url
             ? `<img src="${this._escapeHtml(info.avatar_url)}" class="tree-detail-avatar" />`
@@ -822,7 +823,7 @@ class TaskTreeRenderer {
                 <div>
                     <h3>${this._escapeHtml(displayName)}</h3>
                     <div class="tree-detail-role">${nodeTypeLabel ? this._escapeHtml(nodeTypeLabel) : (this._escapeHtml(info.role || '') + ' \u00b7 ' + this._escapeHtml(node.employee_id))}</div>
-                    <span class="tree-detail-status" style="color:${statusColor}">${this._escapeHtml(node.status)}</span>
+                    <span class="tree-detail-status" style="color:${statusColor}">${this._escapeHtml(statusLabel)}</span>
                 </div>
             </div>
 
@@ -843,7 +844,7 @@ class TaskTreeRenderer {
             ${this._renderDependencies(node)}
 
             <div class="detail-section detail-meta">
-                <span>${_t('taskTree.tokens', 'Tokens')}: ${node.input_tokens || 0} in / ${node.output_tokens || 0} out</span>
+                <span>${_t('taskTree.tokens', 'Tokens')}: ${node.input_tokens || 0} entradas / ${node.output_tokens || 0} saídas</span>
                 <span>${_t('taskTree.cost', 'Custo')}: $${(node.cost_usd || 0).toFixed(4)}</span>
                 <span>${_t('taskTree.timeout', 'Tempo limite')}: ${node.timeout_seconds || 3600}s</span>
             </div>
@@ -863,20 +864,22 @@ class TaskTreeRenderer {
         let html = '';
 
         // Prerequisites
-        html += '<div class="detail-section"><h4>Prerequisites</h4>';
+        html += `<div class="detail-section"><h4>${_t('taskTree.prerequisites', 'Pré-requisitos')}</h4>`;
         if (node.depends_on && node.depends_on.length > 0) {
             html += '<ul>';
             node.depends_on.forEach(depId => {
                 const depNode = this.treeData?.nodes?.find(n => n.id === depId);
                 if (depNode) {
-                    const sc = (STATUS_STYLES[depNode.status] || STATUS_STYLES.pending).color;
+                    const depStyle = STATUS_STYLES[depNode.status] || STATUS_STYLES.pending;
+                    const sc = depStyle.color;
                     const desc = depNode.description ? this._escapeHtml(depNode.description.slice(0, 60)) + '...' : '';
-                    html += `<li><span class="node-log-type" style="color:${sc}">\u25cf</span> ${this._escapeHtml(depNode.employee_info?.name || depId)}: ${desc} [${this._escapeHtml(depNode.status)}]</li>`;
+                    const depStatusLabel = _t(depStyle.labelKey, depStyle.labelFallback);
+                    html += `<li><span class="node-log-type" style="color:${sc}">\u25cf</span> ${this._escapeHtml(depNode.employee_info?.name || depId)}: ${desc} [${this._escapeHtml(depStatusLabel)}]</li>`;
                 }
             });
             html += '</ul>';
         } else {
-            html += '<p class="node-log-empty">None</p>';
+            html += `<p class="node-log-empty">${_t('taskTree.none', 'Nenhum')}</p>`;
         }
         html += '</div>';
 
@@ -886,17 +889,19 @@ class TaskTreeRenderer {
             (n.depends_on || []).includes(node.id) ||
             n.parent_id === node.id
         );
-        html += '<div class="detail-section"><h4>Downstream Tasks</h4>';
+        html += `<div class="detail-section"><h4>${_t('taskTree.downstreamTasks', 'Tarefas dependentes')}</h4>`;
         if (dependents.length > 0) {
             html += '<ul>';
             dependents.forEach(dep => {
-                const sc = (STATUS_STYLES[dep.status] || STATUS_STYLES.pending).color;
+                const depStyle = STATUS_STYLES[dep.status] || STATUS_STYLES.pending;
+                const sc = depStyle.color;
                 const desc = dep.description ? this._escapeHtml(dep.description.slice(0, 60)) + '...' : '';
-                html += `<li><span class="node-log-type" style="color:${sc}">\u25cf</span> ${this._escapeHtml(dep.employee_info?.name || dep.id)}: ${desc} [${this._escapeHtml(dep.status)}]</li>`;
+                const depStatusLabel = _t(depStyle.labelKey, depStyle.labelFallback);
+                html += `<li><span class="node-log-type" style="color:${sc}">\u25cf</span> ${this._escapeHtml(dep.employee_info?.name || dep.id)}: ${desc} [${this._escapeHtml(depStatusLabel)}]</li>`;
             });
             html += '</ul>';
         } else {
-            html += '<p class="node-log-empty">None</p>';
+            html += `<p class="node-log-empty">${_t('taskTree.none', 'Nenhum')}</p>`;
         }
         html += '</div>';
 
