@@ -25,23 +25,23 @@ class ChatPanel {
                 <div class="chat-panel-header">
                     <span class="chat-panel-type"></span>
                     <span class="chat-panel-employee"></span>
-                    <button class="chat-panel-clear-btn">${t('chatPanel.clear', 'Clear')}</button>
-                    <button class="chat-panel-close-btn">${t('chatPanel.end', 'End')}</button>
+                    <button class="chat-panel-clear-btn">${t('chatPanel.clear', 'Limpar')}</button>
+                    <button class="chat-panel-close-btn">${t('chatPanel.end', 'Encerrar')}</button>
                 </div>
                 <div class="chat-panel-messages"></div>
-                <div class="chat-panel-typing hidden" aria-label="${t('chatPanel.typingAriaLabel', 'Agent thinking')}">
+                <div class="chat-panel-typing hidden" aria-label="${t('chatPanel.typingAriaLabel', 'Agente pensando')}">
                     <span class="chat-panel-typing-dot">.</span>
                     <span class="chat-panel-typing-dot">.</span>
                     <span class="chat-panel-typing-dot">.</span>
                 </div>
                 <div class="chat-panel-input-row">
-                    <textarea class="chat-panel-input" rows="2" placeholder="${t('chatPanel.messagePlaceholder', 'Type a message...')}"></textarea>
+                    <textarea class="chat-panel-input" rows="2" placeholder="${t('chatPanel.messagePlaceholder', 'Digite uma mensagem...')}"></textarea>
                     <div class="chat-panel-actions">
                         <label class="chat-panel-upload-label" title="${t('chatPanel.attach', '+')}">
                             <input type="file" class="chat-panel-file" multiple hidden />
                             +
                         </label>
-                        <button class="chat-panel-send-btn">${t('common.send', 'Send')}</button>
+                        <button class="chat-panel-send-btn">${t('common.send', 'Enviar')}</button>
                     </div>
                 </div>
             </div>
@@ -97,12 +97,18 @@ class ChatPanel {
     setConversation(convId, convType, employeeName) {
         this._convId = convId;
         this._convType = convType;
-        const typeLabels = { oneonone: '1-on-1', ceo_session: 'Session' };
+        const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
+        const typeLabels = {
+            oneonone: t('ceo.oneOnOne', '1-pra-1'),
+            ceo_session: t('chatPanel.sessionType', 'Sessão'),
+        };
         this._container.querySelector('.chat-panel-type').textContent =
-            typeLabels[convType] || 'Chat';
+            typeLabels[convType] || t('chatPanel.chatType', 'Chat');
         this._container.querySelector('.chat-panel-employee').textContent = employeeName;
         this._clearBtn.style.display = convType === 'oneonone' ? '' : 'none';
-        this._closeBtn.textContent = convType === 'ceo_session' ? 'Close' : 'End';
+        this._closeBtn.textContent = convType === 'ceo_session'
+          ? t('common.closeText', 'Fechar')
+          : t('chatPanel.end', 'Encerrar');
     }
 
     renderMessages(messages) {

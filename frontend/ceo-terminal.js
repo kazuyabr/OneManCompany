@@ -314,8 +314,9 @@ class CeoTerminal {
         sections.push(line);
       }
     }
+    const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     card.innerHTML = `
-      <div class="completion-card-header">${this._esc(title || 'Project Complete')}</div>
+      <div class="completion-card-header">${this._esc(title || t('ceo.projectComplete', 'Projeto concluído'))}</div>
       <div class="completion-card-body">${sections.map(s => `<div>${this._esc(s)}</div>`).join('')}</div>
     `;
     this._container.appendChild(card);
