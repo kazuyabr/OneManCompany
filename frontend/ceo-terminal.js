@@ -43,7 +43,7 @@ class CeoTerminal {
     el.className = 'ceo-msg--system';
     el.style.color = '#71717a';
     el.style.padding = '8px 0';
-    el.textContent = `  ${this._t('ceo.selectProjectToStart', 'Select a project to start')}`;
+    el.textContent = `  ${this._t('ceo.selectProjectToStart', 'Selecione um projeto para começar')}`;
     this._container.appendChild(el);
   }
 
@@ -73,7 +73,7 @@ class CeoTerminal {
       const empty = document.createElement('div');
       empty.style.color = '#71717a';
       empty.style.padding = '4px 0';
-      empty.textContent = `  ${this._t('ceo.noMessagesYet', 'No messages yet.')}`;
+      empty.textContent = `  ${this._t('ceo.noMessagesYet', 'Nenhuma mensagem ainda.')}`;
       this._container.appendChild(empty);
     }
 
@@ -237,7 +237,7 @@ class CeoTerminal {
         el.innerHTML = `<span class="ceo-msg-sender">[${this._esc(src)}]</span>`
           + `<span class="ceo-msg-text ceo-msg-collapsed">${this._esc(preview)}</span>`
           + `<span class="ceo-msg-text ceo-msg-full" style="display:none">${this._esc(full)}</span>`
-          + `<span class="ceo-msg-toggle" onclick="this.parentElement.querySelector('.ceo-msg-collapsed').style.display=this.parentElement.querySelector('.ceo-msg-collapsed').style.display==='none'?'':'none';this.parentElement.querySelector('.ceo-msg-full').style.display=this.parentElement.querySelector('.ceo-msg-full').style.display==='none'?'':'none';this.textContent=this.textContent===window.OMC_I18N?.t('common.showMore', 'Show more')?'▲ '+window.OMC_I18N?.t('common.showLess', 'Show less'):window.OMC_I18N?.t('common.showMore', 'Show more')">${window.OMC_I18N?.t('common.showMore', 'Show more')}</span>`;
+          + `<span class="ceo-msg-toggle" onclick="this.parentElement.querySelector('.ceo-msg-collapsed').style.display=this.parentElement.querySelector('.ceo-msg-collapsed').style.display==='none'?'':'none';this.parentElement.querySelector('.ceo-msg-full').style.display=this.parentElement.querySelector('.ceo-msg-full').style.display==='none'?'':'none';this.textContent=this.textContent===window.OMC_I18N?.t('common.showMore', 'Mostrar mais')?'▲ '+window.OMC_I18N?.t('common.showLess', 'Mostrar menos'):window.OMC_I18N?.t('common.showMore', 'Mostrar mais')">${window.OMC_I18N?.t('common.showMore', 'Mostrar mais')}</span>`;
       } else {
         el.innerHTML = `<span class="ceo-msg-sender">[${this._esc(src)}]</span>`
           + `<span class="ceo-msg-text">${this._esc(text)}</span>`;

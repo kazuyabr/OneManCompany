@@ -574,7 +574,7 @@ class OfficeRenderer {
     const execRowH = layout.exec_row_height || 2;
     const execMidX = (MAP_COLS / 2) * TILE;
     const execSignY = (execRow + execRowH + WALL_ROWS) * TILE;
-    this._drawDeptSign(execMidX, execSignY, window.OMC_I18N?.t('office.executiveLabel', 'Executive'), '#c0b060');
+    this._drawDeptSign(execMidX, execSignY, window.OMC_I18N?.t('office.executiveLabel', 'Executivo'), '#c0b060');
   }
 
   /** Draw a pixel-art garden-style sign: stake + board with label text. */
@@ -1001,7 +1001,7 @@ class OfficeRenderer {
     this.ctx.fillStyle = PALETTE.led1;
     this.ctx.font = '7px monospace';
     this.ctx.textAlign = 'center';
-    const label = (toolData.name || window.OMC_I18N?.t('office.toolLabelFallback', 'TOOL')).substring(0, 8).toUpperCase();
+    const label = (toolData.name || window.OMC_I18N?.t('office.toolLabelFallback', 'FERRAMENTA')).substring(0, 8).toUpperCase();
     this.ctx.fillText(label, px + 16, py + 36);
     this.ctx.textAlign = 'left';
   }
@@ -1120,7 +1120,7 @@ class OfficeRenderer {
     if (roomData.is_booked) {
       ctx.fillStyle = PALETTE.meetingBooked;
       ctx.font = '6px monospace';
-      ctx.fillText(window.OMC_I18N?.t('office.roomInUseBadge', 'IN USE'), px + TILE, ly + 8 + lines.length * lineH);
+      ctx.fillText(window.OMC_I18N?.t('office.roomInUseBadge', 'EM USO'), px + TILE, ly + 8 + lines.length * lineH);
     }
     ctx.textAlign = 'left';
 
@@ -1211,15 +1211,15 @@ class OfficeRenderer {
     let tooltipText = null;
 
     if (x >= 5 && x <= 7 && y <= 1) {
-      tooltipText = window.OMC_I18N?.t('office.companyRulesTooltip', 'Company Rules\nClick to view and edit workflows');
+      tooltipText = window.OMC_I18N?.t('office.companyRulesTooltip', 'Regras da empresa\nClique para ver e editar workflows');
     }
     if (x >= 12 && x <= 14 && y <= 1) {
-      tooltipText = window.OMC_I18N?.t('office.projectWallTooltip', 'Project Wall\nClick to view project history');
+      tooltipText = window.OMC_I18N?.t('office.projectWallTooltip', 'Mural de projetos\nClique para ver o histórico de projetos');
     }
 
     const ceoCanvasRow = ((this.state.office_layout || {}).executive_row || 0) + WALL_ROWS;
     if (x === 10 && (y === ceoCanvasRow - 1 || y === ceoCanvasRow || y === ceoCanvasRow + 1)) {
-      tooltipText = window.OMC_I18N?.t('office.ceoTooltip', 'CEO (You)\nRole: Chief Executive\nInput tasks below');
+      tooltipText = window.OMC_I18N?.t('office.ceoTooltip', 'CEO (Você)\nFunção: Chief Executive\nInsira tarefas abaixo');
     }
 
     const LEVEL_NAMES = {
