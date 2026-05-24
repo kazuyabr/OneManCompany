@@ -99,8 +99,8 @@ class ChatPanel {
         this._convType = convType;
         const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
         const typeLabels = {
-            oneonone: t('ceo.oneOnOne', '1-pra-1'),
-            ceo_session: t('chatPanel.sessionType', 'Sessão'),
+            oneonone: t('ceo.oneOnOne', '1-on-1'),
+            ceo_session: t('chatPanel.sessionType', 'Session'),
         };
         this._container.querySelector('.chat-panel-type').textContent =
             typeLabels[convType] || t('chatPanel.chatType', 'Chat');

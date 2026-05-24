@@ -43,7 +43,7 @@ class CeoTerminal {
     el.className = 'ceo-msg--system';
     el.style.color = '#71717a';
     el.style.padding = '8px 0';
-    el.textContent = `  ${this._t('ceo.selectProjectToStart', 'Selecione um projeto para começar')}`;
+    el.textContent = `  ${this._t('ceo.selectProjectToStart', 'Select a project to start')}`;
     this._container.appendChild(el);
   }
 
@@ -73,7 +73,7 @@ class CeoTerminal {
       const empty = document.createElement('div');
       empty.style.color = '#71717a';
       empty.style.padding = '4px 0';
-      empty.textContent = `  ${this._t('ceo.noMessagesYet', 'Nenhuma mensagem ainda.')}`;
+      empty.textContent = `  ${this._t('ceo.noMessagesYet', 'No messages yet.')}`;
       this._container.appendChild(empty);
     }
 
@@ -316,7 +316,7 @@ class CeoTerminal {
     }
     const t = (key, fallback = '', vars = {}) => window.OMC_I18N?.t(key, fallback, vars) || fallback;
     card.innerHTML = `
-      <div class="completion-card-header">${this._esc(title || t('ceo.projectComplete', 'Projeto concluído'))}</div>
+      <div class="completion-card-header">${this._esc(title || t('ceo.projectComplete', 'Project Complete'))}</div>
       <div class="completion-card-body">${sections.map(s => `<div>${this._esc(s)}</div>`).join('')}</div>
     `;
     this._container.appendChild(card);

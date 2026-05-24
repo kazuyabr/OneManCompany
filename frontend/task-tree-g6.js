@@ -15,15 +15,15 @@ const DEPT_COLORS = {
 };
 
 const STATUS_STYLES = {
-    pending:    { color: '#f59e0b', labelKey: 'taskTree.status.pending', labelFallback: '\u25cc Pendente' },
-    processing: { color: '#5e6ad2', labelKey: 'taskTree.status.processing', labelFallback: '\u27f3 Em andamento' },
-    completed:  { color: '#10b981', labelKey: 'taskTree.status.completed', labelFallback: '\u2713 Concluída' },
-    accepted:   { color: '#10b981', labelKey: 'taskTree.status.accepted', labelFallback: '\u2713 Aceita' },
-    finished:   { color: '#10b981', labelKey: 'taskTree.status.finished', labelFallback: '\u2713 Finalizada' },
-    failed:     { color: '#ef4444', labelKey: 'taskTree.status.failed', labelFallback: '\u2717 Falhou' },
-    cancelled:  { color: '#62666d', labelKey: 'taskTree.status.cancelled', labelFallback: '\u2014 Cancelada' },
-    holding:    { color: '#8b5cf6', labelKey: 'taskTree.status.holding', labelFallback: '\u23f8 Em espera' },
-    blocked:    { color: '#f97316', labelKey: 'taskTree.status.blocked', labelFallback: '\u2298 Bloqueada' },
+    pending:    { color: '#f59e0b', labelKey: 'taskTree.status.pending', labelFallback: '\u25cc Pending' },
+    processing: { color: '#5e6ad2', labelKey: 'taskTree.status.processing', labelFallback: '\u27f3 Processing' },
+    completed:  { color: '#10b981', labelKey: 'taskTree.status.completed', labelFallback: '\u2713 Completed' },
+    accepted:   { color: '#10b981', labelKey: 'taskTree.status.accepted', labelFallback: '\u2713 Accepted' },
+    finished:   { color: '#10b981', labelKey: 'taskTree.status.finished', labelFallback: '\u2713 Finished' },
+    failed:     { color: '#ef4444', labelKey: 'taskTree.status.failed', labelFallback: '\u2717 Failed' },
+    cancelled:  { color: '#62666d', labelKey: 'taskTree.status.cancelled', labelFallback: '\u2014 Cancelled' },
+    holding:    { color: '#8b5cf6', labelKey: 'taskTree.status.holding', labelFallback: '\u23f8 Holding' },
+    blocked:    { color: '#f97316', labelKey: 'taskTree.status.blocked', labelFallback: '\u2298 Blocked' },
 };
 
 const CARD_W = 260;
@@ -159,7 +159,7 @@ G6.registerNode('org-card', {
             group.addShape('text', {
                 attrs: {
                     x: w / 2, y: h / 2 - 6,
-                    text: _t('taskTree.showMoreLabel', '+{count} mais', { count: cfg._hiddenChildren?.length || 0 }),
+                    text: _t('taskTree.showMoreLabel', '+{count} more', { count: cfg._hiddenChildren?.length || 0 }),
                     fontSize: 13, fontWeight: 'bold',
                     fill: '#8a8f98',
                     textAlign: 'center', textBaseline: 'middle',
@@ -170,7 +170,7 @@ G6.registerNode('org-card', {
             group.addShape('text', {
                 attrs: {
                     x: w / 2, y: h / 2 + 10,
-                    text: _t('taskTree.showMoreHint', 'Clique para expandir'),
+                    text: _t('taskTree.showMoreHint', 'Click to expand'),
                     fontSize: 9, fill: '#62666d',
                     textAlign: 'center', textBaseline: 'middle',
                     cursor: 'pointer',
@@ -459,12 +459,12 @@ class TaskTreeRenderer {
             const hidden = node.children.slice(pageSize);
             const moreNode = {
                 id: `_more_${node.id}`,
-                name: _t('taskTree.showMoreLabel', '+{count} mais', { count: hidden.length }),
+                name: _t('taskTree.showMoreLabel', '+{count} more', { count: hidden.length }),
                 avatar: '···',
                 avatarUrl: '',
                 dept: 'Default',
                 role: '',
-                desc: _t('taskTree.showMoreDesc', 'Clique para mostrar {count} tarefas a mais', { count: hidden.length }),
+                desc: _t('taskTree.showMoreDesc', 'Click to show {count} more tasks', { count: hidden.length }),
                 status: 'pending',
                 _isShowMore: true,
                 _parentId: node.id,
@@ -675,12 +675,12 @@ class TaskTreeRenderer {
         if (remaining.length > 0) {
             const newMore = {
                 id: `_more_${moreModel._parentId}_${Date.now()}`,
-                name: _t('taskTree.showMoreLabel', '+{count} mais', { count: remaining.length }),
+                name: _t('taskTree.showMoreLabel', '+{count} more', { count: remaining.length }),
                 avatar: '···',
                 avatarUrl: '',
                 dept: 'Default',
                 role: '',
-                desc: _t('taskTree.showMoreDesc', 'Clique para mostrar {count} tarefas a mais', { count: remaining.length }),
+                desc: _t('taskTree.showMoreDesc', 'Click to show {count} more tasks', { count: remaining.length }),
                 status: 'pending',
                 _isShowMore: true,
                 _parentId: moreModel._parentId,
@@ -765,7 +765,7 @@ class TaskTreeRenderer {
                 if (!logContent) return;
                 if (logContent.classList.contains('hidden')) {
                     logContent.classList.remove('hidden');
-                    el.innerHTML = `&#9660; ${_t('taskTree.executionLog', 'Registro de execução')}`;
+                    el.innerHTML = `&#9660; ${_t('taskTree.executionLog', 'Execution Log')}`;
                     // Use xterm.js for terminal rendering
                     if (typeof XTermLog !== 'undefined') {
                         logContent.innerHTML = '';
@@ -775,14 +775,14 @@ class TaskTreeRenderer {
                         fetch(`/api/node/${nodeId}/logs${qs}`)
                             .then(r => r.json())
                             .then(data => { xterm.renderLogs(data.logs || []); })
-                            .catch(() => { xterm.writeln(`${ANSI.red}${_t('taskTree.failedToLoadLogs', 'Falha ao carregar logs')}${ANSI.reset}`); });
+                            .catch(() => { xterm.writeln(`${ANSI.red}${_t('taskTree.failedToLoadLogs', 'Failed to load logs')}${ANSI.reset}`); });
                         logContent._xterm = xterm;
                     } else {
-                        logContent.innerHTML = `<div style="color:#666;padding:8px">${_t('taskTree.terminalNotLoaded', 'Terminal não carregado')}</div>`;
+                        logContent.innerHTML = `<div style="color:#666;padding:8px">${_t('taskTree.terminalNotLoaded', 'Terminal not loaded')}</div>`;
                     }
                 } else {
                     logContent.classList.add('hidden');
-                    el.innerHTML = `&#9654; ${_t('taskTree.executionLog', 'Registro de execução')}`;
+                    el.innerHTML = `&#9654; ${_t('taskTree.executionLog', 'Execution Log')}`;
                     if (logContent._xterm) { logContent._xterm.dispose(); logContent._xterm = null; }
                 }
             });
@@ -798,7 +798,7 @@ class TaskTreeRenderer {
             .map(c => `<li>${this._escapeHtml(c)}</li>`).join('');
         const acceptance = node.acceptance_result
             ? `<div class="detail-section">
-                 <h4>${_t('taskTree.acceptance', 'Aceitação')}</h4>
+                 <h4>${_t('taskTree.acceptance', 'Acceptance')}</h4>
                  <span class="${node.acceptance_result.passed ? 'status-pass' : 'status-fail'}">
                    ${node.acceptance_result.passed ? _t('taskTree.passed', 'APROVADO') : _t('taskTree.failedLabel', 'FALHOU')}
                  </span>
@@ -810,9 +810,9 @@ class TaskTreeRenderer {
         const isCeo = node.node_type === 'ceo_prompt' || node.node_type === 'ceo_followup' || node.node_type === 'ceo_request';
         const displayName = isCeo ? 'CEO' : (info.nickname || info.name || node.employee_id);
         const statusLabel = _t((STATUS_STYLES[node.status] || STATUS_STYLES.pending).labelKey, (STATUS_STYLES[node.status] || STATUS_STYLES.pending).labelFallback);
-        const nodeTypeLabel = node.node_type === 'ceo_prompt' ? _t('taskTree.originalPrompt', 'Prompt original')
-            : node.node_type === 'ceo_followup' ? _t('taskTree.followUp', 'Acompanhamento')
-            : node.node_type === 'ceo_request' ? _t('taskTree.ceoRequest', 'Solicitação do CEO') : '';
+        const nodeTypeLabel = node.node_type === 'ceo_prompt' ? _t('taskTree.originalPrompt', 'Original prompt')
+            : node.node_type === 'ceo_followup' ? _t('taskTree.followUp', 'Follow-up')
+            : node.node_type === 'ceo_request' ? _t('taskTree.ceoRequest', 'CEO request') : '';
         const avatarHtml = info.avatar_url
             ? `<img src="${this._escapeHtml(info.avatar_url)}" class="tree-detail-avatar" />`
             : `<div class="tree-detail-avatar${isCeo ? ' tree-detail-avatar-ceo' : ''}">${isCeo ? 'CEO' : this._escapeHtml((node.employee_id || '').slice(-2))}</div>`;
@@ -829,14 +829,18 @@ class TaskTreeRenderer {
 
             <div class="detail-section">
                 <h4>${_t('taskTree.prompt', 'Prompt')}</h4>
-                <pre class="detail-prompt">${this._escapeHtml(node.description || _t('taskTree.none', '(nenhum)'))}</pre>
+                <pre class="detail-prompt">${this._escapeHtml(node.description || _t('taskTree.none', '(none)'))}</pre>
             </div>
 
-            ${criteria ? `<div class="detail-section"><h4>${_t('taskTree.acceptanceCriteria', 'Critérios de aceitação')}</h4><ul>${criteria}</ul></div>` : ''}
+            ${criteria ? `<div class="detail-section"><h4>${_t('taskTree.acceptanceCriteria', 'Acceptance criteria')}</h4><ul>${criteria}</ul></div>` : ''}
 
             <div class="detail-section">
-                <h4>${_t('taskTree.result', 'Resultado')}</h4>
-                <pre class="detail-result">${this._escapeHtml(node.result || _t('taskTree.pendingResult', '(pendente)'))}</pre>
+                <h4>${_t('taskTree.result', 'Result')}</h4>
+                <div class="detail-result">${this._escapeHtml(node.result || _t('taskTree.pendingResult', '(pending)'))}</div>
+                ${node.passed !== undefined ? `
+                    <div class="detail-pass-fail ${node.passed ? 'passed' : 'failed'}">
+                        [${node.passed ? _t('taskTree.passed', 'PASSED') : _t('taskTree.failedLabel', 'FAILED')}]
+                    </div>` : ''}
             </div>
 
             ${acceptance}
@@ -851,7 +855,7 @@ class TaskTreeRenderer {
 
             <div class="detail-section">
                 <h4 class="detail-log-toggle" data-node-id="${node.id}" style="cursor:pointer;user-select:none">
-                    &#9654; ${_t('taskTree.executionLog', 'Registro de execução')}
+                    &#9654; ${_t('taskTree.executionLog', 'Execution Log')}
                 </h4>
                 <div class="detail-log-content hidden" id="node-log-${node.id}"></div>
             </div>
@@ -864,7 +868,7 @@ class TaskTreeRenderer {
         let html = '';
 
         // Prerequisites
-        html += `<div class="detail-section"><h4>${_t('taskTree.prerequisites', 'Pré-requisitos')}</h4>`;
+        html += `<div class="detail-section"><h4>${_t('taskTree.prerequisites', 'Prerequisites')}</h4>`;
         if (node.depends_on && node.depends_on.length > 0) {
             html += '<ul>';
             node.depends_on.forEach(depId => {
@@ -889,7 +893,7 @@ class TaskTreeRenderer {
             (n.depends_on || []).includes(node.id) ||
             n.parent_id === node.id
         );
-        html += `<div class="detail-section"><h4>${_t('taskTree.downstreamTasks', 'Tarefas dependentes')}</h4>`;
+        html += `<div class="detail-section"><h4>${_t('taskTree.downstreamTasks', 'Dependent tasks')}</h4>`;
         if (dependents.length > 0) {
             html += '<ul>';
             dependents.forEach(dep => {

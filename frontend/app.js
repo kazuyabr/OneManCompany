@@ -89,49 +89,49 @@ class AppController {
 
     setText('#reconnecting-overlay .reconnecting-text', 'banner.reconnecting', '🔄 Reconectando...');
 
-    setTitle('#create-product-btn', 'toolbar.newProduct', 'Novo Produto');
-    setTitle('#import-product-btn', 'toolbar.importProduct', 'Importar Produto');
-    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Mural de Ex-funcionários');
-    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Cultura da Empresa');
-    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Direção da Empresa');
-    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Painel');
-    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Anúncios');
-    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Configurações');
-    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Converse com EA');
-    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Alternar lista de projetos');
-    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Vincular tarefa ao produto');
-    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Não Perturbe');
-    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Tarefas em Segundo Plano');
-    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Exportar captura SVG');
-    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Parar todas as tarefas');
-    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Recarregar todos os dados do disco');
+    setTitle('#create-product-btn', 'toolbar.newProduct', 'New Product');
+    setTitle('#import-product-btn', 'toolbar.importProduct', 'Import Product');
+    setTitle('#ex-employee-toolbar-btn', 'toolbar.exEmployeeWall', 'Ex-Employee Wall');
+    setTitle('#company-culture-toolbar-btn', 'toolbar.companyCulture', 'Company Culture');
+    setTitle('#company-direction-toolbar-btn', 'toolbar.companyDirection', 'Company Direction');
+    setTitle('#dashboard-toolbar-btn', 'toolbar.dashboard', 'Dashboard');
+    setTitle('#announcements-toolbar-btn', 'toolbar.announcements', 'Announcements');
+    setTitle('#settings-toolbar-btn', 'toolbar.settings', 'Settings');
+    setTitle('#ceo-chat-btn', 'ceo.chatWithEA', 'Chat with EA');
+    setTitle('#ceo-list-toggle', 'ceo.toggleProjectList', 'Toggle project list');
+    setTitle('#ceo-product-select', 'ceo.linkTaskToProduct', 'Link task to product');
+    setTitle('#dnd-toggle-btn', 'toolbar.doNotDisturb', 'Do Not Disturb');
+    setTitle('#bg-tasks-toolbar-btn', 'toolbar.backgroundTasks', 'Background Tasks');
+    setTitle('#screenshot-toolbar-btn', 'toolbar.exportScreenshot', 'Export SVG Screenshot');
+    setTitle('#abort-all-toolbar-btn', 'toolbar.stopAllTasks', 'Stop all tasks');
+    setTitle('#reload-toolbar-btn', 'toolbar.forceReload', 'Force reload all data from disk');
 
-    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Registro ao vivo da reunião');
-    setText('#emp-modal-title', 'employee.detailsTitle', 'Detalhes do funcionário');
-    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Selecione um workflow para ver');
-    setText('#hiring-request-approve', 'common.approve', 'Aprovar');
-    setText('#hiring-request-reject', 'common.reject', 'Rejeitar');
-    setText('#interview-modal-title', 'interview.title', '🎤 Entrevista');
+    setText('#meeting-chat-panel .meeting-chat-header', 'meeting.liveLog', 'Live meeting log');
+    setText('#emp-modal-title', 'employee.detailsTitle', 'Employee Details');
+    setText('#workflow-placeholder', 'workflow.selectPrompt', '← Select a workflow to view');
+    setText('#hiring-request-approve', 'common.approve', 'Approve');
+    setText('#hiring-request-reject', 'common.reject', 'Reject');
+    setText('#interview-modal-title', 'interview.title', '🎤 Interview');
     setText('#onboarding-toggle-btn', 'onboarding.toggle', '▼');
     setText('#onboarding-done-btn', 'common.close', '✕');
     setText('#ex-employee-close-btn', 'common.close', '✕');
     setText('#dashboard-close-btn', 'common.close', '✕');
     setText('#company-culture-close-btn', 'common.close', '✕');
     setText('#project-close-btn', 'common.close', '✕');
-    setText('#product-modal-title', 'product.detailTitle', 'Detalhe do produto');
+    setText('#product-modal-title', 'product.detailTitle', 'Product Detail');
     setText('#company-direction-close-btn', 'common.close', '✕');
-    setText('#generic-popup-title', 'common.notification', 'Notificação');
+    setText('#generic-popup-title', 'common.notification', 'Notification');
     setText('#bg-tasks-close-btn', 'common.close', '✕');
-    setText('#trace-modal-title', 'traceViewer.title', 'VISUALIZADOR DE TRACE');
+    setText('#trace-modal-title', 'traceViewer.title', 'TRACE VIEWER');
 
-    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'ex.: Focamos em ferramentas criativas com IA para criadores independentes...');
-    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Adicione uma nova entrada de cultura...');
-    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'ex.: OneManCompany site');
-    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Objetivo do produto');
-    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Digite a mensagem, / para comandos (Enter para enviar)');
-    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
-    setPlaceholder('#meeting-ceo-input', 'meeting.messagePlaceholder', 'Envie uma mensagem para esta reunião...');
-    setPlaceholder('#interview-question', 'meeting.messagePlaceholder', 'Digite uma mensagem...');
+    setPlaceholder('#company-direction-input', 'companyDirection.placeholder', 'e.g.: We focus on creative AI tools for independent creators...');
+    setPlaceholder('#company-culture-input', 'companyCulture.placeholder', 'Add a new culture entry...');
+    setPlaceholder('#create-product-name', 'createProduct.namePlaceholder', 'e.g.: OneManCompany website');
+    setPlaceholder('#create-product-desc', 'createProduct.objectivePlaceholder', 'Product objective');
+    setPlaceholder('#ceo-conv-input', 'ceo.messagePlaceholder', '$ Type message, / for commands (Enter to send)');
+    setPlaceholder('#oneonone-input', 'meeting.messagePlaceholder', 'Type a message...');
+    setPlaceholder('#meeting-ceo-input', 'meeting.sendMessagePlaceholder', 'Send a message to this meeting...');
+    setPlaceholder('#interview-question', 'interview.messagePlaceholder', 'Type a message...');
   }
 
   // ===== WebSocket =====
@@ -706,7 +706,7 @@ class AppController {
 
   // ===== Cancel Task (used by project card overlay) =====
   async _cancelTask(projectId) {
-    if (!confirm('Are you sure you want to cancel this task?')) return;
+    if (!confirm(window.OMC_I18N?.t('common.cancelTask', 'Are you sure you want to cancel this task?'))) return;
     try {
       const resp = await fetch(`/api/task/${projectId}/abort`, { method: 'POST' });
       const data = await resp.json();
@@ -1185,18 +1185,18 @@ class AppController {
 
     // Abort all tasks (panic button)
     document.getElementById('abort-all-toolbar-btn')?.addEventListener('click', async () => {
-        if (!confirm('Are you sure you want to stop all tasks for all employees?\nThis will cancel ALL running tasks for ALL employees.')) return;
+        if (!confirm(window.OMC_I18N?.t('common.stopAllTasksConfirm', 'Are you sure you want to stop all tasks for all employees?\nThis will cancel ALL running tasks for ALL employees.'))) return;
         try {
             const resp = await fetch('/api/abort-all', { method: 'POST' });
             const data = await resp.json();
             if (data.status === 'ok') {
                 console.log('Abort all result:', data);
             } else {
-                this._showToast(data.detail || data.message || window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
+                this._showToast(data.detail || data.message || window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Failed to abort all tasks') || 'Failed to abort all tasks', 'error');
             }
         } catch (e) {
             console.error('Abort all failed:', e);
-            this._showToast(window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Falha ao abortar todas as tarefas') || 'Falha ao abortar todas as tarefas', 'error');
+            this._showToast(window.OMC_I18N?.t('common.failedToAbortAllTasks', 'Failed to abort all tasks') || 'Failed to abort all tasks', 'error');
         }
     });
 
@@ -1867,7 +1867,7 @@ class AppController {
       })
       .catch(err => {
         console.error('Fire employee error:', err);
-        this._showToast('Failed to dismiss employee', 'error');
+        this._showToast(window.OMC_I18N?.t('common.failedToDismissEmployee', 'Failed to dismiss employee'), 'error');
       });
   }
 
@@ -2045,10 +2045,10 @@ class AppController {
         await traceLoadAllNodeLogs(nodes);
         xterm.clear();
         xterm.renderTraceFeed(nodes, data.root_id);
-        metaEl.textContent = window.OMC_I18N?.t('traceViewer.nodes', '{count} nós', { count: Object.keys(nodes).length }) || `${Object.keys(nodes).length} nós`;
+        metaEl.textContent = window.OMC_I18N?.t('traceViewer.nodes', '{count} nodes', { count: Object.keys(nodes).length }) || `${Object.keys(nodes).length} nodes`;
       })
       .catch(e => {
-        xterm.writeln(`${ANSI.red}${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${e.message}${ANSI.reset}`);
+        xterm.writeln(`${ANSI.red}${window.OMC_I18N?.t('common.error', 'Error') || 'Error'}: ${e.message}${ANSI.reset}`);
       });
   }
 
@@ -2124,7 +2124,7 @@ class AppController {
   }
 
   async _cancelCron(empId, cronName) {
-    if (!confirm(window.OMC_I18N?.t('cron.stopPrompt', 'Parar a tarefa agendada "{name}"? As tarefas pendentes também serão canceladas.', { name: cronName }) || `Parar a tarefa agendada "${cronName}"? As tarefas pendentes também serão canceladas.`)) return;
+    if (!confirm(window.OMC_I18N?.t('cron.stopPrompt', 'Stop scheduled task "{name}"? Pending tasks will also be cancelled.', { name: cronName }) || `Stop scheduled task "${cronName}"? Pending tasks will also be cancelled.`)) return;
     try {
       const resp = await fetch(`/api/automations/${empId}/cron/${encodeURIComponent(cronName)}/stop`, {
         method: 'POST',
@@ -2133,16 +2133,16 @@ class AppController {
       if (data.status === 'ok') {
         this._fetchCronList(empId);
       } else {
-        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
+        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopFailed', 'Failed to stop scheduled task') || 'Failed to stop scheduled task', 'error');
       }
     } catch (err) {
       console.error('Failed to cancel cron:', err);
-      this._showToast(window.OMC_I18N?.t('cron.stopJobFailed', 'Falha ao parar a tarefa agendada') || 'Falha ao parar a tarefa agendada', 'error');
+      this._showToast(window.OMC_I18N?.t('cron.stopJobFailed', 'Failed to stop scheduled task') || 'Failed to stop scheduled task', 'error');
     }
   }
 
   async _stopAllCrons(empId) {
-    if (!confirm(window.OMC_I18N?.t('cron.stopAllPrompt', 'Parar TODAS as tarefas agendadas deste funcionário?') || 'Parar TODAS as tarefas agendadas deste funcionário?')) return;
+    if (!confirm(window.OMC_I18N?.t('cron.stopAllPrompt', 'Stop ALL scheduled tasks for this employee?') || 'Stop ALL scheduled tasks for this employee?')) return;
     try {
       const resp = await fetch(`/api/automations/${empId}/crons/stop-all`, {
         method: 'POST',
@@ -2151,11 +2151,11 @@ class AppController {
       if (data.status === 'ok') {
         this._fetchCronList(empId);
       } else {
-        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
+        this._showToast(data.detail || data.message || window.OMC_I18N?.t('cron.stopAllFailed', 'Failed to stop all scheduled tasks') || 'Failed to stop all scheduled tasks', 'error');
       }
     } catch (err) {
       console.error('Failed to stop all crons:', err);
-      this._showToast(window.OMC_I18N?.t('cron.stopAllFailed', 'Falha ao parar todas as tarefas agendadas') || 'Falha ao parar todas as tarefas agendadas', 'error');
+      this._showToast(window.OMC_I18N?.t('cron.stopAllFailed', 'Failed to stop all scheduled tasks') || 'Failed to stop all scheduled tasks', 'error');
     }
   }
 
@@ -2171,7 +2171,7 @@ class AppController {
       .then(r => r.json())
       .then(projects => {
         if (!projects || projects.length === 0) {
-          container.innerHTML = '<span class="empty-hint">No project history</span>';
+          container.innerHTML = `<span class="empty-hint">${window.OMC_I18N?.t('common.noProjectHistory', 'No project history')}</span>`;
           return;
         }
         let html = '';
@@ -2196,7 +2196,7 @@ class AppController {
       })
       .catch(err => {
         console.error('[loadProjectList] failed:', err);
-        container.innerHTML = '<span class="empty-hint">Failed to load</span>';
+        container.innerHTML = `<span class="empty-hint">${window.OMC_I18N?.t('common.failedToLoad', 'Failed to load')}</span>`;
       });
   }
 
@@ -2760,7 +2760,7 @@ class AppController {
             this._ceoTerm?.appendMessage({ role: 'system', text: t('command.reviewError', 'Review error: {message}', { message: e.message }), source: 'system' });
           });
       }},
-      { cmd: '/1on1', desc: t('command.oneononeDesc', 'Start 1-pra-1 meeting with an employee'), action: () => {
+      { cmd: '/1on1', desc: t('command.oneononeDesc', 'Start 1-on-1 meeting with an employee'), action: () => {
         const modal = document.getElementById('oneonone-modal');
         if (modal) {
           document.getElementById('meeting-type-select').value = 'oneonone';
@@ -2768,7 +2768,7 @@ class AppController {
           modal.classList.remove('hidden');
         }
       }},
-      { cmd: '/allhands', desc: t('command.allHandsDesc', 'Iniciar reunião geral (fala do CEO)'), action: async (arg) => {
+      { cmd: '/allhands', desc: t('command.allHandsDesc', 'Start all-hands meeting (CEO speech)'), action: async (arg) => {
         await this._startMeetingInConsole('all_hands', arg);
       }},
       { cmd: '/discuss', desc: t('command.discussDesc', 'Start discussion meeting (open floor)'), action: async (arg) => {
@@ -3270,7 +3270,7 @@ class AppController {
 
   async _loadModelOrApiKeySection(empId) {
     const container = document.getElementById('emp-settings-container');
-    container.innerHTML = `<div style="color:var(--text-dim);font-size:6px;padding:4px;">${window.OMC_I18N?.t('settings.loadingSettings', 'Carregando configurações...') || 'Carregando configurações...'}</div>`;
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:6px;padding:4px;">${window.OMC_I18N?.t('settings.loadingSettings', 'Loading settings...') || 'Loading settings...'}</div>`;
 
     try {
       const empResp = await fetch(`/api/employee/${empId}?_t=${Date.now()}`).then(r => r.json());
@@ -3312,7 +3312,7 @@ class AppController {
         // Add a save button
         const saveRow = document.createElement('div');
         saveRow.style.cssText = 'display:flex;gap:4px;margin-top:4px;';
-        saveRow.innerHTML = '<button class="pixel-btn small" id="emp-manifest-save-btn">Save</button>';
+        saveRow.innerHTML = `<button class="pixel-btn small" id="emp-manifest-save-btn">${window.OMC_I18N?.t('common.save', 'Save')}</button>`;
         container.appendChild(saveRow);
         document.getElementById('emp-manifest-save-btn').addEventListener('click', () => this._saveManifestSettings(empId));
       } else {
@@ -3349,8 +3349,8 @@ class AppController {
       const isSet = field.key === 'api_key' ? empData.api_key_set : !!empData[`${field.key}_set`];
       const preview = field.key === 'api_key' ? empData.api_key_preview : empData[`${field.key}_preview`];
       input.placeholder = isSet
-        ? window.OMC_I18N?.t('settings.setWithPreview', 'Definido ({preview})', { preview: preview || '****' }) || `Definido (${preview || '****'})`
-        : window.OMC_I18N?.t('settings.notSet', 'Não definido...') || 'Não definido...';
+          ? window.OMC_I18N?.t('settings.setWithPreview', 'Set ({preview})', { preview: preview || '****' }) || `Set (${preview || '****'})`
+          : window.OMC_I18N?.t('settings.notSet', 'Not set...') || 'Not set...';
       input.value = '';
       row.appendChild(input);
       // Status indicator
@@ -3464,7 +3464,7 @@ class AppController {
     try {
       const modelsResp = await fetch('/api/models').then(r => r.json());
       const models = modelsResp.models || [];
-      select.innerHTML = '<option value="">-- Use default --</option>';
+      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.useDefault', '-- Use default --')}</option>`;
       for (const m of models) {
         const opt = document.createElement('option');
         opt.value = m.id;
@@ -3622,7 +3622,7 @@ class AppController {
     section.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
     section.innerHTML = `
       <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.agentFamily', 'Família do agente') || 'Família do agente'}</span>
+        <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('employee.agentFamily', 'Agent family') || 'Agent family'}</span>
         <span style="font-size:6px;color:var(--pixel-cyan);">Claude Session</span>
       </div>
       <div style="display:flex;align-items:center;gap:4px;">
@@ -3635,7 +3635,7 @@ class AppController {
         <span style="font-size:6px;color:var(--pixel-yellow);min-width:55px;">${window.OMC_I18N?.t('settings.status', 'Status') || 'Status'}</span>
         <span style="font-size:6px;color:${statusColor};">${statusText}</span>
       </div>
-      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} ${window.OMC_I18N?.t('common.sessions', 'sessão(ões)') || 'sessão(ões)'}</div>` : ''}
+      ${sessions.length > 0 ? `<div style="font-size:5px;color:var(--text-dim);margin-top:2px;">${sessions.length} ${window.OMC_I18N?.t('common.sessions', 'session(s)') || 'session(s)'}</div>` : ''}
     `;
     container.appendChild(section);
 
@@ -3714,7 +3714,7 @@ class AppController {
         if (data.error) {
           this.logEntry('SYSTEM', `${window.OMC_I18N?.t('common.error', 'Erro') || 'Erro'}: ${data.error}`, 'system');
         } else {
-          this.logEntry('CEO', `${window.OMC_I18N?.t('settings.setAsDefault', 'Definir como padrão') || 'Definir como padrão'}: ${provider}`, 'ceo');
+          this.logEntry('CEO', `${window.OMC_I18N?.t('settings.setAsDefault', 'Set as default') || 'Set as default'}: ${provider}`, 'ceo');
           this._loadModelOrApiKeySection(empId);
         }
       } catch (err) {
@@ -3745,7 +3745,7 @@ class AppController {
       const currentModel = empResp.llm_model || '';
       const models = modelsResp.models || [];
 
-      select.innerHTML = '<option value="">-- Use default model --</option>';
+      select.innerHTML = `<option value="">${window.OMC_I18N?.t('common.useDefaultModel', '-- Use default model --')}</option>`;
       for (const m of models) {
         const opt = document.createElement('option');
         opt.value = m.id;
@@ -3888,7 +3888,7 @@ class AppController {
     // Fallback: show manual input
     document.getElementById('emp-oauth-code-row').style.display = 'flex';
     this.logEntry('SYSTEM',
-      window.OMC_I18N?.t('oauth.pasteCodeAnywhere', 'Cole o código (Ctrl+V) em qualquer lugar desta página, ou digite acima e clique em Enviar.') || 'Cole o código (Ctrl+V) em qualquer lugar desta página, ou digite acima e clique em Enviar.',
+      window.OMC_I18N?.t('oauth.pasteCodeAnywhere', 'Paste the code (Ctrl+V) anywhere on this page, or type above and click Send.') || 'Paste the code (Ctrl+V) anywhere on this page, or type above and click Send.',
       'system');
   }
 
@@ -4809,7 +4809,7 @@ class AppController {
       .then(data => {
         const projects = this._sortProjectsNewestFirst(data.projects || []);
         if (projects.length === 0) {
-          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'Nenhum registro de projeto')}</div>`;
+          listEl.innerHTML = `<div style="color:var(--text-dim);font-size:7px;">${t('projectWall.empty', 'No project history')}</div>`;
           return;
         }
         listEl.innerHTML = '';
@@ -5439,7 +5439,7 @@ class AppController {
         </div>`;
       }).join('');
     } else {
-      partEl.innerHTML = '<div style="color:var(--text-dim)">No participants</div>';
+      partEl.innerHTML = `<div style="color:var(--text-dim)">${window.OMC_I18N?.t('meeting.noParticipants', 'No participants')}</div>`;
     }
   }
 
@@ -5475,7 +5475,7 @@ class AppController {
       if (!infoPanel) return;
       const block = document.createElement('div');
       block.className = 'meeting-info-block';
-      block.innerHTML = '<div class="meeting-info-label">Agenda</div><div id="meeting-agenda-list" class="meeting-agenda-list"></div>';
+      block.innerHTML = `<div class="meeting-info-label">${window.OMC_I18N?.t('meeting.agenda', 'Agenda')}</div><div id="meeting-agenda-list" class="meeting-agenda-list"></div>`;
       infoPanel.appendChild(block);
       agendaEl = document.getElementById('meeting-agenda-list');
     }
@@ -5721,21 +5721,21 @@ class AppController {
             </div>
             <div id="${bodyId}" class="api-card-body collapsed">
               ${oauthSection}
-              <label class="api-field-label">${t('settings.apiKey', 'Chave de API')}</label>
-              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Informar ID do modelo...')}" />
+              <label class="api-field-label">${t('settings.apiKey', 'API Key')}</label>
+              <input type="password" id="api-${providerId}-key" class="api-key-input" placeholder="${isConfigured ? '••••••••' : t('settings.enterModelId', 'Enter model ID...')}" />
               <div class="api-card-actions">
-                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Iniciar')}</button>
-                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Salvar')}</button>
+                <button class="pixel-btn small api-test-btn" onclick="app._testProviderKey('${providerId}')">${t('settings.start', 'Start')}</button>
+                <button class="pixel-btn small" onclick="app._saveProviderKey('${providerId}')">${t('settings.save', 'Save')}</button>
                 <span id="api-${providerId}-result" class="api-test-result"></span>
               </div>
               <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">
-                <label class="api-field-label">${t('settings.defaultModel', 'Modelo padrão')}</label>
+                <label class="api-field-label">${t('settings.defaultModel', 'Default model')}</label>
                 <select id="api-${providerId}-model" class="emp-model-select" style="font-size:6px;width:100%;padding:3px 4px;background:var(--bg-dark);color:var(--pixel-green);border:1px solid var(--border);">
-                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Selecionar modelo...')}</option>`}
+                  ${isDefault && defaultModel ? `<option value="${this._escAttr(defaultModel)}" selected>${this._escAttr(defaultModel)}</option>` : `<option value="">${t('settings.selectModel', 'Select model...')}</option>`}
                 </select>
                 <div class="api-card-actions" style="margin-top:4px;">
                   <button class="pixel-btn small${isDefault ? '' : ' api-test-btn'}" onclick="app._setDefaultProvider('${providerId}')"
-                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Salve a chave de API primeiro')}"` : ''}>${isDefault ? t('settings.saveModel', 'Salvar modelo') : t('settings.setAsDefault', 'Definir como padrão')}</button>
+                    ${!isConfigured ? `disabled title="${t('settings.saveApiKeyFirst', 'Save API key first')}"` : ''}>${isDefault ? t('settings.saveModel', 'Save model') : t('settings.setAsDefault', 'Set as default')}</button>
                   <span id="api-${providerId}-default-result" class="api-test-result"></span>
                 </div>
               </div>
@@ -6002,7 +6002,7 @@ class AppController {
       html += '</tbody></table>';
       container.innerHTML = html;
     } catch (e) {
-      container.innerHTML = '<div style="color:var(--pixel-red);font-size:7px;padding:6px;">Error: ' + e.message + '</div>';
+      container.innerHTML = `<div style="color:var(--pixel-red);font-size:7px;padding:6px;">${window.OMC_I18N?.t('common.error', 'Error')}: ${e.message}</div>`;
     }
   }
 
@@ -6772,7 +6772,7 @@ class AppController {
         `).join('');
       }
     } catch (e) {
-      body.innerHTML = '<span class="empty-hint">Failed to load tools</span>';
+      body.innerHTML = `<span class="empty-hint">${window.OMC_I18N?.t('tool.failedToLoad', 'Failed to load tools')}</span>`;
     }
   }
 
@@ -6822,7 +6822,7 @@ class AppController {
         break;
       }
       case 'logout': {
-        if (!confirm('Disconnect OAuth for this tool?')) return;
+        if (!confirm(window.OMC_I18N?.t('common.oauthDisconnectConfirm', 'Disconnect OAuth for this tool?'))) return;
         await fetch(`/api/tools/${esc}/oauth/logout`, { method: 'POST' });
         this.openToolDetail(toolId);
         break;
@@ -6830,7 +6830,7 @@ class AppController {
       case 'credentials': {
         const clientId = document.getElementById('tool-oauth-client-id')?.value || '';
         const clientSecret = document.getElementById('tool-oauth-client-secret')?.value || '';
-        if (!clientId || !clientSecret) { this._showToast('Both Client ID and Client Secret required', 'error'); return; }
+        if (!clientId || !clientSecret) { this._showToast(window.OMC_I18N?.t('settings.oauthRequired', 'Both Client ID and Client Secret required'), 'error'); return; }
         const res = await fetch(`/api/tools/${esc}/oauth/credentials`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -6863,7 +6863,7 @@ class AppController {
   async _templateOpen(toolId, filename) {
     const esc = encodeURIComponent;
     const res = await fetch(`/api/tools/${esc(toolId)}/templates/${esc(filename)}`);
-    if (!res.ok) { this._showToast('Failed to load template', 'error'); return; }
+    if (!res.ok) { this._showToast(window.OMC_I18N?.t('common.failedToLoadTemplate', 'Failed to load template'), 'error'); return; }
     const data = await res.json();
     const body = document.getElementById('tool-list-body');
     const escH = (t) => this._escapeHtml(t);
@@ -6881,7 +6881,7 @@ class AppController {
 
   async _templateSave(toolId, filename) {
     const content = document.getElementById('template-editor')?.value || '';
-    if (!content.trim()) { this._showToast('Template cannot be empty', 'error'); return; }
+    if (!content.trim()) { this._showToast(window.OMC_I18N?.t('common.templateEmpty', 'Template cannot be empty'), 'error'); return; }
     const esc = encodeURIComponent;
     const res = await fetch(`/api/tools/${esc(toolId)}/templates/${esc(filename)}`, {
       method: 'PUT',
@@ -7268,11 +7268,11 @@ class AppController {
       const encodedId = projectId.split('/').map(encodeURIComponent).join('/');
       const url = `/api/projects/${encodedId}/ls?path=${encodeURIComponent(dirPath)}`;
       const resp = await fetch(url);
-      if (!resp.ok) { container.innerHTML = '<div style="color:var(--pixel-red);">Failed to load</div>'; return; }
+      if (!resp.ok) { container.innerHTML = `<div style="color:var(--pixel-red);">${window.OMC_I18N?.t('common.failedToLoad', 'Failed to load')}</div>`; return; }
       const data = await resp.json();
       const entries = data.entries || [];
       if (entries.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-dim);">Empty</div>';
+        container.innerHTML = `<div style="color:var(--text-dim);">${window.OMC_I18N?.t('common.empty', 'Empty')}</div>`;
         return;
       }
       let html = '';
@@ -7554,7 +7554,7 @@ class AppController {
     const ownerId = document.getElementById('create-product-owner')?.value || '';
 
     if (!name) {
-      this._showToast('Product name is required', 'warning');
+      this._showToast(window.OMC_I18N?.t('product.nameRequired', 'Product name is required'), 'warning');
       return;
     }
 
@@ -7595,7 +7595,7 @@ class AppController {
       this._refreshProductSelector();
     } catch (e) {
       console.error('Failed to create product:', e);
-      this._showToast('Failed to create product', 'error');
+      this._showToast(window.OMC_I18N?.t('common.failedToCreateProduct', 'Failed to create product'), 'error');
     }
   }
 
@@ -7754,7 +7754,7 @@ class AppController {
     statusSel.className = 'form-input';
     statusSel.style.width = 'auto';
     statusSel.style.marginLeft = '8px';
-    statusSel.innerHTML = '<option value="planning">planning</option><option value="active">active</option><option value="archived">archived</option>';
+    statusSel.innerHTML = `<option value="planning">${window.OMC_I18N?.t('product.status.planning', 'planning')}</option><option value="active">${window.OMC_I18N?.t('product.status.active', 'active')}</option><option value="archived">${window.OMC_I18N?.t('product.status.archived', 'archived')}</option>`;
     statusSel.value = product.status || 'active';
     statusSel.addEventListener('change', () => {
       fetch(`/api/product/${encodeURIComponent(slug)}`, {
@@ -7859,7 +7859,7 @@ class AppController {
     const ownerEl = document.createElement('select');
     ownerEl.className = 'form-input';
     ownerEl.style.width = 'auto';
-    ownerEl.innerHTML = '<option value="">Unassigned</option>';
+    ownerEl.innerHTML = `<option value="">${window.OMC_I18N?.t('common.unassigned', 'Unassigned')}</option>`;
     for (const emp of (this._cachedEmployees || [])) {
       const opt = document.createElement('option');
       opt.value = emp.id;
@@ -7929,7 +7929,7 @@ class AppController {
         try {
           const r = await fetch(`/api/product/${encodeURIComponent(slug)}/kr/${encodeURIComponent(kr.id)}`, { method: 'DELETE' });
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
-          this._showToast('KR deleted', 'success');
+          this._showToast(window.OMC_I18N?.t('kr.deleted', 'KR deleted'), 'success');
           this._openProductDetail(slug);
         } catch (err) { this._showToast(`Failed: ${err.message}`, 'error'); }
       });
@@ -8167,7 +8167,15 @@ class AppController {
     const statusSel = document.createElement('select');
     statusSel.className = 'form-input';
     statusSel.style.width = 'auto';
-    statusSel.innerHTML = '<option value="">All</option><option value="backlog">Backlog</option><option value="planned">Planned</option><option value="in_progress">In Progress</option><option value="in_review">In Review</option><option value="done">Done</option><option value="released">Released</option>';
+    statusSel.innerHTML = `
+      <option value="">${window.OMC_I18N?.t('common.all', 'All')}</option>
+      <option value="backlog">${window.OMC_I18N?.t('issue.status.backlog', 'Backlog')}</option>
+      <option value="planned">${window.OMC_I18N?.t('issue.status.planned', 'Planned')}</option>
+      <option value="in_progress">${window.OMC_I18N?.t('issue.status.inProgress', 'In Progress')}</option>
+      <option value="in_review">${window.OMC_I18N?.t('issue.status.inReview', 'In Review')}</option>
+      <option value="done">${window.OMC_I18N?.t('issue.status.done', 'Done')}</option>
+      <option value="released">${window.OMC_I18N?.t('issue.status.released', 'Released')}</option>
+    `;
     statusSel.addEventListener('change', () => renderFiltered());
     toolbar.appendChild(statusSel);
 
@@ -8175,7 +8183,7 @@ class AppController {
     const priSel = document.createElement('select');
     priSel.className = 'form-input';
     priSel.style.width = 'auto';
-    priSel.innerHTML = '<option value="">All Priority</option><option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>';
+    priSel.innerHTML = `<option value="">${window.OMC_I18N?.t('issue.allPriority', 'All Priority')}</option><option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>`;
     priSel.addEventListener('change', () => renderFiltered());
     toolbar.appendChild(priSel);
 
@@ -8216,7 +8224,7 @@ class AppController {
       });
       issueList.innerHTML = '';
       if (filtered.length === 0) {
-        issueList.innerHTML = '<div class="task-empty">No issues</div>';
+        issueList.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('issue.noIssues', 'No issues')}</div>`;
         return;
       }
       for (const issue of filtered) {
@@ -8352,7 +8360,7 @@ class AppController {
     assignSel.className = 'form-input';
     assignSel.style.width = 'auto';
     assignSel.style.display = 'inline';
-    assignSel.innerHTML = '<option value="">Unassigned</option>';
+    assignSel.innerHTML = `<option value="">${window.OMC_I18N?.t('common.unassigned', 'Unassigned')}</option>`;
     for (const emp of (this._cachedEmployees || [])) {
       const opt = document.createElement('option');
       opt.value = emp.id;
@@ -8375,7 +8383,7 @@ class AppController {
     if (history.length > 0) {
       const histEl = document.createElement('div');
       histEl.className = 'issue-card-history';
-      histEl.innerHTML = '<div class="issue-history-label">History</div>';
+      histEl.innerHTML = `<div class="issue-history-label">${window.OMC_I18N?.t('issue.history', 'History')}</div>`;
       const recent = history.slice(-5).reverse();
       for (const h of recent) {
         const hEntry = document.createElement('div');
@@ -8477,7 +8485,7 @@ class AppController {
           try {
             const r = await fetch(`/api/product/${encodeURIComponent(slug)}/issue/${encodeURIComponent(issue.id)}/link/${encodeURIComponent(link.issue_id)}`, { method: 'DELETE' });
             if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-            this._showToast('Link removed', 'success');
+            this._showToast(window.OMC_I18N?.t('product.linkRemoved', 'Link removed'), 'success');
             this._openProductDetail(slug);
           } catch (err) { this._showToast(`Remove link failed: ${err.message}`, 'error'); }
         });
@@ -8504,7 +8512,7 @@ class AppController {
     const targetSel = document.createElement('select');
     targetSel.className = 'form-input';
     targetSel.style.width = 'auto';
-    targetSel.innerHTML = '<option value="">Select issue...</option>';
+    targetSel.innerHTML = `<option value="">${window.OMC_I18N?.t('issue.selectIssue', 'Select issue...')}</option>`;
     for (const i of (fullData.issues || [])) {
       if (i.id === issue.id) continue;
       const opt = document.createElement('option');
@@ -8527,7 +8535,7 @@ class AppController {
           body: JSON.stringify({ target_id: targetSel.value, relation: relSel.value }),
         });
         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-        this._showToast('Link added', 'success');
+        this._showToast(window.OMC_I18N?.t('product.linkAdded', 'Link added'), 'success');
         this._openProductDetail(slug);
       } catch (err) { this._showToast(`Add link failed: ${err.message}`, 'error'); }
     });
@@ -8631,7 +8639,7 @@ class AppController {
 
   _renderProductProjects(projects, container) {
     if (projects.length === 0) {
-      container.innerHTML = '<div class="task-empty">No projects linked to this product</div>';
+      container.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('product.noProjectsLinked', 'No projects linked to this product')}</div>`;
       return;
     }
     const sorted = this._sortProjectsNewestFirst(projects);
@@ -8649,7 +8657,7 @@ class AppController {
   // ---------------------------------------------------------------------------
 
   _renderProductKanban(slug, container, fullData) {
-    container.innerHTML = '<div class="loading-text">Loading kanban...</div>';
+    container.innerHTML = `<div class="loading-text">${window.OMC_I18N?.t('product.loadingKanban', 'Loading kanban...')}</div>`;
     fetch(`/api/product/${encodeURIComponent(slug)}/kanban`)
       .then(r => r.json())
       .then(data => {
@@ -8757,7 +8765,7 @@ class AppController {
   // ---------------------------------------------------------------------------
 
   _renderProductRoadmap(slug, container) {
-    container.innerHTML = '<div class="loading-text">Loading roadmap...</div>';
+    container.innerHTML = `<div class="loading-text">${window.OMC_I18N?.t('product.loadingRoadmap', 'Loading roadmap...')}</div>`;
     fetch(`/api/product/${encodeURIComponent(slug)}/roadmap`)
       .then(r => r.json())
       .then(data => {
@@ -8848,7 +8856,7 @@ class AppController {
                 try {
                   const r = await fetch(`/api/product/${encodeURIComponent(slug)}/sprint/${encodeURIComponent(s.id)}/close`, { method: 'POST' });
                   if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-                  this._showToast('Sprint closed', 'success');
+                  this._showToast(window.OMC_I18N?.t('sprint.closed', 'Sprint closed'), 'success');
                   this._renderProductRoadmap(slug, container);
                 } catch (err) { this._showToast(`Close failed: ${err.message}`, 'error'); }
               });
@@ -9009,7 +9017,7 @@ class AppController {
           body: JSON.stringify({ name, start_date, end_date, goal, capacity }),
         });
         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-        this._showToast('Sprint created', 'success');
+        this._showToast(window.OMC_I18N?.t('sprint.created', 'Sprint created'), 'success');
         this._openProductDetail(slug);
       } catch (err) { this._showToast(`Create failed: ${err.message}`, 'error'); }
     });
@@ -9057,7 +9065,7 @@ class AppController {
           body: JSON.stringify(updates),
         });
         if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-        this._showToast('Sprint updated', 'success');
+        this._showToast(window.OMC_I18N?.t('sprint.updated', 'Sprint updated'), 'success');
         this._openProductDetail(slug);
       } catch (err) { this._showToast(`Update failed: ${err.message}`, 'error'); }
     });
@@ -9070,14 +9078,14 @@ class AppController {
   // ---------------------------------------------------------------------------
 
   _renderProductActivity(slug, container) {
-    container.innerHTML = '<div class="loading-text">Loading activity...</div>';
+    container.innerHTML = `<div class="loading-text">${window.OMC_I18N?.t('product.loadingActivity', 'Loading activity...')}</div>`;
     fetch(`/api/product/${encodeURIComponent(slug)}/activity?limit=100`)
       .then(r => r.json())
       .then(entries => {
         container.innerHTML = '';
 
         if (!entries.length) {
-          container.innerHTML = '<div class="task-empty">No activity recorded yet.</div>';
+          container.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('product.noActivity', 'No activity recorded yet.')}</div>`;
           return;
         }
 
@@ -9244,7 +9252,7 @@ class AppController {
             try {
               const r = await fetch(`/api/product/${encodeURIComponent(slug)}/review/${encodeURIComponent(rev.id)}/complete`, { method: 'POST' });
               if (!r.ok) { const err = await r.json(); throw new Error(err.detail || r.statusText); }
-              this._showToast('Review completed', 'success');
+              this._showToast(window.OMC_I18N?.t('product.reviewCompleted', 'Review completed'), 'success');
               this._openProductDetail(slug);
             } catch (err) { this._showToast(`Failed: ${err.message}`, 'error'); }
           });
@@ -9271,7 +9279,7 @@ class AppController {
       .then(data => {
         const doneIssues = (data.issues || []).filter(i => i.status === 'done');
         if (!doneIssues.length) {
-          form.innerHTML = '<div class="task-empty">No issues in DONE status to release.</div>';
+          form.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('product.noIssuesToRelease', 'No issues in DONE status to release.')}</div>`;
           const closeBtn = document.createElement('button');
           closeBtn.className = 'kr-remove-btn';
           closeBtn.innerHTML = '&times;';
@@ -9310,7 +9318,7 @@ class AppController {
         const bumpSel = document.createElement('select');
         bumpSel.className = 'form-input';
         bumpSel.style.width = 'auto';
-        bumpSel.innerHTML = '<option value="patch">Patch</option><option value="minor">Minor</option><option value="major">Major</option>';
+        bumpSel.innerHTML = `<option value="patch">${window.OMC_I18N?.t('product.bump.patch', 'Patch')}</option><option value="minor">${window.OMC_I18N?.t('product.bump.minor', 'Minor')}</option><option value="major">${window.OMC_I18N?.t('product.bump.major', 'Major')}</option>`;
         bumpRow.appendChild(bumpLabel);
         bumpRow.appendChild(bumpSel);
 
@@ -9319,7 +9327,7 @@ class AppController {
         releaseBtn.textContent = window.OMC_I18N?.t('product.releaseVersion', '+ Release Version') || 'Release';
         releaseBtn.addEventListener('click', async () => {
           const selectedIds = checkboxes.filter(cb => cb.checked).map(cb => cb.dataset.issueId);
-          if (!selectedIds.length) { this._showToast('Select at least one issue', 'warning'); return; }
+          if (!selectedIds.length) { this._showToast(window.OMC_I18N?.t('product.selectAtLeastOneIssue', 'Select at least one issue'), 'warning'); return; }
           try {
             const r = await fetch(`/api/product/${encodeURIComponent(slug)}/release`, {
               method: 'POST',
@@ -9355,7 +9363,7 @@ class AppController {
         const orphans = data.orphan_projects || [];
 
         if (products.length === 0 && orphans.length === 0) {
-          panel.innerHTML = '<div class="task-empty">No products or projects</div>';
+          panel.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('product.noProductsOrProjects', 'No products or projects')}</div>`;
           return;
         }
 
@@ -9390,7 +9398,7 @@ class AppController {
           header.className = 'product-group-header';
           const version = prod.current_version ? ` (v${this._escHtml(prod.current_version)})` : '';
           const statusBadge = prod.status === 'active' ? '\u25CF' : prod.status === 'planning' ? '\u25CB' : '\u25C6';
-          const planningIndicator = prod.status === 'planning' ? '<span class="product-planning-indicator">PLANNING</span>' : '';
+          const planningIndicator = prod.status === 'planning' ? `<span class="product-planning-indicator">${window.OMC_I18N?.t('product.planningIndicator', 'PLANNING')}</span>` : '';
           header.innerHTML = `
             <span class="product-expand-arrow">${state.main ? '\u25BE' : '\u25B8'}</span>
             <span class="product-status-dot status-${this._escHtml(prod.status || 'active')}">${statusBadge}</span>
@@ -9571,7 +9579,7 @@ class AppController {
       .then(data => {
         const projects = this._sortProjectsNewestFirst(data.projects || []);
         if (projects.length === 0) {
-          panel.innerHTML = '<div class="task-empty">No projects</div>';
+          panel.innerHTML = `<div class="task-empty">${window.OMC_I18N?.t('project.noProjects', 'No projects')}</div>`;
           return;
         }
         const frag = document.createDocumentFragment();
@@ -9882,7 +9890,7 @@ class AppController {
 
         if (doc.status !== 'completed' && doc.status !== 'pending_confirmation') {
           detailHtml += `<div style="margin:8px 0;display:flex;gap:6px;">`;
-          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continuar iteração atual')}</button>`;
+          detailHtml += `<button class="pixel-btn" id="continue-iter-btn" style="font-size:6px;padding:4px 10px;">\u25B6 ${window.OMC_I18N?.t('common.continueCurrentIteration', 'Continue current iteration')}</button>`;
           detailHtml += `<button class="pixel-btn" id="stop-iter-btn" style="font-size:6px;padding:4px 10px;background:var(--pixel-red);color:#000;">■ ${window.OMC_I18N?.t('toolbar.stopAllTasks', 'Stop All Tasks')}</button>`;
           detailHtml += `</div>`;
         }
@@ -10057,7 +10065,7 @@ class AppController {
         const stopBtn = document.getElementById('stop-iter-btn');
         if (stopBtn) {
           stopBtn.addEventListener('click', () => {
-            if (!confirm('Are you sure you want to stop all running tasks in this iteration?')) return;
+            if (!confirm(window.OMC_I18N?.t('common.stopAllTasksIterationConfirm', 'Are you sure you want to stop all running tasks in this iteration?'))) return;
             stopBtn.disabled = true;
             stopBtn.textContent = '⏳ Stopping...';
             fetch(`/api/task/${encodeURIComponent(iterationId)}/abort`, { method: 'POST' })
@@ -10310,7 +10318,7 @@ class AppController {
     list.innerHTML = '';
 
     if (!data.talents || data.talents.length === 0) {
-      list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No talents available</div>';
+      list.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">${window.OMC_I18N?.t('talent.noTalents', 'No talents available')}</div>`;
       return;
     }
 
@@ -10370,7 +10378,7 @@ class AppController {
     });
     const el = document.getElementById('bg-tasks-list');
     if (!tasks.length) {
-      el.innerHTML = '<div style="color:#555;font-size:10px;padding:12px;font-family:var(--font-mono);">No background tasks</div>';
+      el.innerHTML = `<div style="color:#555;font-size:10px;padding:12px;font-family:var(--font-mono);">${window.OMC_I18N?.t('bgTasks.noTasks', 'No background tasks')}</div>`;
       return;
     }
     const statusIcon = { running: '\u2588', completed: '\u2591', failed: '\u2573', stopped: '\u2592' };
@@ -10519,7 +10527,7 @@ class AppController {
 
 // Global abort handler for task detail view
 window._abortTask = async function(projectId) {
-  if (!confirm('Abort this task? All related sub-tasks will be cancelled.')) return;
+  if (!confirm(window.OMC_I18N?.t('common.abortTaskConfirm', 'Abort this task? All related sub-tasks will be cancelled.'))) return;
   try {
     const res = await fetch(`/api/task/${encodeURIComponent(projectId)}/abort`, { method: 'POST' });
     const data = await res.json();
@@ -10535,7 +10543,7 @@ window._abortTask = async function(projectId) {
 
 // Global abort handler for individual agent task
 window._abortAgentTask = async function(employeeId, taskId) {
-  if (!confirm('Cancel this task?')) return;
+  if (!confirm(window.OMC_I18N?.t('common.cancelTask', 'Cancel this task?'))) return;
   try {
     const res = await fetch(`/api/employee/${encodeURIComponent(employeeId)}/task/${encodeURIComponent(taskId)}/cancel`, { method: 'POST' });
     const data = await res.json();
