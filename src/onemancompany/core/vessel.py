@@ -38,6 +38,10 @@ from onemancompany.core.config import (
     ENCODING_UTF8,
     LAUNCH_SH_FILENAME,
     MAX_HOLD_SECONDS,
+    MAX_SESSION_TURNS,
+    MAX_STALL_RETRIES,
+    MAX_SUBTASK_DEPTH,
+    MAX_SUBTASK_ITERATIONS,
     MAX_SUMMARY_LEN,
     PF_NAME,
     PF_NICKNAME,
@@ -72,8 +76,6 @@ from loguru import logger
 TASK_HISTORY_FILENAME = "task_history.json"
 PROGRESS_LOG_MAX_LINES = 30
 # EXECUTION_LOG_MAX_SIZE removed — per-employee summary log no longer written
-MAX_SUBTASK_ITERATIONS = 3
-MAX_SUBTASK_DEPTH = 2
 MAX_RETRIES = 3
 RETRY_DELAYS = [5, 15, 30]
 MAX_HISTORY_ENTRIES = 8
@@ -161,9 +163,6 @@ def detect_unfulfilled_promises(output: str | None) -> bool:
     if not output:
         return False
     return bool(_PROMISE_PATTERNS.search(output))
-
-
-MAX_STALL_RETRIES: int = 2  # max times to re-run a stalled agent before giving up
 
 
 def _should_retry_stall(node) -> bool:

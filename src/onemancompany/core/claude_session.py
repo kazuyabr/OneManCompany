@@ -28,7 +28,17 @@ from pathlib import Path
 
 from loguru import logger
 
-from onemancompany.core.config import BLOCK_KEY_TEXT, BLOCK_KEY_TYPE, BLOCK_TYPE_TEXT, EMPLOYEES_DIR, ENCODING_UTF8, PROJECTS_DIR, read_text_utf, write_text_utf
+from onemancompany.core.config import (
+    BLOCK_KEY_TEXT,
+    BLOCK_KEY_TYPE,
+    BLOCK_TYPE_TEXT,
+    EMPLOYEES_DIR,
+    ENCODING_UTF8,
+    MAX_SESSION_TURNS,
+    PROJECTS_DIR,
+    read_text_utf,
+    write_text_utf,
+)
 
 LLM_TRACES_FILENAME = "llm_traces.jsonl"
 
@@ -249,7 +259,7 @@ class ClaudeDaemon:
         is_new: bool,
         mcp_config_path: str | None = None,
         work_dir: str = "",
-        max_turns: int = 50,
+        max_turns: int = MAX_SESSION_TURNS,
         claude_plugins: list[str] | None = None,
         model: str = "",
     ) -> None:
@@ -666,7 +676,7 @@ async def _get_or_start_daemon(
     employee_id: str,
     project_id: str,
     work_dir: str = "",
-    max_turns: int = 50,
+    max_turns: int = MAX_SESSION_TURNS,
     task_id: str = "",
 ) -> ClaudeDaemon:
     """Get an existing daemon or start a new one for this employee+project."""
@@ -760,7 +770,7 @@ async def run_claude_session(
     project_id: str,
     prompt: str,
     work_dir: str = "",
-    max_turns: int = 50,
+    max_turns: int = MAX_SESSION_TURNS,
     timeout: int = 600,
     task_id: str = "",
 ) -> dict:

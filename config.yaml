@@ -17,3 +17,14 @@ talent_market:
   api_key: "" # Set your API key in Settings or here
   use_ai_search: false # Use AI-powered search for better candidate matching
   mode: "local" # "local" = use talents/ folder, "remote" = use cloud Talent Market
+
+# -----------------------------------------------------------------------------
+# Circuit Breaker — Prevention of Infinite Loops and Overspending
+# -----------------------------------------------------------------------------
+circuit_breaker:
+  max_review_rounds: 5       # Rounds of rejection before escalating to CEO
+  max_children_per_node: 20  # Max active sub-tasks per task
+  max_tree_depth: 10         # Max depth of delegation (CEO -> ... -> Worker)
+  max_hold_seconds: 3600     # Auto-cancel tasks stuck in HOLDING (1 hour)
+  max_stall_retries: 3       # Re-runs when agent promises action but does nothing
+  max_session_turns: 100     # Max turns in a single Claude CLI session

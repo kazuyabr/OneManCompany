@@ -341,6 +341,10 @@ ROLE_DEPARTMENT_MAP: dict[str, str] = {
 }
 DEFAULT_DEPARTMENT = "General"
 
+# Load once at import time
+_app_config = {}  # Placeholder to be filled below
+
+
 # ---------------------------------------------------------------------------
 # Prompt truncation limits (characters)
 # ---------------------------------------------------------------------------
@@ -349,13 +353,6 @@ MAX_PRINCIPLES_LEN = 400
 MAX_WORKFLOW_CONTEXT_LEN = 800
 MAX_DISCUSSION_SUMMARY_LEN = 500
 
-# ---------------------------------------------------------------------------
-# Tree growth limits (circuit breaker)
-# ---------------------------------------------------------------------------
-MAX_REVIEW_ROUNDS = 3       # Max review rounds per parent before CEO escalation
-MAX_CHILDREN_PER_NODE = 10  # Max active children per parent node
-MAX_TREE_DEPTH = 6          # Max nesting depth for dispatch_child
-MAX_HOLD_SECONDS = 1800     # Hard timeout for HOLDING tasks (30 minutes)
 
 # ---------------------------------------------------------------------------
 # Department-based office layout
@@ -691,6 +688,38 @@ def is_hot_reload_enabled() -> bool:
 
 # Load once at import time
 _app_config = _read_app_config_from_disk()
+
+
+# ---------------------------------------------------------------------------
+# Tree growth limits (circuit breaker)
+# ---------------------------------------------------------------------------
+class CircuitBreakerConfig(BaseModel):
+    """Limits to prevent infinite loops and excessive token usage."""
+
+    max_review_rounds: int = 5  # Max review rounds per parent before CEO escalation
+    max_children_per_node: int = 20  # Max active children per parent node
+    max_tree_depth: int = 10  # Max nesting depth for dispatch_child
+    max_hold_seconds: int = 3600  # Hard timeout for HOLDING tasks (1 hour)
+    max_stall_retries: int = 3  # Max times to re-run a stalled agent before giving up
+    max_session_turns: int = 100  # Max interactions per agent session (Claude CLI)
+    max_subtask_iterations: int = 5  # Max iterations for a subtask cycle
+    max_subtask_depth: int = 4  # Max nesting depth for subtasks
+
+
+# Initialize with defaults, then override from app config if present
+_cb_defaults = CircuitBreakerConfig()
+_cb_overrides = _app_config.get("circuit_breaker", {})
+CIRCUIT_BREAKER = CircuitBreakerConfig(**{**_cb_defaults.model_dump(), **_cb_overrides})
+
+# Legacy constants for backward compatibility (pointing to the new config object)
+MAX_REVIEW_ROUNDS = CIRCUIT_BREAKER.max_review_rounds
+MAX_CHILDREN_PER_NODE = CIRCUIT_BREAKER.max_children_per_node
+MAX_TREE_DEPTH = CIRCUIT_BREAKER.max_tree_depth
+MAX_HOLD_SECONDS = CIRCUIT_BREAKER.max_hold_seconds
+MAX_STALL_RETRIES = CIRCUIT_BREAKER.max_stall_retries
+MAX_SESSION_TURNS = CIRCUIT_BREAKER.max_session_turns
+MAX_SUBTASK_ITERATIONS = CIRCUIT_BREAKER.max_subtask_iterations
+MAX_SUBTASK_DEPTH = CIRCUIT_BREAKER.max_subtask_depth
 
 
 def load_employee_configs() -> dict[str, EmployeeConfig]:
